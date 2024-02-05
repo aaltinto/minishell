@@ -20,7 +20,19 @@ char	*get_path(char **env, char *to_find, int len)
 	return(ret);
 }
 
-int	something_familiar(char *input)
+int	is_builtin(t_vars *vars, char *input)
+{
+	char	**command;
+
+	command = ft_split(input, ' ');
+	if (ft_strncmp(command[0], "cd", 3) == 0)
+		return (new_cd(vars, command[1]));
+	if (ft_strncmp(command[0], "pwd", 4) == 0)
+		return (new_pwd(vars), 1);
+	return (0);
+}
+
+int	something_familiar(char *input, t_vars *vars)
 {
 	if (ft_strncmp("", input, 1) == 0)
 		return (1);
@@ -28,6 +40,8 @@ int	something_familiar(char *input)
 		return (printf("See ya 🫡\n"), 2);
 	else if (ft_strncmp("hi", input, 3) == 0)
 		return (printf("hi baby 😘\n"), 1);
+	else if (is_builtin(vars, input))
+		return (1);
 	else
 		return (0);
 
@@ -82,7 +96,7 @@ int	handle_prompt(char *input, char **env, t_vars *vars)
 	int	ret;
 	char	*this_is_the_way;
 
-	ret = something_familiar(input);
+	ret = something_familiar(input, vars);
 	if (ret)
 		return (ret);
 	this_is_the_way = path_finder(env, input, vars);
@@ -105,10 +119,7 @@ char	*find_w_dir(char **env)
 		if (ft_strncmp("USER=", env[i], 5) == 0)
 			break ;
 	user = ft_split(env[i], '=');
-	while(env[++i])
-		if (ft_strncmp("PWD=", env[i], 4) == 0)
-			break;
-	pwd = ft_split(env[i], '/');
+	pwd = ft_split(getcwd(NULL, 0), '/');
 	i = 0;
 	while (pwd[i])
 		++i;
@@ -120,6 +131,22 @@ char	*find_w_dir(char **env)
 	return (free_doubles(pwd), free(ret), tmp);
 }
 
+int	env_init(t_vars *vars, char **env)
+{
+	int	i;
+
+	i = 0;
+	while (env[i])
+		i++;
+	vars->env = malloc(sizeof(char *) * (i + 1));
+	if (!vars->env)
+		return (free_doubles(vars->env), 0);
+	i = -1;
+	while (env[++i])
+		vars->env[i] = ft_strdup(env[i]);
+	return (printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m"), 1);
+}
+
 int	main(int argc, char **argv, char **env)
 {
 	char *input;
@@ -128,13 +155,13 @@ int	main(int argc, char **argv, char **env)
 
 	if (argc != 1)
 		return (err_msg("Error\nRun without arguments", 1), 1);
-
+	env_init(&vars, env);
 	while (1)
 	{
-		pwd = find_w_dir(env);
+		pwd = find_w_dir(vars.env);
 		input = readline(pwd);
 		add_history(input);
-		if (handle_prompt(input, env, &vars) == 2)
+		if (handle_prompt(input, vars.env, &vars) == 2)
 			break ;
 		free(input);
 		free(pwd);
