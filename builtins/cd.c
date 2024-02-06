@@ -19,15 +19,14 @@ int	new_cd(t_vars *vars, char *path_to_go)
 	new_path = getcwd(NULL, 0);
 	i = find_in_env(vars, "PWD=");
 	tmp = ft_strjoin("PWD=", new_path);
-	printf("%i  %s\n",i, vars->env[i]);
 	if (i != -1)
-		ft_strlcpy(vars->env[i], tmp, ft_strlen(tmp));
+		ft_strlcpy(vars->env[i], tmp, ft_strlen(tmp) + 1);
 	free(new_path);
 	free(tmp);
 	i = find_in_env(vars, "OLDPWD");
 	tmp = ft_strjoin("OLDPWD=", old_path);
 	free(old_path);
 	if (i != -1)
-		ft_strlcpy(vars->env[i], tmp, ft_strlen(tmp));
+		ft_strlcpy(vars->env[i], tmp, ft_strlen(tmp) + 1);
 	return (free(tmp), 1);
 }

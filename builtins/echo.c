@@ -13,7 +13,8 @@ void	echo(t_vars *vars, char *input)
 	while (split_commadns[++i])
 	{
 		ft_putstr_fd(split_commadns[i], 1);
-		ft_putstr_fd(" ", 1);
+		if (split_commadns[i + 1] != NULL)
+			ft_putstr_fd(" ", 1);
 	}
 	if (ft_strncmp(split_commadns[1], "-n", 3) != 0)
 		ft_putstr_fd("\n", 1);

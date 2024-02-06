@@ -42,7 +42,8 @@ int	path_finder(char *input, t_vars *vars)
 				command_exec(this_is_the_way, prompt, vars), 1);
 		free(this_is_the_way);
 	}
-	return (err_msg(ft_strjoin("command not found: ", prompt[0]), 0), 0);
+	return (err_msg(ft_strjoin("minishell: command not found: ", prompt[0]),
+			1), 0);
 }
 
 

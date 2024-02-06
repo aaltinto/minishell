@@ -26,5 +26,5 @@ int	env_init(t_vars *vars, char **env)
 	i = -1;
 	while (env[++i])
 		vars->env[i] = ft_strdup(env[i]);
-	return (ft_putstr_fd("\e[1;33mMornin' Sunshine 🌞\e[0m", 1), 1);
+	return (ft_putstr_fd("\e[1;33mMornin' Sunshine 🌞\n\e[0m", 1), 1);
 }
