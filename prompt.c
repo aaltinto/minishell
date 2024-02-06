@@ -22,9 +22,9 @@ int	something_familiar(char *input, t_vars *vars)
 	if (ft_strncmp("", input, 1) == 0)
 		return (1);
 	else if (ft_strncmp("exit", input, 5) == 0)
-		return (printf("See ya 🫡"), 2);
+		return (printf("See ya 🫡\n"), 2);
 	else if (ft_strncmp("hi", input, 3) == 0)
-		return (printf("hi baby 😘"), 1);
+		return (printf("hi baby 😘\n"), 1);
 	else if (is_builtin(vars, input))
 		return (1);
 	else
@@ -39,7 +39,7 @@ char	*wait_close(int	quote_check)
 	while (1)
 	{
 		input = readline(">");
-		
+
 	}
 }
 
@@ -47,7 +47,7 @@ int	quote(char *input, t_vars *vars)
 {
 	int	quote_check;
 	int	i;
-	char	*
+
 
 	quote_check = 0;
 	i = -1;

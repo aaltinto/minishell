@@ -83,7 +83,6 @@ int	main(int argc, char **argv, char **env)
 	while (1)
 	{
 		pwd = find_w_dir(vars.env);
-		printf("\n");
 		input = readline(pwd);
 		add_history(input);
 		if (handle_prompt(input, &vars) == 2)
