@@ -7,104 +7,44 @@
 
 #define EXIT 5
 
-char	*get_path(char **env, char *to_find, int len)
-{
-	int 	i;
-	char	*ret;
-
-	i = -1;
-	while(env[++i])
-		if (ft_strncmp(to_find, env[i], len) == 0)
-			break ;
-	ret = ft_strdup(env[i]);
-	return(ret);
-}
-
-int	is_builtin(t_vars *vars, char *input)
-{
-	char	**command;
-
-	command = ft_split(input, ' ');
-	if (ft_strncmp(command[0], "cd", 3) == 0)
-		return (new_cd(vars, command[1]));
-	if (ft_strncmp(command[0], "pwd", 4) == 0)
-		return (new_pwd(vars), 1);
-	return (0);
-}
-
-int	something_familiar(char *input, t_vars *vars)
-{
-	if (ft_strncmp("", input, 1) == 0)
-		return (1);
-	else if (ft_strncmp("exit", input, 5) == 0)
-		return (printf("See ya 🫡\n"), 2);
-	else if (ft_strncmp("hi", input, 3) == 0)
-		return (printf("hi baby 😘\n"), 1);
-	else if (is_builtin(vars, input))
-		return (1);
-	else
-		return (0);
-
-}
-char	*find_the_way(char **path, char *input, t_vars *vars)
-{
-	int		i;
-	char	*this_is_the_way;
-	char	*cmd;
-
-	vars->command = ft_split(input, ' ');
-	if (!vars->command)
-		return (err_msg("Error!", 1), NULL);
-	cmd = ft_strjoin("/", vars->command[0]);
-	i = -1;
-	while(path[++i])
-	{
-		this_is_the_way = ft_strjoin(path[i], cmd);
-
-		if (access(this_is_the_way, F_OK) == 0)
-			return (free_doubles(path), this_is_the_way);
-		free(this_is_the_way);
-	}
-	return (NULL);
-}
-
-char	*path_finder(char **env, char *input, t_vars *vars)
-{
-	char	**split_path;
-	char	*path;
-
-	path = get_path(env, "PATH=", 5);
-	split_path = ft_split(path, ':');
-	if (!split_path)
-		return(err_msg("Error!", 1), NULL);
-	return (find_the_way(split_path, input, vars));
-}
-
-void	command_exec(char *path, t_vars *vars, char **env)
+void	command_exec(char *path, char **command, t_vars *vars)
 {
 	int	p_id;
 
 	p_id = fork();
 	if (p_id == 0)
-		if (execve(path, vars->command, env) == -1)
+		if (execve(path, command, vars->env) == -1)
 			perror("execute problem");
 	waitpid(p_id, NULL, 0);
 }
-
-int	handle_prompt(char *input, char **env, t_vars *vars)
+int	path_finder(char *input, t_vars *vars)
 {
-	int	ret;
+	char	**split_path;
 	char	*this_is_the_way;
+	char	**prompt;
+	char	*cmd;
+	int		i;
 
-	ret = something_familiar(input, vars);
-	if (ret)
-		return (ret);
-	this_is_the_way = path_finder(env, input, vars);
-	if (!this_is_the_way)
-		return (err_msg("command not found: ", 0), err_msg(vars->command[0], 1), 1);
-	command_exec(this_is_the_way, vars, env);
-	return (1);
+	i = find_in_env(vars, "PATH=");
+	split_path = ft_split(vars->env[i], ':');
+	if (!split_path)
+		return(err_msg("Error!", 1), 0);
+	prompt = ft_split(input, ' ');
+	if (!vars->command)
+		return (err_msg("Error!", 1), 0);
+	cmd = ft_strjoin("/", prompt[0]);
+	i = -1;
+	while(split_path[++i])
+	{
+		this_is_the_way = ft_strjoin(split_path[i], cmd);
+		if (access(this_is_the_way, F_OK) == 0)
+			return (free_doubles(split_path),
+				command_exec(this_is_the_way, prompt, vars), 1);
+		free(this_is_the_way);
+	}
+	return (err_msg(ft_strjoin("command not found: ", prompt[0]), 0), 0);
 }
+
 
 char	*find_w_dir(char **env)
 {
@@ -131,22 +71,6 @@ char	*find_w_dir(char **env)
 	return (free_doubles(pwd), free(ret), tmp);
 }
 
-int	env_init(t_vars *vars, char **env)
-{
-	int	i;
-
-	i = 0;
-	while (env[i])
-		i++;
-	vars->env = malloc(sizeof(char *) * (i + 1));
-	if (!vars->env)
-		return (free_doubles(vars->env), 0);
-	i = -1;
-	while (env[++i])
-		vars->env[i] = ft_strdup(env[i]);
-	return (printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m"), 1);
-}
-
 int	main(int argc, char **argv, char **env)
 {
 	char *input;
@@ -159,9 +83,10 @@ int	main(int argc, char **argv, char **env)
 	while (1)
 	{
 		pwd = find_w_dir(vars.env);
+		printf("\n");
 		input = readline(pwd);
 		add_history(input);
-		if (handle_prompt(input, vars.env, &vars) == 2)
+		if (handle_prompt(input, &vars) == 2)
 			break ;
 		free(input);
 		free(pwd);
