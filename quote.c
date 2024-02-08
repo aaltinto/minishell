@@ -95,5 +95,5 @@ int	quote(t_vars *vars)
 	}
 	if (in_quote != 0)
 		wait_close(2, in_quote != 2, vars);
-	return (quote_vanish(vars), in_quote != 0);
+	return (in_quote != 0);
 }

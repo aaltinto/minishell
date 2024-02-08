@@ -23,5 +23,6 @@ void	new_pwd(t_vars *vars);
 void	echo(t_vars *vars);
 
 int		quote(t_vars *vars);
+void	quote_vanish(t_vars *vars);
 
 #endif

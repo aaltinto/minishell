@@ -36,6 +36,7 @@ int	handle_prompt(t_vars *vars)
 	int		ret;
 
 	quote(vars);
+	quote_vanish(vars);
 	ret = something_familiar(vars);
 	if (ret)
 		return (ret);
