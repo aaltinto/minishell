@@ -3,20 +3,17 @@
 
 void	echo(t_vars *vars)
 {
-	char	**split_commadns;
 	int		i;
 
-	split_commadns = ft_split(vars->input, ' ');
 	i = 0;
-	if (ft_strncmp(split_commadns[1], "-n", 3) == 0)
+	if (ft_strncmp(vars->input_parsed[1], "-n", 3) == 0)
 		i++;
-	while (split_commadns[++i])
+	while (vars->input_parsed[++i])
 	{
-		ft_putstr_fd(split_commadns[i], 1);
-		if (split_commadns[i + 1] != NULL)
+		ft_putstr_fd(vars->input_parsed[i], 1);
+		if (vars->input_parsed[i + 1] != NULL)
 			ft_putstr_fd(" ", 1);
 	}
-	if (ft_strncmp(split_commadns[1], "-n", 3) != 0)
+	if (ft_strncmp(vars->input_parsed[1], "-n", 3) != 0)
 		ft_putstr_fd("\n", 1);
-	free_doubles(split_commadns);
 }

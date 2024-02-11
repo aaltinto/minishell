@@ -31,42 +31,79 @@ void	wait_close(int quote_check, int type, t_vars *vars)
 		return ;
 }
 
-void	quote_vanish(t_vars *vars)
+int	arg_counter(t_vars *vars)
 {
-	char	*tmp;
-	int		in_quote;
 	int		i;
+	int		count;
+	int		check;
+	char	quote_type;
+
+	quote_type = '\0';
+	count = 0;
+	check = 0;
+	i = -1;
+	while (vars->input[++i] != '\0')
+	{
+		if (is_space(vars->input[i]))
+			check = 0;
+		if (vars->input[i] == '\'' || vars->input[i] == '\"')
+		{
+			quote_type = vars->input[i];
+			check = 0;
+			while (vars->input[++i] != quote_type)
+				;
+			continue ;
+		}
+		if (check == 0 && ++check)
+			count++;
+	}
+	return (count);
+}
+
+int	parse_quote(int i, t_vars *vars)
+{
+	int		j;
+	char	quote_type;
+
+	j = 0;
+	quote_type = vars->input[i];
+	if (is_quote(vars->input[i]))
+	{
+		while (vars->input[++i] != quote_type)
+		{
+			j++;
+		}
+	}
+	return (j);
+}
+
+int	parse(t_vars *vars)
+{
+	int		i;
+	char	*input;
+	int		i_sub;
 	int		j;
 
-	tmp = malloc(ft_strlen(vars->input) + 1);
-	if (!tmp)
-		return (err_msg("Malloc Error", 1));
-	in_quote = 0;
+	vars->input_parsed = malloc(sizeof(char *) * (arg_counter(vars) + 1));
+	if (!vars->input_parsed)
+		err_msg("something went wrong", 1);
 	i = -1;
-	j = 0;
+	i_sub = -1;
+	input = ft_strdup (vars->input);
 	while (vars->input[++i])
 	{
-		if (vars->input[i] == '\"' && in_quote != 2)
-		{
-		    if (!in_quote)
-		        in_quote = 1;
-			else if (in_quote == 1)
-		        in_quote = 0;
-		}
-		else if (vars->input[i] == '\'' && in_quote != 1)
-		{
-		    if (!in_quote)
-		        in_quote = 2;
-		    else if (in_quote == 2)
-		        in_quote = 0;
-		}
-		else
-		    tmp[j++] = vars->input[i];
+		j = 0;
+		while (input[i] && !is_space(input[i]) && !is_quote(input[i]) && ++i)
+			j++;
+		if (j)
+			vars->input_parsed[++i_sub] = ft_substr(input, (i--) - j, j);
+		j = parse_quote(i, vars);
+		i += j;
+		if (j)
+			vars->input_parsed[++i_sub] = ft_substr(vars->input, ++i - j, j);
 	}
-	tmp[j] = '\0';
-	free(vars->input);
-	vars->input = ft_strdup(tmp);
-	free(tmp);
+	vars->input_parsed[++i_sub] = NULL;
+	return (free(input), 1);
 }
 
 int	quote(t_vars *vars)

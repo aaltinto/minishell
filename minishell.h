@@ -5,6 +5,7 @@
 typedef struct s_vars
 {
 	char	*input;
+	char	**input_parsed;
 	char	**env;
 }	t_vars;
 
@@ -21,8 +22,13 @@ int		env_init(t_vars *vars, char **env);
 int		new_cd(t_vars *vars);
 void	new_pwd(t_vars *vars);
 void	echo(t_vars *vars);
+int		new_export(t_vars *vars);
+void	new_env(t_vars *vars);
 
 int		quote(t_vars *vars);
-void	quote_vanish(t_vars *vars);
+int		parse(t_vars *vars);
+
+int		is_quote(char c);
+int		is_space(char c);
 
 #endif

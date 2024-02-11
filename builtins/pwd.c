@@ -3,7 +3,7 @@
 
 void	new_pwd(t_vars *vars)
 {
-	int	i;
+	int		i;
 	char	**splitted;
 
 	i = find_in_env(vars, "PWD");

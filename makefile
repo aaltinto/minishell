@@ -5,8 +5,11 @@ SRC = main.c\
 	free_n_exit.c\
 	prompt.c\
 	env.c\
+	utils.c\
 	quote.c\
 	builtins/cd.c\
+	builtins/cmd_env.c\
+	builtins/export.c\
 	builtins/pwd.c\
 	builtins/echo.c
 LIBFT = libft/libft.a

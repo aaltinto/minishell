@@ -4,15 +4,16 @@
 
 int	is_builtin(t_vars *vars)
 {
-	char	**command;
-
-	command = ft_split(vars->input, ' ');
-	if (ft_strncmp(command[0], "cd", 3) == 0)
-		return (free_doubles(command), new_cd(vars));
-	if (ft_strncmp(command[0], "pwd", 4) == 0)
-		return (free_doubles(command), new_pwd(vars), 1);
-	if (ft_strncmp(command[0], "echo", 5) == 0)
-		return (free_doubles(command), echo(vars), 1);
+	if (ft_strncmp(vars->input_parsed[0], "cd", 3) == 0)
+		return (new_cd(vars));
+	if (ft_strncmp(vars->input_parsed[0], "pwd", 4) == 0)
+		return (new_pwd(vars), 1);
+	if (ft_strncmp(vars->input_parsed[0], "echo", 5) == 0)
+		return (echo(vars), 1);
+	if (ft_strncmp(vars->input_parsed[0], "export", 6) == 0)
+		return (new_export(vars));
+	if (ft_strncmp(vars->input_parsed[0], "env", 6) == 0)
+		return (new_env(vars), 1);
 	return (0);
 }
 
@@ -30,13 +31,12 @@ int	something_familiar(t_vars *vars)
 		return (0);
 }
 
-
 int	handle_prompt(t_vars *vars)
 {
 	int		ret;
 
 	quote(vars);
-	quote_vanish(vars);
+	parse(vars);
 	ret = something_familiar(vars);
 	if (ret)
 		return (ret);

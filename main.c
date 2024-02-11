@@ -61,11 +61,12 @@ char	*find_w_dir(char **env)
 	while (pwd[i])
 		++i;
 	tmp = ft_strjoin(user[1], "@ \e[1;92m");
-	free_doubles(user);
+	//free_doubles(user);
+	write(1, "hi\n", 3);
 	ret = ft_strjoin(tmp, pwd[i - 1]);
 	free(tmp);
 	tmp = ft_strjoin(ret, " $ \e[0m");
-	return (free_doubles(pwd), free(ret), tmp);
+	return (free(ret), tmp);
 }
 
 int	main(int argc, char **argv, char **env)
@@ -78,12 +79,11 @@ int	main(int argc, char **argv, char **env)
 	env_init(&vars, env);
 	while (1)
 	{
-		pwd = find_w_dir(vars.env);
-		vars.input = readline(pwd);
+		//pwd = find_w_dir(vars.env);
+		vars.input = readline(">>");
 		add_history(vars.input);
 		if (handle_prompt(&vars) == 2)
 			break ;
-		free(vars.input);
-		free(pwd);
+		//free(pwd);
 	}
 }
