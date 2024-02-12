@@ -1,6 +1,6 @@
 NAME = minishell
 CC = gcc
-FLAGS = -lreadline #-wall -wextra -werror
+FLAGS = -Wall -Wextra -Werror -lreadline -g
 SRC = main.c\
 	free_n_exit.c\
 	prompt.c\

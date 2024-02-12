@@ -18,12 +18,12 @@ int	env_init(t_vars *vars, char **env)
 {
 	int	i;
 
-	i = 0;
-	while (env[i])
-		i++;
+	i = -1;
+	while (env[++i])
+		;
 	vars->env = malloc(sizeof(char *) * (i + 1));
 	if (!vars->env)
-		return (free_doubles(vars->env), 0);
+		return (0);
 	i = -1;
 	while (env[++i])
 		vars->env[i] = ft_strdup(env[i]);

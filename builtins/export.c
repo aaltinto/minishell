@@ -11,12 +11,7 @@ int	count_vars(t_vars *vars)
 	new_var = 0;
 	i = 0;
 	while (vars->input_parsed[++i])
-	{
-		j = -1;
-		while (vars->input_parsed[i][++j])
-			if (vars->input_parsed[i][j] == '=')
-				new_var++;
-	}
+		new_var++;
 	return (new_var);
 }
 
@@ -33,10 +28,14 @@ char	**dup_env(t_vars *vars, char **to_dup)
 	count = count_vars(vars);
 	if (!count)
 		return (NULL);
-	new_env = (char **)malloc(i + count);
+	new_env = malloc(sizeof(char *) * (i + count + 1));
 	i = -1;
 	while (to_dup[++i])
+	{
 		new_env[i] = ft_strdup(to_dup[i]);
+		if (!new_env[i])
+			return (err_msg("Error", 1), NULL);
+	}
 	new_env[i] = NULL;
 	return (new_env);
 }
@@ -53,8 +52,6 @@ int	new_export(t_vars *vars)
 	new_env = dup_env(vars, vars->env);
 	if (!new_env)
 		return (2);
-	for (int i = 0; new_env[i];i++)
-		printf("%s\n", new_env[i]);
 	i2 = 0;
 	while (new_env[i2])
 		i2++;
@@ -76,8 +73,10 @@ int	new_export(t_vars *vars)
 		}
 	}
 	new_env[i2] = NULL;
+	for (int i = 0; new_env[i];i++)
+		printf("%s\n", new_env[i]);
 	free_doubles(vars->env);
-	dup_env(vars, new_env);
-	free_doubles(new_env);
+	env_init(vars, new_env);
+
 	return (1);
 }

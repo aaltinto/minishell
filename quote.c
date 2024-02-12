@@ -84,6 +84,11 @@ int	parse(t_vars *vars)
 	int		i_sub;
 	int		j;
 
+	if (ft_strncmp("", vars->input, 2) == 0)
+	{
+		vars->input_parsed = NULL;
+		return(1);
+	}
 	vars->input_parsed = malloc(sizeof(char *) * (arg_counter(vars) + 1));
 	if (!vars->input_parsed)
 		err_msg("something went wrong", 1);
@@ -103,7 +108,7 @@ int	parse(t_vars *vars)
 			vars->input_parsed[++i_sub] = ft_substr(vars->input, ++i - j, j);
 	}
 	vars->input_parsed[++i_sub] = NULL;
-	return (free(input), 1);
+	return (free(input), free(vars->input), 1);
 }
 
 int	quote(t_vars *vars)
