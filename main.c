@@ -26,7 +26,7 @@ int	path_finder(t_vars *vars)
 	char	*err;
 	int		i;
 
-	i = find_in_env(vars, "PATH=");
+	i = find_in_env(vars->env, "PATH=");
 	split_path = ft_split(vars->env[i], ':');
 	if (!split_path)
 		return (err_msg("Error!", 1), 0);
@@ -49,21 +49,15 @@ char	*find_w_dir(char **env)
 	int		i;
 	char	**user;
 	char	**pwd;
-	char	*cwd;
 	char	*tmp;
 	char	*ret;
 
-	i = -1;
-	while (env[++i])
-		if (ft_strncmp("USER=", env[i], 5) == 0)
-			break ;
+	i = find_in_env(env, "USER=");
 	user = ft_split(env[i], '=');
-	cwd = getcwd(NULL, 0);
-	pwd = ft_split(cwd, '/');
-	free(cwd);
-	i = 0;
-	while (pwd[i])
-		++i;
+	tmp = getcwd(NULL, 0);
+	pwd = ft_split(tmp, '/');
+	free(tmp);
+	i = double_counter(pwd);
 	tmp = ft_strjoin(user[1], "@ \e[1;92m");
 	free_doubles(user);
 	ret = ft_strjoin(tmp, pwd[i - 1]);
@@ -80,16 +74,14 @@ int	main(int argc, char **argv, char **env)
 
 	if (argc != 1)
 		return (err_msg("Error\nRun without arguments", 1), 1);
+	printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m");
 	env_init(&vars, env);
 	while (1)
 	{
 		pwd = find_w_dir(vars.env);
 		vars.input = readline(pwd);
 		free(pwd);
-		add_history(vars.input);
 		if (handle_prompt(&vars) == 2)
 			break ;
-		if (vars.input_parsed)
-			free_doubles(vars.input_parsed);
 	}
 }

@@ -2,33 +2,14 @@
 #include "../libft/libft.h"
 #include <stdio.h>
 
-int	count_vars(t_vars *vars)
-{
-	int		i;
-	int		j;
-	int		new_var;
-
-	new_var = 0;
-	i = 0;
-	while (vars->input_parsed[++i])
-		new_var++;
-	return (new_var);
-}
-
 char	**dup_env(t_vars *vars, char **to_dup)
 {
 	int		j;
 	int		i;
-	int		count;
 	char	**new_env;
 
-	i = 0;
-	while (to_dup[i])
-		i++;
-	count = count_vars(vars);
-	if (!count)
-		return (NULL);
-	new_env = malloc(sizeof(char *) * (i + count + 1));
+	i = double_counter(to_dup);
+	new_env = malloc(sizeof(char *) * (i + vars->argc + 1));
 	i = -1;
 	while (to_dup[++i])
 	{
@@ -40,6 +21,23 @@ char	**dup_env(t_vars *vars, char **to_dup)
 	return (new_env);
 }
 
+void	print_vars(t_vars *vars)
+{
+	char	**exports;
+	int		i;
+
+	i = -1;
+	while (vars->env[++i])
+	{
+		exports = ft_split(vars->env[i], '=');
+		if (!exports[1])
+			printf("declare -x %s\n", exports[0]);
+		else
+			printf("declare -x %s=\"%s\"\n", exports[0], exports[1]);
+		free_doubles(exports);
+	}
+}
+
 int	new_export(t_vars *vars)
 {
 	int		i;
@@ -48,35 +46,74 @@ int	new_export(t_vars *vars)
 	char	**new_env;
 
 	if (!vars->input_parsed[1])
-		return (1);
+		return (print_vars(vars), 1);
 	new_env = dup_env(vars, vars->env);
 	if (!new_env)
 		return (2);
-	i2 = 0;
-	while (new_env[i2])
-		i2++;
+	i2 = double_counter(new_env) - 1;
 	i = 0;
 	while (vars->input_parsed[++i])
 	{
-		j = -1;
-		while (vars->input_parsed[i][++j])
+		new_env[++i2] = ft_strdup(vars->input_parsed[i]);
+		if (!new_env[i2])
+			return (err_msg("Error", 1), 2);
+	}
+	new_env[++i2] = NULL;
+	free_doubles(vars->env);
+	return (env_init(vars, new_env), 1);
+}
+
+void	re_init_env(t_vars *vars, int count, int del)
+{
+	char	**new_env;
+	int		i;
+	int		j;
+
+	i = -1;
+	j = 0;
+	if (del == 0)
+		return ;
+	new_env = malloc(sizeof(char *) * (count - del + 1));
+	while (count >= ++i)
+	{
+		if (!vars->env[i])
+			continue ;
+		new_env[j] = ft_strdup(vars->env[i]);
+		j++;
+	}
+	free_doubles(vars->env);
+	env_init(vars, new_env);
+}
+
+void	unset(t_vars *vars)
+{
+	int		i;
+	int		j;
+	int		count;
+	int		del;
+	char	**exports;
+
+	if (vars->input_parsed[1] == NULL)
+		return ;
+	count = double_counter(vars->env);
+	del = 0;
+	i = -1;
+	while (vars->env[++i])
+	{
+		j = 0;
+		while (vars->input_parsed[++j])
 		{
-			if (vars->input_parsed[i][j] == '=')
+			exports = ft_split(vars->env[i], '=');
+			if (ft_strncmp(exports[0], vars->input_parsed[j],
+					ft_strlen(exports[0])) == 0)
 			{
-				new_env[i2] = ft_strdup(vars->input_parsed[i]);
-				if (!new_env[i2])
-					return (err_msg("Error", 1), 2);
-				i++;
-				i2++;
+				free(vars->env[i]);
+				vars->env[i] = NULL;
+				free_doubles(exports);
+				del++;
 				break ;
 			}
 		}
 	}
-	new_env[i2] = NULL;
-	for (int i = 0; new_env[i];i++)
-		printf("%s\n", new_env[i]);
-	free_doubles(vars->env);
-	env_init(vars, new_env);
-
-	return (1);
+	re_init_env(vars, count, del);
 }

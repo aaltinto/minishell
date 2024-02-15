@@ -24,6 +24,7 @@ $(NAME) : $(OBJ)
 clean :
 	make clean -C libft
 	rm -rf *.o
+	rm -rf builtins/*.o
 fclean : clean
 	make fclean -C libft
 	rm -rf $(NAME)

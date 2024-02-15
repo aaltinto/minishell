@@ -31,7 +31,7 @@ void	wait_close(int quote_check, int type, t_vars *vars)
 		return ;
 }
 
-int	arg_counter(t_vars *vars)
+void	arg_counter(t_vars *vars)
 {
 	int		i;
 	int		count;
@@ -57,7 +57,7 @@ int	arg_counter(t_vars *vars)
 		if (check == 0 && ++check)
 			count++;
 	}
-	return (count);
+	vars->argc = count;
 }
 
 int	parse_quote(int i, t_vars *vars)
@@ -77,38 +77,30 @@ int	parse_quote(int i, t_vars *vars)
 	return (j);
 }
 
-int	parse(t_vars *vars)
+int	parse(t_vars *vars, int count)
 {
 	int		i;
-	char	*input;
-	int		i_sub;
+	int		len;
+	int		in_quotes;
 	int		j;
 
-	if (ft_strncmp("", vars->input, 2) == 0)
-	{
-		vars->input_parsed = NULL;
-		return(1);
-	}
-	vars->input_parsed = malloc(sizeof(char *) * (arg_counter(vars) + 1));
-	if (!vars->input_parsed)
-		err_msg("something went wrong", 1);
+	len = ft_strlen(vars->input);
+	vars->input_parsed = (char **)malloc(len * sizeof(char *));
 	i = -1;
-	i_sub = -1;
-	input = ft_strdup (vars->input);
-	while (vars->input[++i])
+	in_quotes = 0;
+	j = 0;
+	while (++i <= len)
 	{
-		j = 0;
-		while (input[i] && !is_space(input[i]) && !is_quote(input[i]) && ++i)
-			j++;
-		if (j)
-			vars->input_parsed[++i_sub] = ft_substr(input, (i--) - j, j);
-		j = parse_quote(i, vars);
-		i += j;
-		if (j)
-			vars->input_parsed[++i_sub] = ft_substr(vars->input, ++i - j, j);
+		if (vars->input[i] == '"')
+			in_quotes = !in_quotes;
+		else if ((is_space(vars->input[i]) && !in_quotes) || !vars->input[i])
+		{
+			if (i > j)
+				vars->input_parsed[count++] = ft_substr(vars->input, j, i - j);
+			j = i + 1;
+		}
 	}
-	vars->input_parsed[++i_sub] = NULL;
-	return (free(input), free(vars->input), 1);
+	return (free(vars->input), 1);
 }
 
 int	quote(t_vars *vars)
