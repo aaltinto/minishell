@@ -2,6 +2,8 @@
 #include "../libft/libft.h"
 #include <stdio.h>
 
+void	re_init_env(t_vars *vars, int count, int del);
+
 char	**dup_env(t_vars *vars, char **to_dup)
 {
 	int		j;
@@ -30,12 +32,40 @@ void	print_vars(t_vars *vars)
 	while (vars->env[++i])
 	{
 		exports = ft_split(vars->env[i], '=');
-		if (!exports[1])
+		if (!ft_strchr(exports[0], '=') && !exports[1])
+			printf("declare -x %s=\"\"\n", exports[0]);
+		else if (!exports[1])
 			printf("declare -x %s\n", exports[0]);
 		else
 			printf("declare -x %s=\"%s\"\n", exports[0], exports[1]);
 		free_doubles(exports);
 	}
+}
+
+int	check_restore(t_vars *vars)
+{
+	int		i;
+	int		index;
+	int		del;
+	int		count;
+	char	**splited;
+
+	i = 0;
+	del = 0;
+	count = double_counter(vars->env);
+	while (vars->input_parsed[++i])
+	{
+		splited = ft_split(vars->input_parsed[i], '=');
+		index = find_in_env(vars->env, splited[0]);
+		printf("%d\n", index);
+		free_doubles(splited);
+		if (index == -1)
+			continue ;
+		vars->env[index] = NULL;
+		del++;
+	}
+	if (del)
+		re_init_env(vars, count, del);
 }
 
 int	new_export(t_vars *vars)
@@ -47,6 +77,7 @@ int	new_export(t_vars *vars)
 
 	if (!vars->input_parsed[1])
 		return (print_vars(vars), 1);
+	check_restore(vars);
 	new_env = dup_env(vars, vars->env);
 	if (!new_env)
 		return (2);
