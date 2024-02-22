@@ -91,15 +91,22 @@ int	parse(t_vars *vars, int count)
 	j = 0;
 	while (++i <= len)
 	{
-		if (vars->input[i] == '"')
+		if (vars->input[i] == '"' || vars->input[i] == '\'')
 			in_quotes = !in_quotes;
-		else if ((is_space(vars->input[i]) && !in_quotes) || !vars->input[i])
+		else if ((!in_quotes && is_space(vars->input[i])) || !vars->input[i])
 		{
-			if (i > j)
+			if (!in_quotes && i > j)
+			{
+				if (vars->input[j] == '"' || vars->input[j] == '\'')
+					j++;
+				if (vars->input[i - 1] == '"' || vars->input[i - 1] == '\'')
+					i--;
 				vars->input_parsed[count++] = ft_substr(vars->input, j, i - j);
+			}
 			j = i + 1;
 		}
 	}
+	vars->input_parsed[count++] = NULL;
 	return (free(vars->input), 1);
 }
 

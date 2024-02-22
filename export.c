@@ -1,1 +1,0 @@
-char **new_env;

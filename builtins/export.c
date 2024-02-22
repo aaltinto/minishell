@@ -42,7 +42,7 @@ void	print_vars(t_vars *vars)
 	}
 }
 
-int	check_restore(t_vars *vars)
+void	check_restore(t_vars *vars)
 {
 	int		i;
 	int		index;
