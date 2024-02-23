@@ -6,6 +6,7 @@
 # include "minishell.h"
 # include <unistd.h>
 # include <readline/readline.h>
+# include <readline/history.h>
 # include "libft/libft.h"
 
 

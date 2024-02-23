@@ -47,72 +47,58 @@ char	**split_string(char *src, char *key)
 		before = src;
 		*found = '\0';
 		after = found + ft_strlen(key);
+		*after = '\0';
 	}
-	result[0] = ft_strdup(before);
+	if (!before)
+		result[0] = NULL;
+	else
+		result[0] = ft_strdup(before);
+	if (!key)
+		result[1] = NULL;
+	else
 	result[1] = ft_strdup(key);
-	result[2] = ft_strdup(after);
+	if (!after)
+		result[2] = NULL;
+	else
+		result[2] = ft_strdup(after);
 	return (result);
-}
-
-void	re_create_input(t_vars *vars, char *var, char **args, int i)
-{
-	int		j;
-	int		dstsize;
-	char	*ret;
-	char	**tmp;
-
-	dstsize = ft_strlen(vars->input) + ft_strlen(var) + 1;
-	ret = malloc(dstsize);
-	j = -1;
-	while (args[++j])
-	{
-		if (j == i)
-		{
-			tmp = ft_split(args[j], '$');
-			if (!var)
-			{
-				ft_strlcat(ret, tmp[0], dstsize);
-				free_doubles(tmp);
-				continue ;
-			}
-			if (tmp[1] != NULL)
-				ft_strlcat(ret, tmp[0], dstsize);
-			free_doubles(tmp);
-			ft_strlcat(ret, var, dstsize);
-			ft_strlcat(ret, " ", dstsize);
-			continue ;
-		}
-		ft_strlcat(ret, args[j], dstsize);
-		ft_strlcat(ret, " ", dstsize);
-	}
-	free(vars->input);
-	vars->input = ft_strdup(ret);
-	//printf("%s\n", vars->input);
 }
 
 int	env_find_dollar(t_vars *vars, int i, char **args)
 {
 	int		j;
+	int		len;
 	char	*var;
-	char	**str;
 	char	**tmp;
+	char	**original;
 
+	original = vars->env;
 	j = 0;
 	while (vars->input[++i] && (vars->input[i] != ' ' && vars->input[i] != '\''
 			&& vars->input[i] != '\"'))
 		j++;
-	var = ft_substr(vars->input, i - ++j, j);
-	printf("%s\n", var);
+	var = ft_substr(vars->input, i - j, j);
 	tmp = split_string(vars->input, var);
+	j = find_in_env(vars->env, var + 1);
 	free(var);
-	j = find_in_env(vars->env, ft_strchr(tmp[1], '$') + 1);
-	printf("j= %d\n", j);
-	if (j != -1)
-		str = ft_split(vars->env[j], '=');
-	if (j == -1)
-		return (re_create_input(vars, NULL, args, i), 1);
-	re_create_input(vars, str[1], args, i); 
-	return (free_doubles(str), 1);
+	free(tmp[1]);
+	tmp[1] = ft_strdup(ft_strchr(vars->env[j], '=') + 1);
+	vars->env = original;
+	printf("%s\n", tmp[1]);
+	len = 0;
+	i = -1;
+	while (++i < 3)
+		if (tmp[i])
+			len += ft_strlen(tmp[i]);
+	free(vars->input);
+	vars->input = malloc(len + 1);
+	i = -1;
+	while (++i <= 2)
+		if (tmp[i])
+			ft_strlcat(vars->input, tmp[i], len + 1);
+	printf("input = %s\n", vars->input);
+	free_doubles(tmp);
+	return (1);
 }
 
 void	dolar_parse(t_vars *vars)
@@ -122,9 +108,6 @@ void	dolar_parse(t_vars *vars)
 	int		quote_type;
 
 	args = ft_split(vars->input, ' ');
-	for(int i = 0; args[i]; i++)
-		printf("%s ", args[i]);
-	printf("\n");
 	quote_type = 0;
 	i = -1;
 	while (vars->input[++i])
@@ -136,7 +119,7 @@ void	dolar_parse(t_vars *vars)
 				;
 		else if (vars->input[i] == '$')
 		{
-			env_find_dollar(vars, i, args);
+			env_find_dollar(vars, --i, args);
 		}
 	}
 	free_doubles(args);

@@ -16,6 +16,10 @@ void	free_doubles(char **str)
 
 	i = -1;
 	while (str[++i])
-		free(str[i]);
-	free(str);
+	{
+		if (!str[i])
+			free(str[i]);
+	}
+	if (!str)
+		free(str);
 }
