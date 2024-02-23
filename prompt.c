@@ -31,6 +31,29 @@ int	something_familiar(t_vars *vars)
 		return (0);
 }
 
+char	**split_string(char *src, char *key)
+{
+	char	**result;
+	char	*before;
+	char	*after;
+	char	*found;	
+
+	result = malloc(3 * sizeof(char *));
+	if (result == NULL)
+		return (err_msg("Memory allocation failed\n", 1), NULL);
+	found = ft_strnstr(src, key, ft_strlen(src));
+	if (found != NULL)
+	{
+		before = src;
+		*found = '\0';
+		after = found + ft_strlen(key);
+	}
+	result[0] = ft_strdup(before);
+	result[1] = ft_strdup(key);
+	result[2] = ft_strdup(after);
+	return (result);
+}
+
 void	re_create_input(t_vars *vars, char *var, char **args, int i)
 {
 	int		j;
@@ -64,7 +87,7 @@ void	re_create_input(t_vars *vars, char *var, char **args, int i)
 	}
 	free(vars->input);
 	vars->input = ft_strdup(ret);
-	printf("%s\n", vars->input);
+	//printf("%s\n", vars->input);
 }
 
 int	env_find_dollar(t_vars *vars, int i, char **args)
@@ -78,20 +101,18 @@ int	env_find_dollar(t_vars *vars, int i, char **args)
 	while (vars->input[++i] && (vars->input[i] != ' ' && vars->input[i] != '\''
 			&& vars->input[i] != '\"'))
 		j++;
-	var = ft_substr(vars->input, i - j, j);
-	printf("var= %s\nimput[i]= %c\n", var, vars->input[i + 1]);
-	i = -1;
-	while (args[++i] && !ft_strchr(args[i], '$'))
-		;
-	tmp = ft_split(args[i], '$');
-	j = find_in_env(vars->env, var);
+	var = ft_substr(vars->input, i - ++j, j);
+	printf("%s\n", var);
+	tmp = split_string(vars->input, var);
 	free(var);
+	j = find_in_env(vars->env, ft_strchr(tmp[1], '$') + 1);
+	printf("j= %d\n", j);
 	if (j != -1)
 		str = ft_split(vars->env[j], '=');
 	if (j == -1)
 		return (re_create_input(vars, NULL, args, i), 1);
 	re_create_input(vars, str[1], args, i); 
-	return (free_doubles(str), free_doubles(tmp), 1);
+	return (free_doubles(str), 1);
 }
 
 void	dolar_parse(t_vars *vars)
