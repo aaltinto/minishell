@@ -9,6 +9,10 @@
 # include <readline/history.h>
 # include "libft/libft.h"
 
+# include <signal.h>
+# include <sys/wait.h>
+
+int g_l;
 
 typedef struct s_vars
 {
@@ -44,5 +48,10 @@ int		is_quote(char c);
 int		is_space(char c);
 int		double_counter(char **str);
 void	arg_counter(t_vars *vars);
+
+void	sig_c(int sig);
+void	sig_d(int sig);
+void	init_signals(void);
+void    init_signals2(void);
 
 #endif

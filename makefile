@@ -11,7 +11,8 @@ SRC = main.c\
 	builtins/cmd_env.c\
 	builtins/export.c\
 	builtins/pwd.c\
-	builtins/echo.c
+	builtins/echo.c\
+	signals.c
 LIBFT = libft/libft.a
 OBJ = $(SRC:c=o)
 

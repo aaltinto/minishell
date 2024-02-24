@@ -76,10 +76,14 @@ int	main(int argc, char **argv, char **env)
 		return (err_msg("Error\nRun without arguments", 1), 1);
 	printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m");
 	env_init(&vars, env);
+
+	g_l = 0;
 	while (1)
 	{
 		pwd = find_w_dir(vars.env);
+		init_signals();
 		vars.input = readline(pwd);
+		init_signals2();
 		free(pwd);
 		if (handle_prompt(&vars) == 2)
 			break ;

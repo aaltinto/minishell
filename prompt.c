@@ -129,6 +129,9 @@ int	handle_prompt(t_vars *vars)
 {
 	int		ret;
 
+	if (!vars->input)
+		return (2);
+
 	if (ft_strncmp("", vars->input, 2) == 0)
 		return (free(vars->input), 1);
 	quote(vars);
