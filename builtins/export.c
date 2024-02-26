@@ -11,7 +11,7 @@ char	**dup_env(t_vars *vars, char **to_dup)
 	char	**new_env;
 
 	i = double_counter(to_dup);
-	new_env = malloc(sizeof(char *) * (i + vars->argc + 1));
+	new_env = ft_calloc((i + vars->argc + 1), sizeof(char *));
 	i = -1;
 	while (to_dup[++i])
 	{
@@ -57,7 +57,6 @@ void	check_restore(t_vars *vars)
 	{
 		splited = ft_split(vars->input_parsed[i], '=');
 		index = find_in_env(vars->env, splited[0]);
-		printf("%d\n", index);
 		free_doubles(splited);
 		if (index == -1)
 			continue ;
@@ -104,7 +103,7 @@ void	re_init_env(t_vars *vars, int count, int del)
 	j = 0;
 	if (del == 0)
 		return ;
-	new_env = malloc(sizeof(char *) * (count - del + 1));
+	new_env = ft_calloc(sizeof(char *), (count - del + 1));
 	while (count >= ++i)
 	{
 		if (!vars->env[i])

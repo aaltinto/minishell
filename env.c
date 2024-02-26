@@ -8,12 +8,16 @@ int	env_init(t_vars *vars, char **env)
 	int	i;
 
 	i = double_counter(env);
-	vars->env = malloc(sizeof(char *) * (i + 1));
+	vars->env = ft_calloc(sizeof(char *), (i + 1));
 	if (!vars->env)
-		return (0);
+		exit(EXIT_FAILURE);
 	i = -1;
 	while (env[++i])
+	{
 		vars->env[i] = ft_strdup(env[i]);
+		if (!vars->env[i])
+			return (free_doubles(vars->env), 0);
+	}
 	vars->env[i] = NULL;
 	return (1);
 }

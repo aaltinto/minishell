@@ -1,49 +1,53 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+
 #include "minishell.h"
-#include "libft/libft.h"
+#include "gnl/get_next_line.h"
 
-char	**split_string(char *src, char *key)
+int	execute(char *path, t_vars *vars, int *pipe_fd)
 {
-	char	**result;
-	char	*before;
-	char	*after;
-	char	*found;	
+	char	*output;
+	char	*tmp;
+	char	**splitted;
+	int		i;
 
-	result = malloc(3 * sizeof(char *));
-	if (result == NULL)
-		return (err_msg("Memory allocation failed\n", 1), NULL);
-	found = ft_strnstr(src, key, ft_strlen(src));
-	if (found != NULL)
+	close(pipe_fd[1]);
+	output = get_next_line(pipe_fd[0]);
+	splitted = ft_split(output, '\n');
+	free(output);
+	if (!splitted)
+		return (perror("Split"), 0);
+	i = -1;
+	while (splitted[++i])
 	{
-		before = src;
-		*found = '\0';
-		after = found + strlen(key);
+		tmp = ft_strdup(splitted[i]);
+		free(splitted[i]);
+		splitted[i] = ft_strjoin(tmp, " ");
+		free(tmp);
 	}
-	result[0] = ft_strdup(before);
-	result[1] = ft_strdup(key);
-	result[2] = ft_strdup(after);
-	return (result);
+	append_doubles(&vars->output, splitted);
+	free_doubles(splitted);
+	return (1);
 }
 
-int main() {
-    char src[] = "sample string";
-    char key[] = "sample";
+int	pipe_exec(char *path, t_vars *vars, char **argv, int condition)
+{
+	int		p_id;
+	int		pipe_fd[2];
 
-    printf("Source: %s\n", src);
-    printf("Key to search: %s\n", key);
-
-    char **result = split_string(src, key);
-
-    printf("Before: %s\n", result[0] != NULL ? result[0] : "Not found");
-    printf("Key: %s\n", result[1] != NULL ? result[1] : "Not found");
-    printf("After: %s\n", result[2] != NULL ? result[2] : "Not found");
-    for (int i = 0; i < 3; i++)
+	vars->output = NULL;
+	if (pipe(pipe_fd) == -1)
+		return (perror("pipe"), 0);
+	p_id = fork();
+	if (p_id == -1)
+		return (perror("fork"), 0);
+	if (p_id == 0)
 	{
-        free(result[i]);
-    }
-    free(result);
-
-    return 0;
+		close(pipe_fd[0]);
+		if (!condition && dup2(pipe_fd[1], STDOUT_FILENO) == -1)
+			return (perror("dup2"), 0);
+		if (execve(path, argv, vars->env) == -1)
+			perror("execute problem");
+	}
+	else if (!condition)
+		execute(path, vars, pipe_fd);
+	return (waitpid(p_id, NULL, 0), close(pipe_fd[0]), 1);
 }
