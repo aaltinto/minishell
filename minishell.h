@@ -9,8 +9,6 @@
 # include <readline/history.h>
 # include "libft/libft.h"
 
-# define BUFFER_SIZE 4096
-
 typedef struct s_vars
 {
 	char	*input;

@@ -79,9 +79,14 @@ int	main(int argc, char **argv, char **env)
 		pwd = find_w_dir(vars.env);
 		if (!pwd)
 			return (err_msg("Error!", 1), 1);
-		vars.input = readline(pwd);
-		free(pwd);
-		if (handle_prompt(&vars) == 2)
-			break ;
+		env_init(&vars, env);
+		while (1)
+		{
+			pwd = find_w_dir(vars.env);
+			vars.input = readline(pwd);
+			free(pwd);
+			if (handle_prompt(&vars) == 2)
+				break ;
+		}
 	}
 }

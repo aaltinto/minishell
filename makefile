@@ -15,6 +15,7 @@ SRC = main.c\
 	builtins/export.c\
 	builtins/pwd.c\
 	builtins/echo.c
+
 LIBFT = libft/libft.a
 GNL = gnl/gnl.a
 OBJ = $(SRC:c=o)
