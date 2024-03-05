@@ -7,8 +7,9 @@ SRC = main.c\
 	env.c\
 	utils.c\
 	quote.c\
-	denem.c\
+	exec.c\
 	parse.c\
+	input_output.c\
 	parse_utils.c\
 	builtins/cd.c\
 	builtins/cmd_env.c\

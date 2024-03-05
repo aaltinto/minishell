@@ -22,10 +22,10 @@ void	wait_close(int quote_check, int type, t_vars *vars)
 				quote_check++;
 		}
 		tmp = ft_strjoin(vars->input, "\n");
-		free(vars->input);
+		null_free(&vars->input);
 		vars->input = ft_strjoin(tmp, new_input);
-		free(tmp);
-		free(new_input);
+		null_free(&tmp);
+		null_free(&new_input);
 	}
 	if (!quote(vars))
 		return ;

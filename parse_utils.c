@@ -22,29 +22,60 @@ char	**split_string(char *src, char *key)
 	i = -1;
 	while (++i < 3)
 		result[i] = NULL;
-	if (before)
+	if (ft_strncmp(before, "", 1) != 0)
 		result[0] = ft_strdup(before);
-	if (after)
+	if (ft_strncmp(after, "", 1) != 0)
 		result[2] = ft_strdup(after);
 	result[1] = ft_strdup(key);
 	return (result);
 }
 
-void	append_doubles(char **dest, char **src)
+char	*strip(char *str)
+{
+	char	*end;
+
+	while (is_space((unsigned char)*str))
+		str++;
+	if (*str == '\0')
+		return (str);
+	end = str + ft_strlen(str) - 1;
+	while (end > str && is_space((unsigned char)*end))
+		end--;
+	*(end + 1) = '\0';
+	return (str);
+}
+
+void	append_doubles(char **dest, char **src, int condition)
 {
 	int	i;
 	int	len;
+	int	null_check;
+	int	max_index;
 
+	if (condition)
+		max_index = 3;
+	else
+		max_index = double_counter(src);
 	len = 0;
 	i = -1;
-	while (src[++i])
+	while (++i < max_index)
 		if (src[i])
 			len += ft_strlen(src[i]);
-	if (dest)
-		free(*dest);
+	i = -1;
+	null_check = 0;
+	if (condition)
+		while (++i < 3)
+			if (src[i] == NULL)
+				null_check++;
+	if (null_check == 3)
+	{
+		null_free(dest);
+		return ;
+	}
+	null_free(dest);
 	*dest = ft_calloc(len + 1, 1);
 	i = -1;
-	while (++i <= double_counter(src))
+	while (++i < max_index)
 		if (src[i])
 			ft_strlcat(*dest, src[i], len + 1);
 }

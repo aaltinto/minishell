@@ -7,6 +7,8 @@ int	parse(t_vars *vars, int count)
 	int		in_quotes;
 	int		j;
 
+	if (!vars->input)
+		return (0);
 	len = ft_strlen(vars->input);
 	vars->input_parsed = (char **)ft_calloc(len, sizeof(char *));
 	i = -1;
@@ -30,7 +32,7 @@ int	parse(t_vars *vars, int count)
 		}
 	}
 	vars->input_parsed[count++] = NULL;
-	free(vars->input);
+	null_free(&vars->input);
 	return (1);
 }
 
@@ -49,15 +51,39 @@ int	env_find_dollar(t_vars *vars, int i)
 	var = ft_substr(vars->input, i - j, j);
 	tmp = split_string(vars->input, var);
 	j = find_in_env(vars->env, var + 1);
-	free(var);
-	free(tmp[1]);
+	null_free(&var);
+	null_free(&tmp[1]);
 	if (j != -1)
 		tmp[1] = ft_strdup(ft_strchr(vars->env[j], '=') + 1);
-	else
-		tmp[1] = NULL;
 	vars->env = original;
-	append_doubles(&vars->input, tmp);
+	append_doubles(&vars->input, tmp, 1);
 	return (free_doubles(tmp), 1);
+}
+
+static int	replace_input(t_vars *vars, char *var, char **tmp)
+{
+	char	**cmd;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	while (tmp[1][++i])
+		if (tmp[1][i] != 41)
+			j++;
+	var = ft_substr(tmp[1], 2, j - 1);
+	if (!var)
+		return (err_msg("Error", 1), free_doubles(tmp), -1);
+	cmd = ft_split(var, ' ');
+	if (!cmd)
+		return (err_msg("Error", 1), -1);
+	path_finder(vars, cmd[0], cmd, 0);
+	null_free(&tmp[1]);
+	tmp[1] = ft_strdup(vars->output);
+	append_doubles(&vars->input, tmp, 1);
+	if (ft_strncmp(vars->input, "", 2) == 0)
+		return (-1);
+	return (1);
 }
 
 int	exec_dollar_command(t_vars *vars, int i)
@@ -67,47 +93,27 @@ int	exec_dollar_command(t_vars *vars, int i)
 	int		check;
 	char	*var;
 	char	**tmp;
-	char	**cmd;
 
 	len = ft_strlen(vars->input);
 	j = 0;
 	check = 0;
 	while (vars->input[++i] && vars->input[i - 1] != 41)
-	{
-		if (vars->input[i] == 40 && check++)
-			return (err_msg("Parentheses error", 1), 0);
-		j++;
-	}
-	if (i == len && vars->input[i - 1] != 41)
-		return (err_msg("Parentheses error", 1), 0);
+		if (j++ && ((vars->input[i] == 40 && check++)
+				|| (i + 1 == len && vars->input[i] != 41)))
+			return (err_msg("Parentheses error", 1), -1);
 	var = ft_substr(vars->input, i - j, j);
 	if (!var)
-		return (err_msg("Error", 1), 0);
+		return (err_msg("Error", 1), -1);
 	tmp = split_string(vars->input, var);
-	free(var);
+	null_free(&var);
 	if (!tmp)
-		return (err_msg("Error", 1), 0);
-	i = -1;
-	j = 0;
-	while (tmp[1][++i])
-		if (ft_isalpha(tmp[1][i]))
-			j++;
-	var = ft_substr(tmp[1], 2, j);
-	if (!var)
-		return (err_msg("Error", 1), free_doubles(tmp), 0);
-	cmd = ft_split(var, ' ');
-	if (!path_finder(vars, var, cmd, 0))
-		vars->output = NULL;
-	free(tmp[1]);
-	tmp[1] = ft_strdup(vars->output);
-	append_doubles(&vars->input, tmp);
-	return (1);
+		return (err_msg("Error", 1), -1);
+	return (replace_input(vars, var, tmp));
 }
 
-void	dolar_parse(t_vars *vars)
+int	dolar_parse(t_vars *vars)
 {
 	int		i;
-	char	**args;
 	int		quote_type;
 
 	i = -1;
@@ -118,13 +124,17 @@ void	dolar_parse(t_vars *vars)
 		else if (quote_type == 0 && vars->input[i] == '\'')
 			while (vars->input[++i] != '\'')
 				;
-		else if (vars->input[i] == '$')
-		{
-			if (vars->input[i + 1] == 40)
-				exec_dollar_command(vars, i - 1);
-			else
-				env_find_dollar(vars, --i);
-		}
+		else if (vars->input[i] == '$' && vars->input[i + 1] == 40
+			&& exec_dollar_command(vars, i -1) == -1)
+			return (null_free(&vars->input), 0);
+		else if (vars->input[i] == '$' && !is_space(vars->input[i + 1])
+			&& vars->input[i + 1] != '\0')
+			env_find_dollar(vars, i -1);
+		else if (vars->input[i] == '<' && open_file(vars, i -1) == -1)
+			return (null_free(&vars->input), 0);
+		else if (vars->input[i] == '>' && output_file(vars, i) == -1)
+			return (null_free(&vars->input), 0);
 	}
+	return (1);
 }
 

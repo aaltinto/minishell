@@ -1,4 +1,4 @@
-
+#include "minishell.h"
 #include "libft/libft.h"
 #include <stdlib.h>
 
@@ -14,12 +14,19 @@ void	free_doubles(char **str)
 {
 	int	i;
 
+	if (!str)
+		return ;
 	i = -1;
 	while (str[++i])
-	{
-		if (!str[i])
-			free(str[i]);
-	}
-	if (!str)
-		free(str);
+		null_free(&str[i]);
+	free(str);
+	str = NULL;
+}
+
+void	null_free(char **var)
+{
+	if (!*var)
+		return ;
+	free(*var);
+	*var = NULL;
 }

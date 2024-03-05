@@ -5,31 +5,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "libft/libft.h"
-
-int	path_finder(t_vars *vars, char *cmd, char **argv, int condition)
-{
-	char	**split_path;
-	char	*this_is_the_way;
-	char	*err;
-	int		i;
-
-	i = find_in_env(vars->env, "PATH=");
-	split_path = ft_split(vars->env[i], ':');
-	if (!split_path)
-		return (err_msg("Error!", 1), 0);
-	cmd = ft_strjoin("/", cmd);
-	i = -1;
-	while (split_path[++i])
-	{
-		this_is_the_way = ft_strjoin(split_path[i], cmd);
-		if (access(this_is_the_way, F_OK) == 0)
-			return (free_doubles(split_path), free(cmd),
-				pipe_exec(this_is_the_way, vars, argv, condition), 1);
-		free(this_is_the_way);
-	}
-	err = ft_strjoin("minishell: command not found: ", cmd);
-	return (err_msg(err, 1), free(err), 0);
-}
+#include <errno.h>
 
 char	*find_w_dir(char **env)
 {
@@ -48,20 +24,64 @@ char	*find_w_dir(char **env)
 		return (free_doubles(user), NULL);
 	pwd = ft_split(tmp, '/');
 	if (!pwd)
-		return (free(tmp), free_doubles(user), NULL);
-	free(tmp);
+		return (null_free(&tmp), free_doubles(user), NULL);
+	null_free(&tmp);
 	tmp = ft_strjoin(user[1], "@ \e[1;92m");
 	free_doubles(user);
 	if (!tmp)
 		return (free_doubles(pwd), NULL);
+	i = find_in_env(env, "HOME=");
+	user = ft_split(env[i], '/');
+	if (!pwd)
+		return (null_free(&ret), NULL);
 	i = double_counter(pwd);
-	ret = ft_strjoin(tmp, pwd[i - 1]);
+	if (i == 0)
+		ret = ft_strjoin(tmp, "/");
+	else if (ft_strncmp(pwd[i - 1], user[double_counter(user) -1],
+			ft_strlen(user[1])) == 0)
+		ret = ft_strjoin(tmp, "~");
+	else
+		ret = ft_strjoin(tmp, pwd[i - 1]);
 	free_doubles(pwd);
-	free(tmp);
+	null_free(&tmp);
 	if (!ret)
 		return (NULL);
 	tmp = ft_strjoin(ret, " $ \e[0m");
-	return (free(ret), tmp);
+	if (!pwd)
+		return (null_free(&ret), free_doubles(pwd), NULL);
+	return (null_free(&ret), tmp);
+}
+
+void	reset_vars(t_vars *vars)
+{
+	vars->file_created = 0;
+	vars->file_opened = 0;
+	null_free(&vars->input);
+	null_free(&vars->output);
+	free_doubles(vars->input_parsed);
+}
+
+int	marche(t_vars *vars, char **env)
+{
+	int		i;
+	char	**tmp;
+
+	if (!env_init(vars, env))
+		return (err_msg("Env couldn't initialized", 1), 0);
+	// i = find_in_env(env, "HOME=");
+	// tmp = ft_split(vars->env[i], '=');
+	// if (!tmp)
+	// 	return (err_msg("ft_split error!", 1), 0);
+	// chdir(tmp[1]);
+	// if (dup2(vars->origin_stdout, STDOUT_FILENO) == -1)
+	// 	return (perror("dup2"), 0);
+	vars->input = NULL;
+	vars->input_parsed = NULL;
+	vars->output = NULL;
+	vars->file_created = 0;
+	vars->file_opened = 0;
+	printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m");
+	return (1);
 }
 
 int	main(int argc, char **argv, char **env)
@@ -71,22 +91,20 @@ int	main(int argc, char **argv, char **env)
 
 	if (argc != 1)
 		return (err_msg("Error\nRun without arguments", 1), 1);
-	printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m");
-	if (!env_init(&vars, env))
-		return (err_msg("Env couldn't initialized", 1), 1);
+	if (!marche(&vars, env))
+		exit (EXIT_FAILURE);
 	while (1)
 	{
+		reset_vars(&vars);
 		pwd = find_w_dir(vars.env);
 		if (!pwd)
 			return (err_msg("Error!", 1), 1);
-		env_init(&vars, env);
-		while (1)
-		{
-			pwd = find_w_dir(vars.env);
-			vars.input = readline(pwd);
-			free(pwd);
-			if (handle_prompt(&vars) == 2)
-				break ;
-		}
+		vars.input = readline(pwd);
+		null_free(&pwd);
+		if (dup2(vars.origin_stdin, STDIN_FILENO) == -1)
+			return (perror("dup2"), 0);
+		if (handle_prompt(&vars) == 2)
+			break ;
 	}
+	return (1);
 }
