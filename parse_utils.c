@@ -1,5 +1,7 @@
 
 #include "minishell.h"
+#include "libft/libft.h"
+#include <stdlib.h>
 
 char	**split_string(char *src, char *key)
 {

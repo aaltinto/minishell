@@ -1,5 +1,6 @@
 #include "../minishell.h"
 #include "../libft/libft.h"
+#include <stdio.h>
 
 void	echo(t_vars *vars)
 {

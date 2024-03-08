@@ -2,15 +2,9 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include <stdio.h>
-# include "minishell.h"
-# include <unistd.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include "libft/libft.h"
-
 typedef struct s_vars
 {
+	char	*user_pwd;
 	char	*input;
 	char	*output;
 	char	**input_parsed;
@@ -31,6 +25,7 @@ void	null_free(char **var);
 int		handle_prompt(t_vars *vars);
 int		path_finder(t_vars *vars, char *cmd, char **argv, int condition);
 int		pipe_exec(char *path, t_vars *vars, char **argv, int condition);
+int		pipe_parse(t_vars *vars);
 
 int		find_in_env(char **env, char *to_find);
 int		env_init(t_vars *vars, char **env);
@@ -47,6 +42,7 @@ int		quote(t_vars *vars);
 int		parse(t_vars *vars, int count);
 
 //utils
+int		reset_fds(t_vars *vars);
 int		is_quote(char c);
 int		is_space(char c);
 int		double_counter(char **str);

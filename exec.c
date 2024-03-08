@@ -1,6 +1,8 @@
 
 #include "minishell.h"
 #include "gnl/get_next_line.h"
+#include "libft/libft.h"
+#include <stdio.h>
 
 int	execute(char *path, t_vars *vars, int *pipe_fd)
 {
@@ -11,7 +13,6 @@ int	execute(char *path, t_vars *vars, int *pipe_fd)
 
 	close(pipe_fd[1]);
 	output = get_next_line(pipe_fd[0]);
-	printf("output: %s\n", output);
 	if (!output)
 		return (0);
 	splitted = ft_split(output, '\n');
@@ -21,6 +22,8 @@ int	execute(char *path, t_vars *vars, int *pipe_fd)
 	i = -1;
 	while (splitted[++i])
 	{
+		if (splitted[i + 1] == NULL)
+			break ;
 		tmp = ft_strdup(splitted[i]);
 		null_free(&splitted[i]);
 		splitted[i] = ft_strjoin(tmp, " ");
@@ -51,7 +54,6 @@ int	pipe_exec(char *path, t_vars *vars, char **argv, int condition)
 	}
 	else if (!condition)
 		execute(path, vars, pipe_fd);
-	if (p_id == 0)
 	if (!condition)
 		close(pipe_fd[0]);
 	return (waitpid(p_id, NULL, 0), 1);

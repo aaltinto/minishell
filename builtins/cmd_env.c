@@ -1,4 +1,5 @@
 #include "../minishell.h"
+#include "../libft/libft.h"
 #include <stdio.h>
 
 void	new_env(t_vars *vars)

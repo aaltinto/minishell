@@ -8,6 +8,7 @@ SRC = main.c\
 	utils.c\
 	quote.c\
 	exec.c\
+	pipe.c\
 	parse.c\
 	input_output.c\
 	parse_utils.c\

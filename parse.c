@@ -1,4 +1,5 @@
 #include "minishell.h"
+#include "libft/libft.h"
 
 int	parse(t_vars *vars, int count)
 {
@@ -59,7 +60,6 @@ int	env_find_dollar(t_vars *vars, int i)
 	append_doubles(&vars->input, tmp, 1);
 	return (free_doubles(tmp), 1);
 }
-
 static int	replace_input(t_vars *vars, char *var, char **tmp)
 {
 	char	**cmd;
@@ -110,6 +110,55 @@ int	exec_dollar_command(t_vars *vars, int i)
 		return (err_msg("Error", 1), -1);
 	return (replace_input(vars, var, tmp));
 }
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdio.h>
+static int	fd_append_operations(t_vars *vars, char *var)
+{
+	int		fd;
+	char	*file;
+
+	if (vars->file_created)
+		if (dup2(vars->origin_stdout, STDOUT_FILENO) == -1)
+			return (perror("dup2"), 0);
+	file = ft_substr(strip(var + 1), 0, ft_strlen(var));
+	free(var);
+	fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	if (fd < 0)
+		return (err_msg("No such file or directory", 1), 0);
+	vars->origin_stdout = dup(STDOUT_FILENO);
+	if (dup2(fd, STDOUT_FILENO) == -1)
+		return (perror("dup2"), 0);
+	vars->file_created = 1;
+	if (!vars->input)
+		return (close(fd), -1);
+	close(fd);
+	return (1);
+}
+
+int	append_output(t_vars *vars, int i)
+{
+	int		j;
+	int		check;
+	char	*var;
+	char	**tmp;
+
+	j = 1;
+	check = 1;
+	printf("append\n");
+	while (vars->input[++i] && (check || !is_space(vars->input[i])))
+		if (j++ && !is_space(vars->input[i]))
+			check = 0;
+	if (j++ <= 2)
+		return (-1);
+	var = ft_substr(vars->input, i - j, j);
+	if (!var)
+		return (err_msg("Error", 1), -1);
+	tmp = split_string(strip(vars->input), var);
+	null_free(&tmp[1]);
+	append_doubles(&vars->input, tmp, 1);
+	return (fd_append_operations(vars, var));
+}
 
 int	dolar_parse(t_vars *vars)
 {
@@ -117,6 +166,7 @@ int	dolar_parse(t_vars *vars)
 	int		quote_type;
 
 	i = -1;
+	quote_type = 0;
 	while (vars->input[++i])
 	{
 		if (vars->input[i] == '\"')
@@ -131,6 +181,9 @@ int	dolar_parse(t_vars *vars)
 			&& vars->input[i + 1] != '\0')
 			env_find_dollar(vars, i -1);
 		else if (vars->input[i] == '<' && open_file(vars, i -1) == -1)
+			return (null_free(&vars->input), 0);
+		else if (vars->input[i] == '>' && vars->input[i + 1] == '>'
+			&& ++i && ++i && append_output(vars, i -3) == -1)
 			return (null_free(&vars->input), 0);
 		else if (vars->input[i] == '>' && output_file(vars, i) == -1)
 			return (null_free(&vars->input), 0);

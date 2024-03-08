@@ -1,6 +1,10 @@
 
 #include "minishell.h"
 #include <fcntl.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+#include "libft/libft.h"
 
 static int	fd_open_operations(t_vars *vars, char *var, int condition)
 {
@@ -11,7 +15,6 @@ static int	fd_open_operations(t_vars *vars, char *var, int condition)
 		if (dup2(vars->origin_stdin, STDIN_FILENO) == -1)
 			return (perror("dup2"), 0);
 	file = ft_substr(strip(var + 1), 0, ft_strlen(var));
-	free(var);
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
 		return (err_msg("No such file or directory", 1), -1);
@@ -27,6 +30,7 @@ static int	fd_open_operations(t_vars *vars, char *var, int condition)
 int	open_file(t_vars *vars, int i)
 {
 	int		j;
+	int		ret;
 	int		check;
 	char	*var;
 	char	**tmp;
@@ -44,9 +48,9 @@ int	open_file(t_vars *vars, int i)
 		return (free(var), -1);
 	null_free(&tmp[1]);
 	append_doubles(&vars->input, tmp, 1);
-	printf("input: %s\n", vars->input);
 	free_doubles(tmp);
-	return (fd_open_operations(vars, var, 1));
+	ret = fd_open_operations(vars, var, 1);
+	return (ret);
 }
 
 static int	fd_output_operations(t_vars *vars, char *var)
@@ -81,6 +85,7 @@ int	output_file(t_vars *vars, int i)
 
 	j = 0;
 	check = 1;
+	printf("output\n");
 	while (vars->input[++i] && (check || !is_space(vars->input[i])))
 		if (j++ && !is_space(vars->input[i]))
 			check = 0;

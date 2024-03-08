@@ -2,6 +2,7 @@
 #include "../minishell.h"
 #include "../libft/libft.h"
 #include <stdlib.h>
+#include <unistd.h>
 #include <stdio.h>
 
 int	new_cd(t_vars *vars)
