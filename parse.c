@@ -1,5 +1,7 @@
 #include "minishell.h"
 #include "libft/libft.h"
+#include <unistd.h>
+#include <stdio.h>
 
 int	parse(t_vars *vars, int count)
 {
@@ -58,49 +60,103 @@ int	env_find_dollar(t_vars *vars, int i)
 		tmp[1] = ft_strdup(ft_strchr(vars->env[j], '=') + 1);
 	vars->env = original;
 	append_doubles(&vars->input, tmp, 1);
+	if (!vars->input)
+		return (free_doubles(tmp), -1);
 	return (free_doubles(tmp), 1);
 }
+
 static int	replace_input(t_vars *vars, char *var, char **tmp)
 {
 	char	**cmd;
+	int		fd[2];
+	t_vars	new_vars;
 	int		i;
+	int		i2;
 	int		j;
 
-	i = 0;
-	j = 0;
-	while (tmp[1][++i])
+	i = ft_strlen(tmp[1]) + 1;
+	while (--i > 0)
 		if (tmp[1][i] != 41)
-			j++;
+			break ;
+	j = 0;
+	i2 = 0;
+	while (++i2 < i -1)
+		++j;
 	var = ft_substr(tmp[1], 2, j - 1);
 	if (!var)
 		return (err_msg("Error", 1), free_doubles(tmp), -1);
 	cmd = ft_split(var, ' ');
 	if (!cmd)
 		return (err_msg("Error", 1), -1);
-	path_finder(vars, cmd[0], cmd, 0);
+	if (pipe(fd) == -1)
+		return (perror("pipe"), -1);
+	marche(&new_vars, vars->env, 0);
+	new_vars.input = ft_strdup(var);
+	handle_prompt(&new_vars, 0);
 	null_free(&tmp[1]);
-	tmp[1] = ft_strdup(vars->output);
+	if (new_vars.output == NULL)
+		return (-1);
+	tmp[1] = ft_strdup(new_vars.output);
 	append_doubles(&vars->input, tmp, 1);
 	if (ft_strncmp(vars->input, "", 2) == 0)
 		return (-1);
 	return (1);
 }
+// static int	replace_input(t_vars *vars, char *var, char **tmp)
+// {
+// 	char	**cmd;
+// 	int		i;
+// 	int		j;
+
+// 	i = 0;
+// 	j = 0;
+// 	while (tmp[1][++i])
+// 		if (tmp[1][i] != 41)
+// 			j++;
+// 	var = ft_substr(tmp[1], 2, j - 1);
+// 	if (!var)
+// 		return (err_msg("Error", 1), free_doubles(tmp), -1);
+// 	cmd = ft_split(var, ' ');
+// 	if (!cmd)
+// 		return (err_msg("Error", 1), -1);
+// 	path_finder(vars, cmd[0], cmd, 0);
+// 	null_free(&tmp[1]);
+// 	tmp[1] = ft_strdup(vars->output);
+// 	append_doubles(&vars->input, tmp, 1);
+// 	if (ft_strncmp(vars->input, "", 2) == 0)
+// 		return (-1);
+// 	return (1);
+// }
 
 int	exec_dollar_command(t_vars *vars, int i)
 {
 	int		j;
+	int		open_paren;
+	int		last_paren;
 	int		len;
 	int		check;
 	char	*var;
 	char	**tmp;
 
 	len = ft_strlen(vars->input);
+	last_paren = 0;
 	j = 0;
 	check = 0;
-	while (vars->input[++i] && vars->input[i - 1] != 41)
-		if (j++ && ((vars->input[i] == 40 && check++)
-				|| (i + 1 == len && vars->input[i] != 41)))
+	open_paren = 0;
+	while (vars->input[++i] && ++last_paren)
+	{
+		if (vars->input[i] == 40)
+			open_paren++;
+		else if (vars->input[i] == 41)
+		{
+			j = last_paren;
+			open_paren--;
+		}
+		if (open_paren < 0)
 			return (err_msg("Parentheses error", 1), -1);
+	}
+	if (open_paren != 0)
+		return (err_msg("Parentheses error", 1), -1);
 	var = ft_substr(vars->input, i - j, j);
 	if (!var)
 		return (err_msg("Error", 1), -1);
@@ -110,54 +166,18 @@ int	exec_dollar_command(t_vars *vars, int i)
 		return (err_msg("Error", 1), -1);
 	return (replace_input(vars, var, tmp));
 }
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdio.h>
-static int	fd_append_operations(t_vars *vars, char *var)
-{
-	int		fd;
-	char	*file;
 
-	if (vars->file_created)
-		if (dup2(vars->origin_stdout, STDOUT_FILENO) == -1)
-			return (perror("dup2"), 0);
-	file = ft_substr(strip(var + 1), 0, ft_strlen(var));
-	free(var);
-	fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	if (fd < 0)
-		return (err_msg("No such file or directory", 1), 0);
-	vars->origin_stdout = dup(STDOUT_FILENO);
-	if (dup2(fd, STDOUT_FILENO) == -1)
-		return (perror("dup2"), 0);
-	vars->file_created = 1;
-	if (!vars->input)
-		return (close(fd), -1);
-	close(fd);
-	return (1);
-}
-
-int	append_output(t_vars *vars, int i)
+int	exit_status(t_vars *vars, int i)
 {
-	int		j;
-	int		check;
-	char	*var;
+	char	*deli;
 	char	**tmp;
 
-	j = 1;
-	check = 1;
-	printf("append\n");
-	while (vars->input[++i] && (check || !is_space(vars->input[i])))
-		if (j++ && !is_space(vars->input[i]))
-			check = 0;
-	if (j++ <= 2)
-		return (-1);
-	var = ft_substr(vars->input, i - j, j);
-	if (!var)
-		return (err_msg("Error", 1), -1);
-	tmp = split_string(strip(vars->input), var);
+	deli = ft_substr(vars->input, i, 2);
+	tmp = split_string(vars->input, deli);
 	null_free(&tmp[1]);
+	tmp[1] = ft_itoa(vars->exit_stat);
 	append_doubles(&vars->input, tmp, 1);
-	return (fd_append_operations(vars, var));
+	return (1);
 }
 
 int	dolar_parse(t_vars *vars)
@@ -174,16 +194,21 @@ int	dolar_parse(t_vars *vars)
 		else if (quote_type == 0 && vars->input[i] == '\'')
 			while (vars->input[++i] != '\'')
 				;
+		else if (vars->input[i] == '$' && vars->input[i + 1] == '?')
+			exit_status(vars, i);
 		else if (vars->input[i] == '$' && vars->input[i + 1] == 40
 			&& exec_dollar_command(vars, i -1) == -1)
 			return (null_free(&vars->input), 0);
 		else if (vars->input[i] == '$' && !is_space(vars->input[i + 1])
-			&& vars->input[i + 1] != '\0')
-			env_find_dollar(vars, i -1);
+			&& vars->input[i + 1] != '\0' && env_find_dollar(vars, i -1) == -1)
+			return (null_free(&vars->input), 0);
+		else if (vars->input[i] == '<' && vars->input[i + 1] == '<'
+			&& ++i && ++i && heredoc(vars, i) == 0)
+			return (null_free(&vars->input), 0);
 		else if (vars->input[i] == '<' && open_file(vars, i -1) == -1)
 			return (null_free(&vars->input), 0);
 		else if (vars->input[i] == '>' && vars->input[i + 1] == '>'
-			&& ++i && ++i && append_output(vars, i -3) == -1)
+			&& ++i && ++i && append_output(vars, i - 2) == -1)
 			return (null_free(&vars->input), 0);
 		else if (vars->input[i] == '>' && output_file(vars, i) == -1)
 			return (null_free(&vars->input), 0);

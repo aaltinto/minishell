@@ -42,23 +42,26 @@ int	reset_fds(t_vars *vars)
 			return (perror("dup2"), 0);
 	if (vars->file_opened)
 	{
-		printf("hi");
 		if (dup2(vars->origin_stdin, STDIN_FILENO) == -1)
 			return (perror("dup2"), 0);
 	}
 	return (1);
 }
 
-int	handle_prompt(t_vars *vars)
+int	handle_prompt(t_vars *vars, int condition)
 {
 	int		ret;
 
 	if (!vars->input)
 		return (2);
 	if (ft_strncmp("", vars->input, 2) == 0)
+	{
+		vars->exit_stat = 127;
 		return (1);
+	}
 	quote(vars);
-	add_history(vars->input);
+	if (condition)
+		add_history(vars->input);
 	dolar_parse(vars);
 	if (pipe_parse(vars))
 		return (reset_fds(vars), 1);
@@ -68,7 +71,7 @@ int	handle_prompt(t_vars *vars)
 		return (0);
 	ret = something_familiar(vars);
 	if (!ret)
-		path_finder(vars, vars->input_parsed[0], vars->input_parsed, 1);
+		path_finder(vars, vars->input_parsed[0], vars->input_parsed, condition);
 	if (!reset_fds(vars))
 		return (0);
 	return (ret);

@@ -10,6 +10,8 @@ SRC = main.c\
 	exec.c\
 	pipe.c\
 	parse.c\
+	signals.c\
+	heredoc_append.c\
 	input_output.c\
 	parse_utils.c\
 	builtins/cd.c\

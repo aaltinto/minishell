@@ -37,9 +37,14 @@ int	open_file(t_vars *vars, int i)
 
 	j = 0;
 	check = 1;
+	printf("input\n");
 	while (vars->input[++i] && (check || !is_space(vars->input[i])))
 		if (j++ && !is_space(vars->input[i]))
 			check = 0;
+	if (j++ <= 1)
+		return (
+			err_msg("minishell: syntax error near unexpected token `newline'", \
+			1), -1);
 	var = ft_substr(vars->input, i - j, j);
 	if (!var)
 		return (err_msg("Error", 1), 0);
@@ -90,7 +95,9 @@ int	output_file(t_vars *vars, int i)
 		if (j++ && !is_space(vars->input[i]))
 			check = 0;
 	if (j++ <= 1)
-		return (-1);
+		return (
+			err_msg("minishell: syntax error near unexpected token `newline'", \
+			1), -1);
 	var = ft_substr(vars->input, i - j, j);
 	if (!var)
 		return (err_msg("Error", 1), -1);

@@ -57,7 +57,7 @@ int	pipe_piping(int **pipes, int pipe_count, t_vars *vars)
 	}
 	i = -1;
 	while (++i < pipe_count + 1)
-		waitpid(pid[i], NULL, 0);
+		waitpid(pid[i], &g_l, 0);
 	return (free(pid), null_free(&vars->input), 1);
 }
 

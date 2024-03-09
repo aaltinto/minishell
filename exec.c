@@ -33,9 +33,15 @@ int	execute(char *path, t_vars *vars, int *pipe_fd)
 		free_doubles(splitted), 1);
 }
 
+int	wexitstatus(int status)
+{
+	return ((status >> 8) & 0x000000ff);
+}
+
 int	pipe_exec(char *path, t_vars *vars, char **argv, int condition)
 {
 	int		p_id;
+	int		status;
 	int		pipe_fd[2];
 
 	if (!condition && pipe(pipe_fd) == -1)
@@ -56,7 +62,9 @@ int	pipe_exec(char *path, t_vars *vars, char **argv, int condition)
 		execute(path, vars, pipe_fd);
 	if (!condition)
 		close(pipe_fd[0]);
-	return (waitpid(p_id, NULL, 0), 1);
+	waitpid(p_id, &status, 0);
+	vars->exit_stat = wexitstatus(status);
+	return (1);
 }
 
 int	path_finder(t_vars *vars, char *cmd, char **argv, int condition)

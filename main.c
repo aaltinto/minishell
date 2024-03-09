@@ -3,6 +3,7 @@
 #include "minishell.h"
 #include <unistd.h>
 #include <readline/readline.h>
+#include <readline/history.h>
 #include "libft/libft.h"
 
 //[username][@][color][dir_name][$][reset_color]
@@ -26,7 +27,7 @@ char	*find_w_dir(char **env, t_vars *ret)
 		return (free_doubles(vars), NULL);
 	i = find_in_env(env, "HOME=");
 	if (ft_strncmp(pwd, env[i] + 5, ft_strlen(pwd)) == 0)
-		vars[2] = ft_strdup("~");
+		vars[2] = ft_strdup(" ~");
 	else
 	{
 		split = ft_split(pwd, '/');
@@ -51,25 +52,29 @@ void	reset_vars(t_vars *vars)
 	vars->input_parsed = NULL;
 }
 
-int	marche(t_vars *vars, char **env)
+int	marche(t_vars *vars, char **env, int condition)
 {
 	int		i;
 	char	**tmp;
 
 	if (!env_init(vars, env))
 		return (err_msg("Env couldn't initialized", 1), 0);
-	i = find_in_env(env, "HOME=");
-	tmp = ft_split(vars->env[i], '=');
-	if (!tmp)
-		return (err_msg("ft_split error!", 1), 0);
-	chdir(tmp[1]);
+	if (condition)
+	{
+		i = find_in_env(env, "HOME=");
+		tmp = ft_split(vars->env[i], '=');
+		if (!tmp)
+			return (err_msg("ft_split error!", 1), 0);
+		chdir(tmp[1]);
+		printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m");
+	}
 	vars->input = NULL;
 	vars->input_parsed = NULL;
 	vars->output = NULL;
 	vars->user_pwd = NULL;
+	vars->exit_stat = 0;
 	vars->file_created = 0;
 	vars->file_opened = 0;
-	printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m");
 	return (1);
 }
 
@@ -80,7 +85,7 @@ int	main(int argc, char **argv, char **env)
 
 	if (argc != 1)
 		return (err_msg("Error\nRun without arguments", 1), 1);
-	if (!marche(&vars, env))
+	if (!marche(&vars, env, 1))
 		exit (EXIT_FAILURE);
 	while (1)
 	{
@@ -88,12 +93,12 @@ int	main(int argc, char **argv, char **env)
 		find_w_dir(vars.env, &vars);
 		if (!vars.user_pwd)
 			return (err_msg("Error!", 1), 1);
+		init_signals();
 		vars.input = readline(vars.user_pwd);
+		init_signals2();
 		null_free(&vars.user_pwd);
-		if (dup2(vars.origin_stdin, STDIN_FILENO) == -1)
-			return (perror("dup2"), 0);
-		if (handle_prompt(&vars) == 2)
+		if (handle_prompt(&vars, 1) == 2)
 			break ;
 	}
-	return (1);
+	return (42);
 }
