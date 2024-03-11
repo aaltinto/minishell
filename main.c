@@ -35,10 +35,14 @@ char	*find_w_dir(char **env, t_vars *ret)
 			return (null_free(&pwd), free_doubles(vars), NULL);
 		i = double_counter(split);
 		vars[2] = ft_strdup(split[i -1]);
+		free_doubles(split);
 	}
+	null_free(&pwd);
 	vars[3] = ft_strdup(" $ \e[0m");
 	vars[4] = NULL;
-	return (append_doubles(&ret->user_pwd, vars, 0), "OK");
+	append_doubles(&ret->user_pwd, vars, 0);
+	free_doubles(vars);
+	return ("OK");
 }
 
 void	reset_vars(t_vars *vars)
@@ -66,6 +70,7 @@ int	marche(t_vars *vars, char **env, int condition)
 		if (!tmp)
 			return (err_msg("ft_split error!", 1), 0);
 		chdir(tmp[1]);
+		free_doubles(tmp);
 		printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m");
 	}
 	vars->input = NULL;
@@ -85,6 +90,7 @@ int	main(int argc, char **argv, char **env)
 
 	if (argc != 1)
 		return (err_msg("Error\nRun without arguments", 1), 1);
+	vars.id = 1;
 	if (!marche(&vars, env, 1))
 		exit (EXIT_FAILURE);
 	while (1)
@@ -100,5 +106,6 @@ int	main(int argc, char **argv, char **env)
 		if (handle_prompt(&vars, 1) == 2)
 			break ;
 	}
+	killer(&vars);
 	return (42);
 }

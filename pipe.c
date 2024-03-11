@@ -39,7 +39,7 @@ int	pipe_piping(int **pipes, int pipe_count, t_vars *vars)
 	int		j;
 	int		i;
 
-	pid = malloc(sizeof(pid_t) * pipe_count + 1);
+	pid = malloc(sizeof(pid_t) * (pipe_count + 1));
 	i = -1;
 	while (++i < pipe_count + 1)
 	{
@@ -56,8 +56,10 @@ int	pipe_piping(int **pipes, int pipe_count, t_vars *vars)
 		close(pipes[i][1]);
 	}
 	i = -1;
+	g_l = 0;
 	while (++i < pipe_count + 1)
 		waitpid(pid[i], &g_l, 0);
+	vars->exit_stat = wexitstatus(g_l);
 	return (free(pid), null_free(&vars->input), 1);
 }
 
@@ -66,7 +68,6 @@ int	pipe_parse(t_vars *vars)
 	int		i;
 	int		pipe_count;
 	int		**pipes;
-	char	**argv;
 
 	i = -1;
 	pipe_count = 0;
@@ -81,10 +82,9 @@ int	pipe_parse(t_vars *vars)
 	i = -1;
 	while (++i < pipe_count)
 		pipes[i] = malloc(sizeof(int) * 2);
-	argv = ft_split(vars->input, '|');
 	i = -1;
 	while (++i < pipe_count)
 		if (pipe(pipes[i]) == -1)
 			return (perror("pipe"), 1);
-	return (pipe_piping(pipes, pipe_count, vars), 1);
+	return (pipe_piping(pipes, pipe_count, vars), free_doubles2((void **)pipes, pipe_count), 1);
 }

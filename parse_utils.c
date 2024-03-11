@@ -59,10 +59,13 @@ void	append_doubles(char **dest, char **src, int condition)
 	else
 		max_index = double_counter(src);
 	len = 0;
-	i = -1;
-	while (++i < max_index)
+	i = 0;
+	while (i < max_index)
+	{
 		if (src[i])
 			len += ft_strlen(src[i]);
+		i++;
+	}
 	i = -1;
 	null_check = 0;
 	if (condition)
@@ -74,8 +77,8 @@ void	append_doubles(char **dest, char **src, int condition)
 		null_free(dest);
 		return ;
 	}
-	null_free(dest);
-	*dest = ft_calloc(len + 1, 1);
+	null_free(&(*dest));
+	*dest = ft_calloc(len + 1, sizeof(char));
 	i = -1;
 	while (++i < max_index)
 		if (src[i])

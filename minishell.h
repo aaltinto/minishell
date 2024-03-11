@@ -2,8 +2,15 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+#include <stdio.h>
+#include "minishell.h"
+#include <unistd.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+
 typedef struct s_vars
 {
+	int		id;
 	char	*user_pwd;
 	char	*input;
 	char	*output;
@@ -23,7 +30,9 @@ int g_l;
 void	err_msg(char *msg, int x);
 void	free_doubles(char **str);
 void	null_free(char **var);
-
+void	null_free_void(void **var);
+void	killer(t_vars *vars);
+void	free_doubles2(void **str, int j);
 //execute
 int		handle_prompt(t_vars *vars, int condition);
 int		path_finder(t_vars *vars, char *cmd, char **argv, int condition);
@@ -47,6 +56,7 @@ int		parse(t_vars *vars, int count);
 
 //utils
 int		reset_fds(t_vars *vars);
+void	reset_vars(t_vars *vars);
 int		is_quote(char c);
 int		is_space(char c);
 int		double_counter(char **str);

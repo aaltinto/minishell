@@ -1,5 +1,5 @@
 NAME = libft.a
-FLAG = -Wall -Wextra -Werror
+FLAG = -Wall -Wextra -Werror -g
 SRC = ft_isalpha.c \
             ft_isdigit.c \
             ft_isalnum.c \

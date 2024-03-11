@@ -63,6 +63,8 @@ int	handle_prompt(t_vars *vars, int condition)
 	if (condition)
 		add_history(vars->input);
 	dolar_parse(vars);
+	if (!condition && !vars->input)
+		return (killer(vars), 1);
 	if (pipe_parse(vars))
 		return (reset_fds(vars), 1);
 	if (!vars->input)
@@ -74,5 +76,7 @@ int	handle_prompt(t_vars *vars, int condition)
 		path_finder(vars, vars->input_parsed[0], vars->input_parsed, condition);
 	if (!reset_fds(vars))
 		return (0);
+	if (!condition)
+		killer(vars);
 	return (ret);
 }

@@ -52,22 +52,29 @@ int	env_find_dollar(t_vars *vars, int i)
 		&& vars->input[i] != '\"')
 		j++;
 	var = ft_substr(vars->input, i - j, j);
+	if (!var)
+		return (-1);
 	tmp = split_string(vars->input, var);
+	if (!tmp)
+		return (null_free(&var), -1);
 	j = find_in_env(vars->env, var + 1);
 	null_free(&var);
 	null_free(&tmp[1]);
 	if (j != -1)
+	{
 		tmp[1] = ft_strdup(ft_strchr(vars->env[j], '=') + 1);
+		if (!tmp[1])
+			return (free_doubles(tmp), -1);
+	}
 	vars->env = original;
 	append_doubles(&vars->input, tmp, 1);
 	if (!vars->input)
-		return (free_doubles(tmp), -1);
-	return (free_doubles(tmp), 1);
+		return (free_doubles2((void **)tmp, 3), -1);
+	return (free_doubles2((void **)tmp, 3), 1);
 }
 
 static int	replace_input(t_vars *vars, char *var, char **tmp)
 {
-	char	**cmd;
 	int		fd[2];
 	t_vars	new_vars;
 	int		i;
@@ -85,13 +92,12 @@ static int	replace_input(t_vars *vars, char *var, char **tmp)
 	var = ft_substr(tmp[1], 2, j - 1);
 	if (!var)
 		return (err_msg("Error", 1), free_doubles(tmp), -1);
-	cmd = ft_split(var, ' ');
-	if (!cmd)
-		return (err_msg("Error", 1), -1);
 	if (pipe(fd) == -1)
 		return (perror("pipe"), -1);
 	marche(&new_vars, vars->env, 0);
 	new_vars.input = ft_strdup(var);
+	new_vars.id = vars->id + 1;
+	null_free(&var);
 	handle_prompt(&new_vars, 0);
 	null_free(&tmp[1]);
 	if (new_vars.output == NULL)
@@ -102,31 +108,6 @@ static int	replace_input(t_vars *vars, char *var, char **tmp)
 		return (-1);
 	return (1);
 }
-// static int	replace_input(t_vars *vars, char *var, char **tmp)
-// {
-// 	char	**cmd;
-// 	int		i;
-// 	int		j;
-
-// 	i = 0;
-// 	j = 0;
-// 	while (tmp[1][++i])
-// 		if (tmp[1][i] != 41)
-// 			j++;
-// 	var = ft_substr(tmp[1], 2, j - 1);
-// 	if (!var)
-// 		return (err_msg("Error", 1), free_doubles(tmp), -1);
-// 	cmd = ft_split(var, ' ');
-// 	if (!cmd)
-// 		return (err_msg("Error", 1), -1);
-// 	path_finder(vars, cmd[0], cmd, 0);
-// 	null_free(&tmp[1]);
-// 	tmp[1] = ft_strdup(vars->output);
-// 	append_doubles(&vars->input, tmp, 1);
-// 	if (ft_strncmp(vars->input, "", 2) == 0)
-// 		return (-1);
-// 	return (1);
-// }
 
 int	exec_dollar_command(t_vars *vars, int i)
 {
@@ -164,9 +145,9 @@ int	exec_dollar_command(t_vars *vars, int i)
 	null_free(&var);
 	if (!tmp)
 		return (err_msg("Error", 1), -1);
-	return (replace_input(vars, var, tmp));
-}
-
+	i = replace_input(vars, var, tmp);
+	return (free_doubles(tmp), i);
+} 
 int	exit_status(t_vars *vars, int i)
 {
 	char	*deli;
