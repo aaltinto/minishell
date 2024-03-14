@@ -13,6 +13,12 @@ void	wait_close(int quote_check, int type, t_vars *vars)
 	while (quote_check % 2 == 0)
 	{
 		new_input = readline("> ");
+		if (!new_input)
+		{
+			write(1, "\n", 1);
+			err_msg("Quote error", 1);
+			return ;
+		}
 		i = -1;
 		while (new_input[++i])
 		{

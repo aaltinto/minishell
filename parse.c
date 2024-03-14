@@ -9,33 +9,48 @@ int	parse(t_vars *vars, int count)
 	int		len;
 	int		in_quotes;
 	int		j;
+	char	quote_type;
+	char	*input;
 
 	if (!vars->input)
 		return (0);
-	len = ft_strlen(vars->input);
-	vars->input_parsed = (char **)ft_calloc(len, sizeof(char *));
+	input = ft_strdup(strip(vars->input));
+	len = ft_strlen(input);
+	vars->input_parsed = (char **)ft_calloc(len + 1, sizeof(char *));
 	i = -1;
 	in_quotes = 0;
+	quote_type = '\0';
 	j = 0;
+	printf("%s\n", input);
+	if (ft_strncmp(input, "", 1) == 0)
+		return (0);
 	while (++i <= len)
 	{
-		if (vars->input[i] == '"' || vars->input[i] == '\'')
-			in_quotes = !in_quotes;
-		else if ((!in_quotes && is_space(vars->input[i])) || !vars->input[i])
+		if (input[i] == '\"' || input[i] == '\'')
 		{
-			if (!in_quotes && i > j)
+			if (!quote_type)
+				quote_type = input[i];
+			if (quote_type == input[i])
+				in_quotes = !in_quotes;
+		}
+		if ((!in_quotes && (is_space(input[i]) || is_quote(input[i]))) || !input[i])
+		{
+			if (!in_quotes && i >= j)
 			{
-				if (vars->input[j] == '"' || vars->input[j] == '\'')
+				while (input[j] == quote_type)
 					j++;
-				if (vars->input[i - 1] == '"' || vars->input[i - 1] == '\'')
+				while (i > 0 && input[i -1] == quote_type)
 					i--;
-				vars->input_parsed[count++] = ft_substr(vars->input, j, i - j);
+				printf("i = %d,j = %d \n", i , j);
+				vars->input_parsed[count++] = ft_substr(input, j, i - j);
 			}
+			quote_type = '\0';
 			j = i + 1;
 		}
 	}
-	vars->input_parsed[count++] = NULL;
+	vars->input_parsed[count] = NULL;
 	null_free(&vars->input);
+	null_free(&input);
 	return (1);
 }
 
@@ -147,34 +162,50 @@ int	exec_dollar_command(t_vars *vars, int i)
 		return (err_msg("Error", 1), -1);
 	i = replace_input(vars, var, tmp);
 	return (free_doubles(tmp), i);
-} 
+}
+
 int	exit_status(t_vars *vars, int i)
 {
 	char	*deli;
 	char	**tmp;
 
 	deli = ft_substr(vars->input, i, 2);
+	if (!deli)
+		return (0);
 	tmp = split_string(vars->input, deli);
+	null_free(&deli);
 	null_free(&tmp[1]);
 	tmp[1] = ft_itoa(vars->exit_stat);
 	append_doubles(&vars->input, tmp, 1);
+	free_doubles2((void **)tmp, 3);
 	return (1);
 }
 
 int	dolar_parse(t_vars *vars)
 {
 	int		i;
-	int		quote_type;
+	char	quote_type;
+	int		in_quotes;
 
 	i = -1;
 	quote_type = 0;
+	in_quotes = 0;
 	while (vars->input[++i])
 	{
-		if (vars->input[i] == '\"')
-			quote_type = !quote_type;
-		else if (quote_type == 0 && vars->input[i] == '\'')
-			while (vars->input[++i] != '\'')
-				;
+		if (vars->input[i] == '\"' || vars->input[i] == '\'')
+		{
+			if (!quote_type)
+				quote_type = vars->input[i];
+			if (quote_type == vars->input[i])
+			{
+				in_quotes = !in_quotes;
+				if (!in_quotes)
+					quote_type = '\0';
+				continue ;
+			}
+		}
+		if (in_quotes && quote_type == '\'')
+			continue ;
 		else if (vars->input[i] == '$' && vars->input[i + 1] == '?')
 			exit_status(vars, i);
 		else if (vars->input[i] == '$' && vars->input[i + 1] == 40
@@ -196,4 +227,3 @@ int	dolar_parse(t_vars *vars)
 	}
 	return (1);
 }
-

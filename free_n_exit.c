@@ -22,6 +22,7 @@ void	free_doubles(char **str)
 	free(str);
 	str = NULL;
 }
+
 void	free_doubles2(void **str, int j)
 {
 	int	i;
@@ -30,10 +31,7 @@ void	free_doubles2(void **str, int j)
 		return ;
 	i = -1;
 	while (j > ++i)
-	{
-		printf("str[%d] freed\n", i);
 		null_free_void(&str[i]);
-	}
 	free(str);
 	str = NULL;
 }
