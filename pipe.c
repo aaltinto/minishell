@@ -29,7 +29,7 @@ int	child_process(int **pipes, int pipe_count, t_vars *vars, int i)
 			close(pipes[j][1]);
 	}
 	cmd = ft_split(argv[i], ' ');
-	return (path_finder(vars, cmd[0], cmd, 1), exit(EXIT_SUCCESS), 1);
+	return (path_finder(vars, strip(cmd[0]), cmd, 1), exit(EXIT_SUCCESS), 1);
 }
 
 int	pipe_piping(int **pipes, int pipe_count, t_vars *vars)

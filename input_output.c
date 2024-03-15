@@ -72,10 +72,7 @@ static int	fd_output_operations(t_vars *vars, char *var)
 	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	null_free(&file);
 	if (fd < 0)
-	{
-
 		return (perror("minishell"), 0);
-	}
 	vars->origin_stdout = dup(STDOUT_FILENO);
 	if (dup2(fd, STDOUT_FILENO) == -1)
 		return (perror("dup2"), 0);

@@ -6,52 +6,57 @@
 int	parse(t_vars *vars, int count)
 {
 	int		i;
-	int		len;
-	int		in_quotes;
 	int		j;
 	char	quote_type;
 	char	*input;
+	char	*tmp;
 
 	if (!vars->input)
 		return (0);
 	input = ft_strdup(strip(vars->input));
-	len = ft_strlen(input);
-	vars->input_parsed = (char **)ft_calloc(len + 1, sizeof(char *));
+	vars->input_parsed = (char **)ft_calloc(ft_strlen(input) + 1, sizeof(char *));
 	i = -1;
-	in_quotes = 0;
 	quote_type = '\0';
-	j = 0;
-	printf("%s\n", input);
 	if (ft_strncmp(input, "", 1) == 0)
 		return (0);
-	while (++i <= len)
+	while (input[++i] != '\0')
 	{
-		if (input[i] == '\"' || input[i] == '\'')
+		if (input[i] == 39 || input[i] == 34)
 		{
-			if (!quote_type)
-				quote_type = input[i];
-			if (quote_type == input[i])
-				in_quotes = !in_quotes;
-		}
-		if ((!in_quotes && (is_space(input[i]) || is_quote(input[i]))) || !input[i])
-		{
-			if (!in_quotes && i >= j)
+			quote_type = input[i];
+			j = 0;
+			i++;
+			while (input[i] != '\0' && (quote_type != input[i]) && ++i)
+				++j;
+			if (is_space(input[i + 1])) 
 			{
-				while (input[j] == quote_type)
-					j++;
-				while (i > 0 && input[i -1] == quote_type)
-					i--;
-				printf("i = %d,j = %d \n", i , j);
-				vars->input_parsed[count++] = ft_substr(input, j, i - j);
+				tmp = ft_substr(input, i - j, j);
+				vars->input_parsed[count++] = ft_strjoin(tmp, " ");
+				null_free(&tmp);
 			}
-			quote_type = '\0';
-			j = i + 1;
+			else
+				vars->input_parsed[count++] = ft_substr(input, i - j, j);
+			quote_type = 0;
 		}
+		else if (!is_space(input[i]))
+		{
+			j = 0;
+			while (input[i] != '\0' && (!is_space(input[i]) && !is_quote(input[i]) && ++i))
+				++j;
+			if (is_space(input[i]))
+			{
+				tmp = ft_substr(input, i - j, j);
+				vars->input_parsed[count++] = ft_strjoin(tmp, " ");
+				null_free(&tmp);
+			}
+			else
+				vars->input_parsed[count++] = ft_substr(input, i - j, j);
+		}
+		if (input[i] == '\0')
+			break ;
 	}
-	vars->input_parsed[count] = NULL;
-	null_free(&vars->input);
-	null_free(&input);
-	return (1);
+	vars->input_parsed[count++] = NULL;
+	return (null_free(&input), null_free(&vars->input), 1);
 }
 
 int	env_find_dollar(t_vars *vars, int i)
@@ -111,7 +116,6 @@ static int	replace_input(t_vars *vars, char *var, char **tmp)
 		return (perror("pipe"), -1);
 	marche(&new_vars, vars->env, 0);
 	new_vars.input = ft_strdup(var);
-	new_vars.id = vars->id + 1;
 	null_free(&var);
 	handle_prompt(&new_vars, 0);
 	null_free(&tmp[1]);
@@ -187,6 +191,8 @@ int	dolar_parse(t_vars *vars)
 	char	quote_type;
 	int		in_quotes;
 
+	if (!vars->input)
+		return (0);
 	i = -1;
 	quote_type = 0;
 	in_quotes = 0;
@@ -220,10 +226,12 @@ int	dolar_parse(t_vars *vars)
 		else if (vars->input[i] == '<' && open_file(vars, i -1) == -1)
 			return (null_free(&vars->input), 0);
 		else if (vars->input[i] == '>' && vars->input[i + 1] == '>'
-			&& ++i && ++i && append_output(vars, i - 2) == -1)
+			&& append_output(vars, i) == -1)
 			return (null_free(&vars->input), 0);
 		else if (vars->input[i] == '>' && output_file(vars, i) == -1)
 			return (null_free(&vars->input), 0);
+		if (vars->input[i] == '\0')
+			break ;
 	}
 	return (1);
 }

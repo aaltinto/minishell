@@ -17,6 +17,8 @@ void	wait_close(int quote_check, int type, t_vars *vars)
 		{
 			write(1, "\n", 1);
 			err_msg("Quote error", 1);
+			vars->hist = -1;
+			null_free(&vars->input);
 			return ;
 		}
 		i = -1;

@@ -60,7 +60,7 @@ int	handle_prompt(t_vars *vars, int condition)
 		return (1);
 	}
 	quote(vars);
-	if (condition)
+	if (vars->hist != -1 && condition)
 		add_history(vars->input);
 	dolar_parse(vars);
 	if (!condition && !vars->input)
@@ -73,7 +73,7 @@ int	handle_prompt(t_vars *vars, int condition)
 		return (0);
 	ret = something_familiar(vars);
 	if (!ret)
-		path_finder(vars, vars->input_parsed[0], vars->input_parsed, condition);
+		path_finder(vars, strip(vars->input_parsed[0]), vars->input_parsed, condition);
 	if (!reset_fds(vars))
 		return (0);
 	if (!condition)

@@ -54,6 +54,7 @@ void	reset_vars(t_vars *vars)
 	free_doubles(vars->input_parsed);
 	reset_fds(vars);
 	vars->input_parsed = NULL;
+	vars->hist = 0;
 }
 
 int	marche(t_vars *vars, char **env, int condition)
@@ -90,7 +91,6 @@ int	main(int argc, char **argv, char **env)
 
 	if (argc != 1)
 		return (err_msg("Error\nRun without arguments", 1), 1);
-	vars.id = 1;
 	if (!marche(&vars, env, 1))
 		exit (EXIT_FAILURE);
 	while (1)
@@ -107,6 +107,5 @@ int	main(int argc, char **argv, char **env)
 			break ;
 	}
 	killer(&vars);
-	system("leaks minishell");
 	return (42);
 }

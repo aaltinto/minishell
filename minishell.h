@@ -10,7 +10,7 @@
 
 typedef struct s_vars
 {
-	int		id;
+	int		hist;
 	char	*user_pwd;
 	char	*input;
 	char	*output;

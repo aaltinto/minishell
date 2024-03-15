@@ -38,7 +38,6 @@ int	append_output(t_vars *vars, int i)
 
 	j = 3;
 	check = 1;
-	printf("append\n");
 	i += 2;
 	while (vars->input[++i] && (check || !is_space(vars->input[i])))
 		if (j++ && !is_space(vars->input[i]))
@@ -48,7 +47,6 @@ int	append_output(t_vars *vars, int i)
 			err_msg("minishell: syntax error near unexpected token", \
 			1), -1);
 	var = ft_substr(vars->input, i - j, j);
-	printf("var = %s\nj = %d\n", var, j);
 	if (!var)
 		return (err_msg("Error", 1), -1);
 	tmp = split_string(strip(vars->input), var);
