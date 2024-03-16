@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:37 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/15 16:12:38 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/16 13:59:57 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,9 @@ void	free_doubles2(void **str, int j)
 		return ;
 	i = -1;
 	while (j > ++i)
+	{
 		null_free_void(&str[i]);
+	}
 	free(str);
 	str = NULL;
 }

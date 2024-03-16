@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:58 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/15 16:12:59 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/16 17:09:57 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	parse(t_vars *vars, int count)
 	input = ft_strdup(strip(vars->input));
 	vars->input_parsed = (char **)ft_calloc(ft_strlen(input) + 1, sizeof(char *));
 	i = -1;
-	quote_type = '\0';
+	quote_type = 0;
 	if (ft_strncmp(input, "", 1) == 0)
 		return (0);
 	while (input[++i] != '\0')
@@ -38,8 +38,10 @@ int	parse(t_vars *vars, int count)
 			quote_type = input[i];
 			j = 0;
 			i++;
-			while (input[i] != '\0' && (quote_type != input[i]) && ++i)
+			ft_putchar_fd(quote_type, 1);
+			while ((input[i] != '\0' && quote_type != input[i]) && ++i)
 				++j;
+			printf("j= %d\n", j);
 			if (is_space(input[i + 1])) 
 			{
 				tmp = ft_substr(input, i - j, j);
@@ -63,6 +65,7 @@ int	parse(t_vars *vars, int count)
 			}
 			else
 				vars->input_parsed[count++] = ft_substr(input, i - j, j);
+			i = i - 1;
 		}
 		if (input[i] == '\0')
 			break ;

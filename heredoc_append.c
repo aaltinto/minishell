@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:39 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/15 16:12:40 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/15 17:31:56 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,9 @@ int	append_output(t_vars *vars, int i)
 	null_free(&tmp[1]);
 	append_doubles(&vars->input, tmp, 1);
 	free_doubles2((void **)tmp, 3);
-	return (fd_append_operations(vars, var));
+	j = fd_append_operations(vars, var);
+	null_free(&var);
+	return (j);
 }
 
 int	handle_eof(t_vars *vars, char *delimeter, int *fd)

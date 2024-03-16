@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:55 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/15 16:12:56 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/15 17:16:10 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,12 @@ char	*strip(char *str)
 {
 	char	*end;
 
-	while (is_space((unsigned char)*str))
+	while (*str != '\0' && is_space((unsigned char)*str))
 		str++;
 	if (*str == '\0')
 		return (str);
 	end = str + ft_strlen(str) - 1;
-	while (end > str && is_space((unsigned char)*end))
+	while (*str != '\0' && end > str && is_space((unsigned char)*end))
 		end--;
 	*(end + 1) = '\0';
 	return (str);

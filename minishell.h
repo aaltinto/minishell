@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:52 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/15 16:12:53 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/16 16:01:35 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ int		pipe_parse(t_vars *vars);
 int		marche(t_vars *vars, char **env, int condition);
 int		find_in_env(char **env, char *to_find);
 int		env_init(t_vars *vars, char **env);
+char	**dup_env(t_vars *vars, char **to_dup);
 
 //builtins
 int		new_cd(t_vars *vars);
