@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:52 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/16 16:01:35 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/17 16:06:43 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ void	new_env(t_vars *vars);
 
 int		quote(t_vars *vars);
 int		parse(t_vars *vars, int count);
+void	re_init_env(t_vars *vars, int count, int del);
 
 //utils
 int		reset_fds(t_vars *vars);

@@ -6,15 +6,13 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:21 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/16 16:32:23 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/17 16:06:32 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 #include "../libft/libft.h"
 #include <stdio.h>
-
-void	re_init_env(t_vars *vars, int count, int del);
 
 char	**dup_env(t_vars *vars, char **to_dup)
 {

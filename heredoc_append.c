@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:39 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/15 17:31:56 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/17 17:32:39 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,15 +82,15 @@ int	handle_eof(t_vars *vars, char *delimeter, int *fd)
 		ft_putendl_fd(new_input, fd[1]);
 		null_free(&new_input);
 	}
-	if (!new_input)
-		ft_putchar_fd('\n', 1);
-	else
-		null_free(&new_input);
+	null_free(&new_input);
 	vars->origin_stdin = dup(STDIN_FILENO);
 	vars->file_opened = 1;
-	if (dup2(fd[0], STDIN_FILENO) == -1 || close(fd[0]) == -1
-		|| close(fd[1]) == -1)
-		return (perror("dup2/close"), null_free(&vars->input), -1);
+	if (dup2(fd[0], STDIN_FILENO) == -1)
+		return (perror("dup2"), null_free(&vars->input), -1);
+	if (close(fd[0]) == -1)
+		return (perror("close"), null_free(&vars->input), -1);
+	if (close(fd[1]) == -1)
+		return (perror("close"), null_free(&vars->input), -1);
 	return (1);
 }
 

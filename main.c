@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:46 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/15 16:12:47 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/17 16:07:38 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char	*find_w_dir(char **env, t_vars *ret)
 	vars[0] = ft_strdup(env[i] + 5);
 	if (!vars[0])
 		return (free_doubles(vars), NULL);
-	vars[1] = ft_strdup("@\e[1;92m");
+	vars[1] = ft_strdup("@");
 	pwd = getcwd(NULL, 0);
 	if (!pwd)
 		return (free_doubles(vars), NULL);
@@ -50,7 +50,7 @@ char	*find_w_dir(char **env, t_vars *ret)
 		free_doubles(split);
 	}
 	null_free(&pwd);
-	vars[3] = ft_strdup(" $ \e[0m");
+	vars[3] = ft_strdup(" $ ");
 	vars[4] = NULL;
 	append_doubles(&ret->user_pwd, vars, 0);
 	free_doubles(vars);
@@ -72,6 +72,7 @@ void	reset_vars(t_vars *vars)
 int	marche(t_vars *vars, char **env, int condition)
 {
 	int		i;
+	int		count;
 	char	**tmp;
 
 	if (!env_init(vars, env))
@@ -85,6 +86,13 @@ int	marche(t_vars *vars, char **env, int condition)
 		chdir(tmp[1]);
 		free_doubles(tmp);
 		printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m");
+	}
+	count = double_counter(vars->env);
+	i = find_in_env(vars->env, "OLDPWD=");
+	if (i != -1)
+	{
+		null_free(&vars->env[i]);
+		re_init_env(vars, count, 1);
 	}
 	vars->input = NULL;
 	vars->input_parsed = NULL;

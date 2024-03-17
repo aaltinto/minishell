@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:13:05 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/15 16:13:06 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/17 17:22:46 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,49 @@ int	reset_fds(t_vars *vars)
 	return (1);
 }
 
+int	open_fds_parse(t_vars *vars)
+{
+	int		i;
+	char	quote_type;
+	int		in_quotes;
+
+	if (!vars->input)
+		return (0);
+	i = -1;
+	quote_type = 0;
+	in_quotes = 0;
+	while (vars->input[++i])
+	{
+		if (vars->input[i] == '\"' || vars->input[i] == '\'')
+		{
+			if (!quote_type)
+				quote_type = vars->input[i];
+			if (quote_type == vars->input[i])
+			{
+				in_quotes = !in_quotes;
+				if (!in_quotes)
+					quote_type = '\0';
+				continue ;
+			}
+		}
+		if (in_quotes && quote_type == '\'')
+			continue ;
+		else if (vars->input[i] == '<' && vars->input[i + 1] == '<'
+			&& ++i && ++i && heredoc(vars, i) == 0)
+			return (null_free(&vars->input), 0);
+		else if (vars->input[i] == '<' && open_file(vars, i -1) == -1)
+			return (null_free(&vars->input), 0);
+		else if (vars->input[i] == '>' && vars->input[i + 1] == '>'
+			&& append_output(vars, i) == -1)
+			return (null_free(&vars->input), 0);
+		else if (vars->input[i] == '>' && output_file(vars, i) == -1)
+			return (null_free(&vars->input), 0);
+		if (vars->input[i] == '\0')
+			break ;
+	}
+	return (1);
+}
+
 int	handle_prompt(t_vars *vars, int condition)
 {
 	int		ret;
@@ -74,19 +117,20 @@ int	handle_prompt(t_vars *vars, int condition)
 	quote(vars);
 	if (vars->hist != -1 && condition)
 		add_history(vars->input);
-	write(1, "a\n", 2);
 	dolar_parse(vars);
-	if (!condition && !vars->input)
-		return (killer(vars), 1);
 	if (pipe_parse(vars))
 		return (reset_fds(vars), 1);
+	if (!condition && !vars->input)
+		return (killer(vars), 1);
 	if (!vars->input)
 		return (reset_fds(vars));
+	open_fds_parse(vars);
+	printf("%s\n", vars->input);
 	if (!parse(vars, 0))
 		return (0);
 	ret = something_familiar(vars);
 	if (!ret)
-		path_finder(vars, strip(vars->input_parsed[0]), vars->input_parsed, condition);
+		path_finder(vars, vars->input_parsed[0], vars->input_parsed, condition);
 	if (!reset_fds(vars))
 		return (0);
 	if (!condition)

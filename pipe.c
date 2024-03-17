@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:04 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/15 17:22:48 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/17 16:27:38 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,32 +17,27 @@
 
 int	child_process(int **pipes, int pipe_count, t_vars *vars, int i)
 {
+	t_vars	new_vars;
 	char	**cmd;
 	char	**argv;
 	int		j;
 
 	argv = ft_split(vars->input, '|');
 	if (i != 0)
-	{
 		dup2(pipes[i - 1][0], STDIN_FILENO);
-		close(pipes[i - 1][1]);
-	}
 	if (i != pipe_count)
-	{
-		close(pipes[i][0]);
 		dup2(pipes[i][1], STDOUT_FILENO);
-	}
 	j = -1;
 	while (++j < pipe_count)
 	{
-		if (j != i - 1)
-			close(pipes[j][0]);
-		if (j != i)
-			close(pipes[j][1]);
+		close(pipes[j][0]);
+		close(pipes[j][1]);
 	}
-	cmd = ft_split(argv[i], ' ');
-	return (path_finder(vars, cmd[0], cmd, 1),
-		reset_fds(vars), exit(EXIT_SUCCESS), 1);
+	marche(&new_vars, vars->env, 0);
+	new_vars.input = ft_strdup(argv[i]);
+	handle_prompt(&new_vars, 0);
+	free_doubles(argv);
+	return (reset_fds(vars), exit(EXIT_SUCCESS), 1);
 }
 
 int	pipe_piping(int **pipes, int pipe_count, t_vars *vars)
@@ -85,7 +80,7 @@ int	pipe_parse(t_vars *vars)
 	i = -1;
 	pipe_count = 0;
 	if (!vars->input)
-		return (1);
+		return (0);
 	while (vars->input[++i])
 		if (vars->input[i] == '|')
 			pipe_count++;
@@ -94,10 +89,12 @@ int	pipe_parse(t_vars *vars)
 	pipes = malloc(sizeof(int *) * pipe_count);
 	i = -1;
 	while (++i < pipe_count)
+	{
 		pipes[i] = malloc(sizeof(int) * 2);
-	i = -1;
-	while (++i < pipe_count)
+		if (!pipes[i])
+			return (1);
 		if (pipe(pipes[i]) == -1)
 			return (perror("pipe"), 1);
+	}
 	return (pipe_piping(pipes, pipe_count, vars), free_doubles2((void **)pipes, pipe_count), 1);
 }

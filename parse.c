@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:58 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/16 17:09:57 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/17 15:55:44 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,17 @@ int	parse(t_vars *vars, int count)
 {
 	int		i;
 	int		j;
+	int		check;
 	char	quote_type;
 	char	*input;
 	char	*tmp;
 
 	if (!vars->input)
 		return (0);
+	check = 0;
 	input = ft_strdup(strip(vars->input));
+	if (ft_strncmp(input, "echo ", 5) == 0)
+		check = 1;
 	vars->input_parsed = (char **)ft_calloc(ft_strlen(input) + 1, sizeof(char *));
 	i = -1;
 	quote_type = 0;
@@ -42,7 +46,7 @@ int	parse(t_vars *vars, int count)
 			while ((input[i] != '\0' && quote_type != input[i]) && ++i)
 				++j;
 			printf("j= %d\n", j);
-			if (is_space(input[i + 1])) 
+			if (is_space(input[i + 1]) && check) 
 			{
 				tmp = ft_substr(input, i - j, j);
 				vars->input_parsed[count++] = ft_strjoin(tmp, " ");
@@ -57,7 +61,7 @@ int	parse(t_vars *vars, int count)
 			j = 0;
 			while (input[i] != '\0' && (!is_space(input[i]) && !is_quote(input[i]) && ++i))
 				++j;
-			if (is_space(input[i]))
+			if (is_space(input[i]) && check)
 			{
 				tmp = ft_substr(input, i - j, j);
 				vars->input_parsed[count++] = ft_strjoin(tmp, " ");
