@@ -25,7 +25,7 @@ int	child_process(int **pipes, int pipe_count, t_vars *vars, int i)
 	if (i != 0)
 	{
 		dup2(pipes[i - 1][0], STDIN_FILENO);
-		close(pipes[i - 1][0]);
+		close(pipes[i - 1][1]);
 	}
 	if (i != pipe_count)
 	{
@@ -41,7 +41,8 @@ int	child_process(int **pipes, int pipe_count, t_vars *vars, int i)
 			close(pipes[j][1]);
 	}
 	cmd = ft_split(argv[i], ' ');
-	return (path_finder(vars, cmd[0], cmd, 1), exit(EXIT_SUCCESS), 1);
+	return (path_finder(vars, cmd[0], cmd, 1),
+		reset_fds(vars), exit(EXIT_SUCCESS), 1);
 }
 
 int	pipe_piping(int **pipes, int pipe_count, t_vars *vars)

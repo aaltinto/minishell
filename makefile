@@ -24,6 +24,14 @@ LIBFT = libft/libft.a
 GNL = gnl/gnl.a
 OBJ = $(SRC:c=o)
 
+GREEN := \033[0;32m
+RED := \033[0;31m
+RESET := \033[0m
+
+BUILD_PRINT = $(GREEN)Building $<$(RESET)
+DELETE_PRINT = $(RED)Deleting ./philo$(RESET)
+DELETE_OBJ = $(RED)Deleting Objects $(RESET)
+
 all : $(NAME)
 
 $(NAME) : $(OBJ)

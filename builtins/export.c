@@ -74,6 +74,7 @@ void	check_restore(t_vars *vars)
 	while (vars->input_parsed[++i])
 	{
 		splited = ft_split(vars->input_parsed[i], '=');
+		printf("check_restore= -%s-\n", splited[0]);
 		index = find_in_env(vars->env, splited[0]);
 		free_doubles(splited);
 		if (index == -1)
@@ -105,14 +106,13 @@ int	new_export(t_vars *vars)
 	check = NULL;
 	while (vars->input_parsed[++i])
 	{
-		write(1, "a\n", 2);
 		if (ft_strchr(vars->input_parsed[i], '=') != 0)
 			check = ft_strchr(vars->input_parsed[i], '=');
-		if (check == NULL || ft_strncmp(check, "= ", 2) == 0)
+		if (check == NULL || ft_strncmp(check, "= ", 2) == 0 || (!is_space(*check++) && *check != '\0'))
 		{
 			new_env[++i2] = ft_strdup(vars->input_parsed[i]);
 			if (!new_env[i2])
-			return (err_msg("Error", 1), 2);	
+				return (err_msg("Error", 1), 2);
 		}
 		else
 		{
@@ -128,8 +128,6 @@ int	new_export(t_vars *vars)
 		check = NULL;
 	}
 	new_env[++i2] = NULL;
-	for (int i = 0; new_env[i]; i++)
-		printf("%s\n", new_env[i]);
 	free_doubles(vars->env);
 	return (env_init(vars, new_env), free_doubles(new_env), 1);
 }

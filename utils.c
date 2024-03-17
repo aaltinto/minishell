@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "libft/libft.h"
+#include "minishell.h"
 
 int	is_quote(char c)
 {
@@ -36,11 +37,16 @@ int	double_counter(char **str)
 
 int	find_in_env(char **env, char *to_find)
 {
-	int	i;
+	int		i;
+	char	**tmp;
 
 	i = -1;
 	while (env[++i])
-		if (ft_strncmp(env[i], to_find, ft_strlen(to_find)) == 0)
-			return (i);
+	{
+		tmp = ft_split(env[i], '=');
+		if (ft_strncmp(tmp[0], to_find, ft_strlen(tmp[0])) == 0)
+			return (free_doubles(tmp), i);
+		free_doubles(tmp);
+	}
 	return (-1);
 }

@@ -74,6 +74,7 @@ int	handle_prompt(t_vars *vars, int condition)
 	quote(vars);
 	if (vars->hist != -1 && condition)
 		add_history(vars->input);
+	write(1, "a\n", 2);
 	dolar_parse(vars);
 	if (!condition && !vars->input)
 		return (killer(vars), 1);

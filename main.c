@@ -101,6 +101,7 @@ int	main(int argc, char **argv, char **env)
 	char	*pwd;
 	t_vars	vars;
 
+	(void)argv;
 	if (argc != 1)
 		return (err_msg("Error\nRun without arguments", 1), 1);
 	if (!marche(&vars, env, 1))

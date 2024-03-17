@@ -26,15 +26,14 @@ static int	fd_append_operations(t_vars *vars, char *var)
 		if (dup2(vars->origin_stdout, STDOUT_FILENO) == -1)
 			return (perror("dup2"), 0);
 	file = ft_substr(strip(var + 2), 0, ft_strlen(var));
-	free(var);
 	fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	null_free(&file);
 	if (fd < 0)
 		return (err_msg("No such file or directory", 1), 0);
 	vars->origin_stdout = dup(STDOUT_FILENO);
-	if (dup2(fd, STDOUT_FILENO) == -1)
-		return (perror("dup2"), 0);
 	vars->file_created = 1;
+	if (dup2(fd, STDOUT_FILENO) == -1)
+		return (perror("dup2"), -1);
 	if (!vars->input)
 		return (close(fd), -1);
 	close(fd);
