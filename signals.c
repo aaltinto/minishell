@@ -18,11 +18,12 @@
 
 void	sig_c(int sig)
 {
+	(void)sig;
 	if (!g_l)
 	{
 		printf("\n");
 		rl_on_new_line();
-		rl_replace_line("", 0);
+		//rl_replace_line("", 0);
 		rl_redisplay();
 	}
 	else if (g_l == 42)
@@ -34,6 +35,7 @@ void	sig_c(int sig)
 
 void	sig_backslash(int sig)
 {
+	(void)sig;
 	printf("Quit: 3\n");
 }
 

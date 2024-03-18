@@ -28,7 +28,7 @@ int	parse(t_vars *vars, int count)
 		return (0);
 	check = 0;
 	input = ft_strdup(strip(vars->input));
-	if (ft_strncmp(input, "echo ", 5) == 0)
+	if (ft_strncmp(input, "echo ", 5) == 0 || ft_strncmp(input, "export ", 6) == 0)
 		check = 1;
 	vars->input_parsed = (char **)ft_calloc(ft_strlen(input) + 1, sizeof(char *));
 	i = -1;
@@ -42,10 +42,8 @@ int	parse(t_vars *vars, int count)
 			quote_type = input[i];
 			j = 0;
 			i++;
-			ft_putchar_fd(quote_type, 1);
 			while ((input[i] != '\0' && quote_type != input[i]) && ++i)
 				++j;
-			printf("j= %d\n", j);
 			if (is_space(input[i + 1]) && check) 
 			{
 				tmp = ft_substr(input, i - j, j);
@@ -75,6 +73,7 @@ int	parse(t_vars *vars, int count)
 			break ;
 	}
 	vars->input_parsed[count++] = NULL;
+	vars->argc = double_counter(vars->input_parsed);
 	return (null_free(&input), null_free(&vars->input), 1);
 }
 
@@ -130,7 +129,7 @@ static int	replace_input(t_vars *vars, char *var, char **tmp)
 		++j;
 	var = ft_substr(tmp[1], 2, j - 1);
 	if (!var)
-		return (err_msg("Error", 1), free_doubles(tmp), -1);
+		return (err_msg("Error"), free_doubles(tmp), -1);
 	if (pipe(fd) == -1)
 		return (perror("pipe"), -1);
 	marche(&new_vars, vars->env, 0);
@@ -152,15 +151,11 @@ int	exec_dollar_command(t_vars *vars, int i)
 	int		j;
 	int		open_paren;
 	int		last_paren;
-	int		len;
-	int		check;
 	char	*var;
 	char	**tmp;
 
-	len = ft_strlen(vars->input);
 	last_paren = 0;
 	j = 0;
-	check = 0;
 	open_paren = 0;
 	while (vars->input[++i] && ++last_paren)
 	{
@@ -172,17 +167,17 @@ int	exec_dollar_command(t_vars *vars, int i)
 			open_paren--;
 		}
 		if (open_paren < 0)
-			return (err_msg("Parentheses error", 1), -1);
+			return (err_msg("Parentheses error"), -1);
 	}
 	if (open_paren != 0)
-		return (err_msg("Parentheses error", 1), -1);
+		return (err_msg("Parentheses error"), -1);
 	var = ft_substr(vars->input, i - j, j);
 	if (!var)
-		return (err_msg("Error", 1), -1);
+		return (err_msg("Error"), -1);
 	tmp = split_string(vars->input, var);
 	null_free(&var);
 	if (!tmp)
-		return (err_msg("Error", 1), -1);
+		return (err_msg("Error"), -1);
 	i = replace_input(vars, var, tmp);
 	return (free_doubles(tmp), i);
 }
@@ -238,16 +233,6 @@ int	dolar_parse(t_vars *vars)
 			return (null_free(&vars->input), 0);
 		else if (vars->input[i] == '$' && !is_space(vars->input[i + 1])
 			&& vars->input[i + 1] != '\0' && env_find_dollar(vars, i -1) == -1)
-			return (null_free(&vars->input), 0);
-		else if (vars->input[i] == '<' && vars->input[i + 1] == '<'
-			&& ++i && ++i && heredoc(vars, i) == 0)
-			return (null_free(&vars->input), 0);
-		else if (vars->input[i] == '<' && open_file(vars, i -1) == -1)
-			return (null_free(&vars->input), 0);
-		else if (vars->input[i] == '>' && vars->input[i + 1] == '>'
-			&& append_output(vars, i) == -1)
-			return (null_free(&vars->input), 0);
-		else if (vars->input[i] == '>' && output_file(vars, i) == -1)
 			return (null_free(&vars->input), 0);
 		if (vars->input[i] == '\0')
 			break ;

@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include "libft/libft.h"
 
-static int	fd_open_operations(t_vars *vars, char *var, int condition)
+static int	fd_open_operations(t_vars *vars, char *var)
 {
 	int		fd;
 	char	*file;
@@ -30,7 +30,7 @@ static int	fd_open_operations(t_vars *vars, char *var, int condition)
 	fd = open(file, O_RDONLY);
 	null_free(&file);
 	if (fd < 0)
-		return (err_msg("No such file or directory", 1), -1);
+		return (err_msg("No such file or directory"), -1);
 	vars->origin_stdin = dup(STDIN_FILENO);
 	if (dup2(fd, STDIN_FILENO) == -1)
 		return (perror("dup2"), 0);
@@ -55,18 +55,17 @@ int	open_file(t_vars *vars, int i)
 			check = 0;
 	if (check == 1)
 		return (
-			err_msg("minishell: syntax error near unexpected token", \
-			1), -1);
+			err_msg("minishell: syntax error near unexpected token"), -1);
 	var = ft_substr(vars->input, i - j, j);
 	if (!var)
-		return (err_msg("Error", 1), 0);
+		return (err_msg("Error"), 0);
 	tmp = split_string(strip(vars->input), var);
 	if (!tmp)
 		return (free(var), -1);
 	null_free(&tmp[1]);
 	append_doubles(&vars->input, tmp, 1);
 	free_doubles2((void **)tmp, 3);
-	ret = fd_open_operations(vars, var, 1);
+	ret = fd_open_operations(vars, var);
 	null_free(&var);
 	return (ret);
 }
@@ -110,11 +109,10 @@ int	output_file(t_vars *vars, int i)
 			check = 0;
 	if (j++ <= 1)
 		return (
-			err_msg("minishell: syntax error near unexpected token", \
-			1), -1);
+			err_msg("minishell: syntax error near unexpected token"), -1);
 	var = ft_substr(vars->input, i - j, j);
 	if (!var)
-		return (err_msg("Error", 1), -1);
+		return (err_msg("Error"), -1);
 	tmp = split_string(strip(vars->input), var);
 	null_free(&tmp[1]);
 	append_doubles(&vars->input, tmp, 1);

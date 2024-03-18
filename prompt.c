@@ -19,7 +19,7 @@
 int	is_builtin(t_vars *vars)
 {
 	if (ft_strncmp(vars->input_parsed[0], "cd", 2) == 0)
-		return (new_cd(vars), 1);
+		return (new_cd(vars));
 	if (ft_strncmp(vars->input_parsed[0], "pwd", 3) == 0)
 		return (new_pwd(vars), 1);
 	if (ft_strncmp(vars->input_parsed[0], "echo", 4) == 0)
@@ -85,10 +85,10 @@ int	open_fds_parse(t_vars *vars)
 				continue ;
 			}
 		}
-		if (in_quotes && quote_type == '\'')
+		if (in_quotes)
 			continue ;
 		else if (vars->input[i] == '<' && vars->input[i + 1] == '<'
-			&& ++i && ++i && heredoc(vars, i) == 0)
+			&& vars->input[i + 2] != '<' && ++i && ++i && heredoc(vars, i) == 0)
 			return (null_free(&vars->input), 0);
 		else if (vars->input[i] == '<' && open_file(vars, i -1) == -1)
 			return (null_free(&vars->input), 0);
@@ -125,9 +125,8 @@ int	handle_prompt(t_vars *vars, int condition)
 	if (!vars->input)
 		return (reset_fds(vars));
 	open_fds_parse(vars);
-	printf("%s\n", vars->input);
 	if (!parse(vars, 0))
-		return (0);
+		return (reset_fds(vars), 0);
 	ret = something_familiar(vars);
 	if (!ret)
 		path_finder(vars, vars->input_parsed[0], vars->input_parsed, condition);

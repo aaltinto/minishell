@@ -33,3 +33,19 @@ int	env_init(t_vars *vars, char **env)
 	vars->env[i] = NULL;
 	return (1);
 }
+
+int	find_in_env(char **env, char *to_find)
+{
+	int		i;
+	char	**tmp;
+
+	i = -1;
+	while (env[++i])
+	{
+		tmp = ft_split(env[i], '=');
+		if (ft_strncmp(tmp[0], to_find, ft_strlen(tmp[0])) == 0)
+			return (free_doubles(tmp), i);
+		free_doubles(tmp);
+	}
+	return (-1);
+}

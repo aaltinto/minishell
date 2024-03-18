@@ -39,7 +39,7 @@ typedef struct s_vars
 int g_l;
 
 //free and exit
-void	err_msg(char *msg, int x);
+void	err_msg(char *msg);
 void	free_doubles(char **str);
 void	null_free(char **var);
 void	null_free_void(void **var);

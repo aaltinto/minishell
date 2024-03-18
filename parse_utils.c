@@ -25,7 +25,7 @@ char	**split_string(char *src, char *key)
 
 	result = ft_calloc(3, sizeof(char *));
 	if (result == NULL)
-		return (err_msg("Memory allocation failed\n", 1), NULL);
+		return (err_msg("Memory allocation failed\n"), NULL);
 	found = ft_strnstr(src, key, ft_strlen(src));
 	if (found != NULL)
 	{

@@ -16,7 +16,6 @@
 
 char	**dup_env(t_vars *vars, char **to_dup)
 {
-	int		j;
 	int		i;
 	char	**new_env;
 
@@ -28,7 +27,7 @@ char	**dup_env(t_vars *vars, char **to_dup)
 	{
 		new_env[i] = ft_strdup(to_dup[i]);
 		if (!new_env[i])
-			return (err_msg("Error", 1), NULL);
+			return (err_msg("Error"), NULL);
 	}
 	new_env[i] = NULL;
 	return (new_env);
@@ -72,7 +71,6 @@ void	check_restore(t_vars *vars)
 	while (vars->input_parsed[++i])
 	{
 		splited = ft_split(vars->input_parsed[i], '=');
-		printf("check_restore= -%s-\n", splited[0]);
 		index = find_in_env(vars->env, splited[0]);
 		free_doubles(splited);
 		if (index == -1)
@@ -82,6 +80,45 @@ void	check_restore(t_vars *vars)
 	}
 	if (del)
 		re_init_env(vars, count, del);
+}
+
+int	check_validity(t_vars *vars)
+{
+	int		i;
+	int		j;
+	char	*err;
+	char	*tmp;
+	char	*input;
+
+	i = 0;
+	while (vars->input_parsed[++i])
+	{
+		j = -1;
+		tmp = ft_strdup(vars->input_parsed[i]);
+		input = ft_strdup(strip(tmp));
+		null_free(&tmp);
+		printf("%s\n", input);
+		while (input[++j])
+		{
+			if (input[j] != '=' && !ft_isalpha(input[j]))
+			{
+				if (vars->input_parsed[i - 1])
+					tmp = ft_strchr(vars->input_parsed[i - 1], '=');
+				//printf("tmp: -%i-\n", ft_strncmp(tmp, "= ", 2));
+				if (tmp)
+					if (ft_strncmp(tmp, "= ", ft_strlen(tmp)) != 0)
+						break ;
+				err = ft_strjoin("export: invalid identifier found: ",
+						vars->input_parsed[i]);
+				err_msg(err);
+				null_free(&err);
+				null_free(&vars->input_parsed[i]);
+				break ;
+			}
+		}
+		null_free(&input);
+	}
+	return (1);
 }
 
 int	new_export(t_vars *vars)
@@ -94,6 +131,8 @@ int	new_export(t_vars *vars)
 
 	if (!vars->input_parsed[1])
 		return (print_vars(vars), 1);
+	if (!check_validity(vars))
+		return (2);
 	check_restore(vars);
 	new_env = dup_env(vars, vars->env);
 	if (!new_env)
@@ -102,27 +141,31 @@ int	new_export(t_vars *vars)
 	i = 0;
 	tmp = NULL;
 	check = NULL;
-	while (vars->input_parsed[++i])
+	while (vars->argc + 1 >= ++i)
 	{
+		if (!vars->input_parsed[i])
+			continue ;
+		printf("-%s-\n", vars->input_parsed[i]);
 		if (ft_strchr(vars->input_parsed[i], '=') != 0)
 			check = ft_strchr(vars->input_parsed[i], '=');
-		if (check == NULL || ft_strncmp(check, "= ", 2) == 0 || (!is_space(*check++) && *check != '\0'))
+		if (check == NULL || ft_strncmp(check, "= ", 2) == 0
+			|| (!is_space(*check++) && *check != '\0'))
 		{
-			new_env[++i2] = ft_strdup(vars->input_parsed[i]);
+			new_env[++i2] = ft_strdup(strip(vars->input_parsed[i]));
 			if (!new_env[i2])
-				return (err_msg("Error", 1), 2);
+				return (err_msg("Error"), 2);
 		}
 		else
 		{
 			if (vars->input_parsed[i + 1] != NULL)
-				tmp = ft_strjoin(vars->input_parsed[i], vars->input_parsed[i + 1]);
+				tmp = ft_strjoin(vars->input_parsed[i], strip(vars->input_parsed[i + 1]));
 			else
 				new_env[++i2] = ft_strdup(vars->input_parsed[i]);
 			if (tmp != NULL)
 				new_env[++i2] = ft_strdup(tmp);
 			i++;
+			null_free(&tmp);
 		}
-		null_free(&tmp);
 		check = NULL;
 	}
 	new_env[++i2] = NULL;

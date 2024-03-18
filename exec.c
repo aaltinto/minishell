@@ -16,7 +16,7 @@
 #include "libft/libft.h"
 #include <stdio.h>
 
-int	execute(char *path, t_vars *vars, int *pipe_fd)
+int	execute(t_vars *vars, int *pipe_fd)
 {
 	char	*output;
 	char	*tmp;
@@ -64,7 +64,7 @@ int	pipe_exec(char *path, t_vars *vars, char **argv, int condition)
 	if (p_id == 0)
 	{
 		if (!condition && close(pipe_fd[0]) && dup2(pipe_fd[1],
-			STDOUT_FILENO) == -1)
+				STDOUT_FILENO) == -1)
 			return (perror("dup2"), 0);
 		if (execve(path, argv, vars->env) == -1)
 		{
@@ -81,7 +81,7 @@ int	pipe_exec(char *path, t_vars *vars, char **argv, int condition)
 	{
 		close(pipe_fd[1]);
 		close(pipe_fd[0]);
-		execute(path, vars, pipe_fd);
+		execute(vars, pipe_fd);
 	}
 	waitpid(p_id, &status, 0);
 	vars->exit_stat = wexitstatus(status);
@@ -100,12 +100,17 @@ int	path_finder(t_vars *vars, char *cmd, char **argv, int condition)
 	if (argv == NULL)
 		return (0);
 	i = find_in_env(vars->env, "PATH=");
-	split_path = ft_split(vars->env[i], ':');
-	if (!split_path)
-		return (err_msg("Error!", 1), 0);
+	if (i != -1)
+	{
+		split_path = ft_split(vars->env[i], ':');
+		if (!split_path)
+			return (err_msg("Split error!"), 0);
+	}
+	else
+		split_path = NULL;
 	tmp = ft_strjoin("/", cmd);
 	i = -1;
-	while (split_path[++i])
+	while (split_path && split_path[++i])
 	{
 		this_is_the_way = ft_strjoin(split_path[i], tmp);
 		if (access(this_is_the_way, F_OK) == 0)
@@ -124,5 +129,5 @@ int	path_finder(t_vars *vars, char *cmd, char **argv, int condition)
 	err = ft_strjoin("minishell: command not found: ", cmd);
 	null_free(&tmp);
 	free_doubles(split_path);
-	return (err_msg(err, 1), null_free(&err), 0);
+	return (err_msg(err), null_free(&err), 0);
 }

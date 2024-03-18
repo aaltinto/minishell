@@ -38,12 +38,12 @@ SRC = ft_isalpha.c \
 all: $(NAME)
 
 $(NAME):
-	gcc $(FLAG) -c $(SRC)
-	ar rc $(NAME) *.o
+	@gcc $(FLAG) -c $(SRC)
+	@ar rc $(NAME) *.o
 clean:
-	/bin/rm -f  *.o
+	@/bin/rm -f  *.o
 fclean: clean
-	/bin/rm -f $(NAME)
+	@/bin/rm -f $(NAME)
 
 re: fclean all
 

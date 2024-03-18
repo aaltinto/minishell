@@ -9,6 +9,7 @@
 /*   Updated: 2023/07/07 12:21:01 by aaltinto         ###   ########.tr       */
 /*                                                                            */
 /* ************************************************************************** */
+#include <stdlib.h>
 
 char	*ft_strchr(const char *s, int c)
 {
@@ -23,5 +24,5 @@ char	*ft_strchr(const char *s, int c)
 	}
 	if (s[i] == (char)c)
 		return ((char *) s + i);
-	return (0);
+	return ((void *)0);
 }

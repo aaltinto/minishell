@@ -1,6 +1,6 @@
 NAME = minishell
 CC = gcc
-FLAGS = -Wall -Wextra -Werror -lreadline -g
+FLAGS = -Wall -Wextra -Werror -g
 SRC = main.c\
 	free_n_exit.c\
 	prompt.c\
@@ -28,25 +28,35 @@ GREEN := \033[0;32m
 RED := \033[0;31m
 RESET := \033[0m
 
-BUILD_PRINT = $(GREEN)Building $<$(RESET)
-DELETE_PRINT = $(RED)Deleting ./philo$(RESET)
-DELETE_OBJ = $(RED)Deleting Objects $(RESET)
+BUILD_PRINT = @echo "$(GREEN)Building $@$(RESET)"
+DELETE_PRINT = @echo "$(RED)Deleting ./minishell$(RESET)"
+DELETE_OBJ = @echo "$(RED)Deleting Objects $(RESET)"
+SUCCESS_MSG = @printf "$(GREEN)Compilation successful: $(NAME)$(RESET)\n"
 
 all : $(NAME)
 
 $(NAME) : $(OBJ)
-	make all -C libft
-	make all -C gnl
-	$(CC) $(FLAGS) -o $(NAME) $(OBJ) $(LIBFT) $(GNL)
+	$(BUILD_PRINT)
+	@make all -C libft
+	@make all -C gnl
+	@$(CC) $(FLAGS) -o $(NAME) $(OBJ) $(LIBFT) $(GNL) -lreadline
+	@printf "\033[K\r"
+	$(SUCCESS_MSG)
+
+%.o: %.c
+	@printf "$(GREEN)Compiling $<$(RESET)\033[K\r"
+	@$(CC) $(FLAGS) -c $< -o $@
+	@printf "\033[K\r"
 
 clean :
-	make clean -C libft
-	make clean -C gnl
-	rm -rf *.o
-	rm -rf builtins/*.o
+	@make clean -C libft
+	@make clean -C gnl
+	$(DELETE_OBJ)
+	@rm -rf *.o
+	@rm -rf builtins/*.o
 fclean : clean
-	make fclean -C libft
-	make fclean -C gnl
-	rm -rf $(NAME)
+	@make fclean -C libft
+	@make fclean -C gnl
+	@rm -rf $(NAME)
 
 re : fclean all

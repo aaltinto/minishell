@@ -14,12 +14,9 @@
 #include "libft/libft.h"
 #include <stdlib.h>
 
-void	err_msg(char *msg, int x)
+void	err_msg(char *msg)
 {
-	if (x == 1)
-		ft_putendl_fd(msg, 2);
-	if (x == 0)
-		ft_putstr_fd(msg, 2);
+	ft_putendl_fd(msg, 2);
 }
 
 void	free_doubles(char **str)
@@ -44,20 +41,13 @@ void	free_doubles2(void **str, int j)
 	i = -1;
 	while (j > ++i)
 	{
-		null_free_void(&str[i]);
+		null_free((char **)&str[i]);
 	}
 	free(str);
 	str = NULL;
 }
 
 void	null_free(char **var)
-{
-	if (!*var)
-		return ;
-	free(*var);
-	*var = NULL;
-}
-void	null_free_void(void **var)
 {
 	if (!*var)
 		return ;

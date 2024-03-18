@@ -18,7 +18,6 @@
 int	child_process(int **pipes, int pipe_count, t_vars *vars, int i)
 {
 	t_vars	new_vars;
-	char	**cmd;
 	char	**argv;
 	int		j;
 
@@ -42,10 +41,8 @@ int	child_process(int **pipes, int pipe_count, t_vars *vars, int i)
 
 int	pipe_piping(int **pipes, int pipe_count, t_vars *vars)
 {
-	char	**cmd;
-	pid_t	*pid;
-	int		j;
 	int		i;
+	pid_t	*pid;
 
 	pid = malloc(sizeof(pid_t) * (pipe_count + 1));
 	i = -1;
@@ -71,19 +68,44 @@ int	pipe_piping(int **pipes, int pipe_count, t_vars *vars)
 	return (free(pid), null_free(&vars->input), 1);
 }
 
-int	pipe_parse(t_vars *vars)
+int	pipe_counter(t_vars *vars)
 {
 	int		i;
 	int		pipe_count;
-	int		**pipes;
+	int		in_quotes;
+	char	quote_type;
 
 	i = -1;
 	pipe_count = 0;
+	while (vars->input[++i])
+	{
+		if (vars->input[i] == '\"' || vars->input[i] == '\'')
+		{
+			if (!quote_type)
+				quote_type = vars->input[i];
+			if (quote_type == vars->input[i])
+			{
+				in_quotes = !in_quotes;
+				if (!in_quotes)
+					quote_type = '\0';
+				continue ;
+			}
+		}
+		if (!in_quotes && vars->input[i] == '|')
+			pipe_count++;
+	}
+	return (pipe_count);
+}
+
+int	pipe_parse(t_vars *vars)
+{
+	int		i;
+	int		**pipes;
+	int		pipe_count;
+
 	if (!vars->input)
 		return (0);
-	while (vars->input[++i])
-		if (vars->input[i] == '|')
-			pipe_count++;
+	pipe_count = pipe_counter(vars);
 	if (pipe_count == 0)
 		return (0);
 	pipes = malloc(sizeof(int *) * pipe_count);
@@ -96,5 +118,6 @@ int	pipe_parse(t_vars *vars)
 		if (pipe(pipes[i]) == -1)
 			return (perror("pipe"), 1);
 	}
-	return (pipe_piping(pipes, pipe_count, vars), free_doubles2((void **)pipes, pipe_count), 1);
+	return (pipe_piping(pipes, pipe_count, vars),
+		free_doubles2((void **)pipes, pipe_count), 1);
 }

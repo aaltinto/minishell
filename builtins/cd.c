@@ -25,7 +25,7 @@ void	get_oldpwd(t_vars *vars)
 	i = find_in_env(vars->env, "OLDPWD=");
 	if (i == -1)
 	{
-		err_msg("minishell: cd: OLDPWD not set", 1);
+		err_msg("minishell: cd: OLDPWD not set");
 		return ;
 	}
 	tmp = ft_split(vars->env[i], '=');
@@ -41,12 +41,9 @@ int	new_cd(t_vars *vars)
 	char	*tmp;
 	char	**new_env;
 
-	i = find_in_env(vars->env, "HOME=");
 	old_path = getcwd(NULL, 0);
 	if (ft_strncmp(vars->input_parsed[1], "-", 2) == 0)
 		return (get_oldpwd(vars), null_free(&old_path), 1);
-	if (ft_strncmp("/", old_path, 2) == 0)
-		return (null_free(&old_path), 0);
 	if (chdir(vars->input_parsed[1]) != 0)
 		return (perror("minishell: cd"), 0);
 	new_path = getcwd(NULL, 0);
