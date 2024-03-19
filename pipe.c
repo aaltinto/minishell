@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:04 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/17 16:27:38 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/19 19:20:43 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	child_process(int **pipes, int pipe_count, t_vars *vars, int i)
 		close(pipes[j][1]);
 	}
 	marche(&new_vars, vars->env, 0);
-	new_vars.input = ft_strdup(argv[i]);
+	new_vars.input = ft_strdup(strip(argv[i]));
 	handle_prompt(&new_vars, 0);
 	free_doubles(argv);
 	return (reset_fds(vars), exit(EXIT_SUCCESS), 1);
@@ -77,6 +77,8 @@ int	pipe_counter(t_vars *vars)
 
 	i = -1;
 	pipe_count = 0;
+	in_quotes = 0;
+	quote_type = '\0';
 	while (vars->input[++i])
 	{
 		if (vars->input[i] == '\"' || vars->input[i] == '\'')
@@ -106,6 +108,7 @@ int	pipe_parse(t_vars *vars)
 	if (!vars->input)
 		return (0);
 	pipe_count = pipe_counter(vars);
+	printf("pipe: %d\n", pipe_count);
 	if (pipe_count == 0)
 		return (0);
 	pipes = malloc(sizeof(int *) * pipe_count);

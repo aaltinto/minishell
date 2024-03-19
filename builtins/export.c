@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:21 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/17 16:06:32 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/19 20:00:58 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,15 @@ void	check_restore(t_vars *vars)
 	int		del;
 	int		count;
 	char	**splited;
+	char	**tmp;
 
 	i = 0;
 	del = 0;
 	count = double_counter(vars->env);
+	tmp = vars->input_parsed;
 	while (vars->input_parsed[++i])
 	{
-		splited = ft_split(vars->input_parsed[i], '=');
+		splited = ft_split(strip(vars->input_parsed[i]), '=');
 		index = find_in_env(vars->env, splited[0]);
 		free_doubles(splited);
 		if (index == -1)
@@ -80,14 +82,17 @@ void	check_restore(t_vars *vars)
 	}
 	if (del)
 		re_init_env(vars, count, del);
+	vars->input_parsed = tmp;
 }
 
 int	check_validity(t_vars *vars)
 {
 	int		i;
 	int		j;
+	int		check;
 	char	*err;
 	char	*tmp;
+	char	**tmp2;
 	char	*input;
 
 	i = 0;
@@ -100,14 +105,27 @@ int	check_validity(t_vars *vars)
 		printf("%s\n", input);
 		while (input[++j])
 		{
-			if (input[j] != '=' && !ft_isalpha(input[j]))
+			if (input[j] != '=' && !ft_isalnum(input[j]))
 			{
 				if (vars->input_parsed[i - 1])
 					tmp = ft_strchr(vars->input_parsed[i - 1], '=');
-				//printf("tmp: -%i-\n", ft_strncmp(tmp, "= ", 2));
-				if (tmp)
-					if (ft_strncmp(tmp, "= ", ft_strlen(tmp)) != 0)
+				printf("-%s-\n", tmp);
+				if (tmp && tmp++)
+					if (ft_strncmp(tmp, "= ", ft_strlen(tmp)) == 0)
 						break ;
+				tmp2 = ft_split(input, '=');
+				write(1, "a\n", 2);
+				if (tmp2)
+				{
+					check = 0;
+					for (int i= 0; tmp2[0][i]; i++)
+						if (!ft_isalnum(tmp2[0][i]))
+							check = 1;
+					printf("%d\n", check);
+					free_doubles(tmp2);
+					if (check == 0)
+						break;
+				}
 				err = ft_strjoin("export: invalid identifier found: ",
 						vars->input_parsed[i]);
 				err_msg(err);

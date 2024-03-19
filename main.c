@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:46 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/17 16:07:38 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/19 20:02:07 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,9 @@ char	*find_work_dir(char **env)
 
 	pwd = getcwd(NULL, 0);
 	if (!pwd)
-		return (NULL);
+		return (perror("getcwd"), ft_strdup(".. "));
 	i = find_in_env(env, "HOME=");
-	if (i == -1)
-		return (null_free(&pwd), NULL);
-	if (ft_strncmp(pwd, env[i] + 5, ft_strlen(env[i])) == 0)
+	if (i != -1 && ft_strncmp(pwd, env[i] + 5, ft_strlen(env[i])) == 0)
 		ret = ft_strdup(" ~");
 	else if (ft_strncmp(pwd, "/", 2) == 0)
 		ret = ft_strdup(" /");
@@ -57,8 +55,9 @@ int	prompter(char **env, t_vars *ret)
 		return (0);
 	i = find_in_env(env, "USER=");
 	if (i == -1)
-		return (err_msg("Error"), free_doubles2((void **)vars, 6), 0);
-	vars[0] = ft_strdup(env[i] + 5);
+		vars[0] = ft_strdup("user");
+	else
+		vars[0] = ft_strdup(env[i] + 5);
 	vars[1] = ft_strdup("@");
 	vars[2] = find_work_dir(env);
 	vars[3] = ft_strdup(" $ ");
@@ -104,10 +103,14 @@ int	marche(t_vars *vars, char **env, int condition)
 	vars->file_created = 0;
 	vars->file_opened = 0;
 	vars->exit_stat = 0;
-	i = find_in_env(vars->env, "OLDPWD=");
-	if (i != -1)
-		return (null_free(&vars->env[i]),
-			re_init_env(vars, double_counter(vars->env), 1), 1);
+	vars->hist = 0;
+	if (condition)
+	{
+		i = find_in_env(vars->env, "OLDPWD=");
+		if (i != -1)
+			return (null_free(&vars->env[i]),
+				re_init_env(vars, double_counter(vars->env), 1), 1);
+	}
 	return (1);
 }
 

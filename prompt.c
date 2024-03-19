@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:13:05 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/17 17:22:46 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/19 18:46:22 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	is_builtin(t_vars *vars)
 	if (ft_strncmp(vars->input_parsed[0], "cd", 2) == 0)
 		return (new_cd(vars));
 	if (ft_strncmp(vars->input_parsed[0], "pwd", 3) == 0)
-		return (new_pwd(vars), 1);
+		return (new_pwd(), 1);
 	if (ft_strncmp(vars->input_parsed[0], "echo", 4) == 0)
 		return (echo(vars), 1);
 	if (ft_strncmp(vars->input_parsed[0], "export", 5) == 0)

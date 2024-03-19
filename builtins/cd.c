@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:13 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/16 17:09:39 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/19 20:01:33 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	new_cd(t_vars *vars)
 	if (ft_strncmp(vars->input_parsed[1], "-", 2) == 0)
 		return (get_oldpwd(vars), null_free(&old_path), 1);
 	if (chdir(vars->input_parsed[1]) != 0)
-		return (perror("minishell: cd"), 0);
+		return (perror("minishell: cd"), null_free(&old_path), 0);
 	new_path = getcwd(NULL, 0);
 	i = find_in_env(vars->env, "PWD=");
 	tmp = ft_strjoin("PWD=", new_path);
@@ -58,7 +58,7 @@ int	new_cd(t_vars *vars)
 	free(tmp);
 	i = find_in_env(vars->env, "OLDPWD");
 	tmp = ft_strjoin("OLDPWD=", old_path);
-	free(old_path);
+	null_free(&old_path);
 	if (i != -1)
 	{
 		free(vars->env[i]);
