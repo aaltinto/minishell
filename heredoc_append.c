@@ -85,15 +85,6 @@ int	handle_eof(char *delimeter, int *fd)
 	return (1);
 }
 
-void	killer(t_vars *vars)
-{
-	free_doubles(vars->env);
-	free_doubles(vars->input_parsed);
-	null_free(&vars->input);
-	null_free(&vars->output);
-	null_free(&vars->user_pwd);
-}
-
 int	heredoc_loop(t_vars *vars, char *delimeter)
 {
 	int	fd[2];

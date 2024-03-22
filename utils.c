@@ -35,3 +35,11 @@ int	double_counter(char **str)
 	return (i);
 }
 
+void	killer(t_vars *vars)
+{
+	free_doubles(vars->env);
+	free_doubles(vars->input_parsed);
+	null_free(&vars->input);
+	null_free(&vars->output);
+	null_free(&vars->user_pwd);
+}

@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "minishell.h"
 #include "libft/libft.h"
 #include <stdlib.h>
@@ -59,11 +58,25 @@ char	*strip(char *str)
 	return (str);
 }
 
-void	append_doubles(char **dest, char **src, int condition)
+int	null_check(char **src)
+{
+	int	i;
+	int	null_check;
+
+	i = -1;
+	null_check = 0;
+	while (++i < 3)
+		if (src[i] == NULL)
+			null_check++;
+	if (null_check == 3)
+		return (1);
+	return (0);
+}
+
+int	append_doubles(char **dest, char **src, int condition)
 {
 	int	i;
 	int	len;
-	int	null_check;
 	int	max_index;
 
 	if (condition)
@@ -71,28 +84,19 @@ void	append_doubles(char **dest, char **src, int condition)
 	else
 		max_index = double_counter(src);
 	len = 0;
-	i = 0;
-	while (i < max_index)
-	{
+	i = -1;
+	while (++i < max_index)
 		if (src[i])
 			len += ft_strlen(src[i]);
-		i++;
-	}
-	i = -1;
-	null_check = 0;
-	if (condition)
-		while (++i < 3)
-			if (src[i] == NULL)
-				null_check++;
-	if (null_check == 3)
-	{
-		null_free(dest);
-		return ;
-	}
+	if (condition && null_check(src))
+		return (null_free(&(*dest)), 0);
 	null_free(&(*dest));
 	*dest = ft_calloc(len + 1, sizeof(char));
+	if (!(*dest))
+		return (err_msg("Allocation error!"), 0);
 	i = -1;
 	while (++i < max_index)
 		if (src[i])
 			ft_strlcat(*dest, src[i], len + 1);
+	return (1);
 }

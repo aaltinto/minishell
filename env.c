@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "minishell.h"
 #include "libft/libft.h"
 #include <stdio.h>
@@ -32,6 +31,47 @@ int	env_init(t_vars *vars, char **env)
 	}
 	vars->env[i] = NULL;
 	return (1);
+}
+
+char	**dup_env(t_vars *vars, char **to_dup)
+{
+	int		i;
+	char	**new_env;
+
+	i = double_counter(to_dup);
+	vars->argc = double_counter(vars->input_parsed);
+	new_env = malloc((i + vars->argc + 1) * sizeof(char *));
+	i = -1;
+	while (to_dup[++i])
+	{
+		new_env[i] = ft_strdup(to_dup[i]);
+		if (!new_env[i])
+			return (err_msg("Error"), NULL);
+	}
+	new_env[i] = NULL;
+	return (new_env);
+}
+
+void	re_init_env(t_vars *vars, int count, int del)
+{
+	char	**new_env;
+	int		i;
+	int		j;
+
+	i = -1;
+	j = 0;
+	if (del == 0)
+		return ;
+	new_env = ft_calloc(sizeof(char *), (count - del + 1));
+	while (count >= ++i)
+	{
+		if (!vars->env[i])
+			continue ;
+		new_env[j] = ft_strdup(vars->env[i]);
+		j++;
+	}
+	free_doubles(vars->env);
+	env_init(vars, new_env);
 }
 
 int	find_in_env(char **env, char *to_find)

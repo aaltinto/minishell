@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "minishell.h"
 #include "gnl/get_next_line.h"
 #include "libft/libft.h"

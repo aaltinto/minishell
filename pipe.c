@@ -108,7 +108,6 @@ int	pipe_parse(t_vars *vars)
 	if (!vars->input)
 		return (0);
 	pipe_count = pipe_counter(vars);
-	printf("pipe: %d\n", pipe_count);
 	if (pipe_count == 0)
 		return (0);
 	pipes = malloc(sizeof(int *) * pipe_count);

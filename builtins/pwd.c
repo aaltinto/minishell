@@ -13,13 +13,21 @@
 #include "../minishell.h"
 #include "../libft/libft.h"
 
-void	*new_pwd(void)
+void	*new_pwd(t_vars *vars)
 {
 	char	*pwd;
-	
-	pwd = getcwd(NULL, 0);
-	if (!pwd)
-		return (perror("getcwd"), NULL);
-	ft_putendl_fd(pwd, 1);
-	return (null_free(&pwd), NULL);
+	int		i;
+	char	**splitted;
+
+	i = find_in_env(vars->env, "PWD");
+	if (i == -1)
+	{
+		pwd = getcwd(NULL, 0);
+		if (!pwd)
+			return (perror("getcwd"), NULL);
+		return (ft_putendl_fd(pwd, 1), null_free(&pwd), NULL);
+	}
+	splitted = ft_split(vars->env[i], '=');
+	ft_putendl_fd(splitted[1], 1);
+	return (free_doubles(splitted), NULL);
 }

@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include <stdio.h>
 #include "minishell.h"
 #include <unistd.h>
@@ -79,23 +78,40 @@ void	reset_vars(t_vars *vars)
 	vars->hist = 0;
 }
 
-int	marche(t_vars *vars, char **env, int condition)
+int	opening_ceremony(t_vars *vars, char **env)
 {
 	int		i;
 	char	**tmp;
 
-	if (!env_init(vars, env))
-		return (err_msg("Env couldn't initialized"), 0);
-	if (condition)
+	tmp = NULL;
+	i = find_in_env(env, "HOME=");
+	if (i != -1)
 	{
-		i = find_in_env(env, "HOME=");
 		tmp = ft_split(vars->env[i], '=');
 		if (!tmp)
 			return (err_msg("ft_split error!"), 0);
-		chdir(tmp[1]);
+		if (chdir(tmp[1]) != 0)
+			return (perror("chdir"), 0);
+		set_env(vars, "PWD=", tmp[1]);
 		free_doubles(tmp);
-		printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m");
 	}
+	else
+	{
+		if (chdir("/") != 0)
+			return (perror("chdir"), 0);
+		set_env(vars, "PWD=", "/");
+	}
+	i = find_in_env(vars->env, "OLDPWD=");
+	if (printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m") && i != -1)
+		return (null_free(&vars->env[i]),
+			re_init_env(vars, double_counter(vars->env), 1), 1);
+	return (1);
+}
+
+int	marche(t_vars *vars, char **env, int condition)
+{
+	if (!env_init(vars, env))
+		return (err_msg("Env couldn't initialized"), 0);
 	vars->input = NULL;
 	vars->input_parsed = NULL;
 	vars->output = NULL;
@@ -105,12 +121,7 @@ int	marche(t_vars *vars, char **env, int condition)
 	vars->exit_stat = 0;
 	vars->hist = 0;
 	if (condition)
-	{
-		i = find_in_env(vars->env, "OLDPWD=");
-		if (i != -1)
-			return (null_free(&vars->env[i]),
-				re_init_env(vars, double_counter(vars->env), 1), 1);
-	}
+		return (opening_ceremony(vars, env));
 	return (1);
 }
 

@@ -21,7 +21,7 @@ int	is_builtin(t_vars *vars)
 	if (ft_strncmp(vars->input_parsed[0], "cd", 2) == 0)
 		return (new_cd(vars));
 	if (ft_strncmp(vars->input_parsed[0], "pwd", 3) == 0)
-		return (new_pwd(), 1);
+		return (new_pwd(vars), 1);
 	if (ft_strncmp(vars->input_parsed[0], "echo", 4) == 0)
 		return (echo(vars), 1);
 	if (ft_strncmp(vars->input_parsed[0], "export", 5) == 0)
@@ -29,7 +29,7 @@ int	is_builtin(t_vars *vars)
 	if (ft_strncmp(vars->input_parsed[0], "env", 3) == 0)
 		return (new_env(vars), 1);
 	if (ft_strncmp(vars->input_parsed[0], "unset", 5) == 0)
-		return (unset(vars), 1);
+		return (unset(vars, 0, double_counter(vars->env)), 1);
 	return (0);
 }
 

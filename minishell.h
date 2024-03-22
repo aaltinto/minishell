@@ -52,15 +52,17 @@ int		pipe_parse(t_vars *vars);
 
 int		marche(t_vars *vars, char **env, int condition);
 int		find_in_env(char **env, char *to_find);
+char	*get_env(t_vars *vars, char *to_find);
+int		set_env(t_vars *vars, char *to_find, char *to_set);
 int		env_init(t_vars *vars, char **env);
 char	**dup_env(t_vars *vars, char **to_dup);
 
 //builtins
 int		new_cd(t_vars *vars);
-void	*new_pwd(void);
+void	*new_pwd(t_vars *vars);
 void	echo(t_vars *vars);
 int		new_export(t_vars *vars);
-void	unset(t_vars *vars);
+void	unset(t_vars *vars, int del, int count);
 void	new_env(t_vars *vars);
 
 int		quote(t_vars *vars);
@@ -75,7 +77,7 @@ int		is_space(char c);
 int		double_counter(char **str);
 char	**split_string(char *src, char *key);
 char	*strip(char *str);
-void	append_doubles(char **dest, char **src, int condition);
+int		append_doubles(char **dest, char **src, int condition);
 int		dolar_parse(t_vars *vars);
 
 //input and output
