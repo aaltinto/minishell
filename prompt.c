@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:13:05 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/19 18:46:22 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/22 17:28:01 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,17 @@
 
 int	is_builtin(t_vars *vars)
 {
-	if (ft_strncmp(vars->input_parsed[0], "cd", 2) == 0)
+	if (ft_strncmp(vars->input_parsed[0], "cd ", 3) == 0)
 		return (new_cd(vars));
-	if (ft_strncmp(vars->input_parsed[0], "pwd", 3) == 0)
+	if (ft_strncmp(vars->input_parsed[0], "pwd ", 4) == 0)
 		return (new_pwd(vars), 1);
-	if (ft_strncmp(vars->input_parsed[0], "echo", 4) == 0)
+	if (ft_strncmp(vars->input_parsed[0], "echo ", 5) == 0)
 		return (echo(vars), 1);
-	if (ft_strncmp(vars->input_parsed[0], "export", 5) == 0)
+	if (ft_strncmp(vars->input_parsed[0], "export ", 6) == 0)
 		return (new_export(vars));
-	if (ft_strncmp(vars->input_parsed[0], "env", 3) == 0)
+	if (ft_strncmp(vars->input_parsed[0], "env ", 4) == 0)
 		return (new_env(vars), 1);
-	if (ft_strncmp(vars->input_parsed[0], "unset", 5) == 0)
+	if (ft_strncmp(vars->input_parsed[0], "unset ", 5) == 0)
 		return (unset(vars, 0, double_counter(vars->env)), 1);
 	return (0);
 }
@@ -47,62 +47,6 @@ int	something_familiar(t_vars *vars)
 		return (0);
 }
 
-int	reset_fds(t_vars *vars)
-{
-	if (vars->file_created)
-		if (dup2(vars->origin_stdout, STDOUT_FILENO) == -1)
-			return (perror("dup2"), 0);
-	if (vars->file_opened)
-	{
-		if (dup2(vars->origin_stdin, STDIN_FILENO) == -1)
-			return (perror("dup2"), 0);
-	}
-	return (1);
-}
-
-int	open_fds_parse(t_vars *vars)
-{
-	int		i;
-	char	quote_type;
-	int		in_quotes;
-
-	if (!vars->input)
-		return (0);
-	i = -1;
-	quote_type = 0;
-	in_quotes = 0;
-	while (vars->input[++i])
-	{
-		if (vars->input[i] == '\"' || vars->input[i] == '\'')
-		{
-			if (!quote_type)
-				quote_type = vars->input[i];
-			if (quote_type == vars->input[i])
-			{
-				in_quotes = !in_quotes;
-				if (!in_quotes)
-					quote_type = '\0';
-				continue ;
-			}
-		}
-		if (in_quotes)
-			continue ;
-		else if (vars->input[i] == '<' && vars->input[i + 1] == '<'
-			&& vars->input[i + 2] != '<' && ++i && ++i && heredoc(vars, i) == 0)
-			return (null_free(&vars->input), 0);
-		else if (vars->input[i] == '<' && open_file(vars, i -1) == -1)
-			return (null_free(&vars->input), 0);
-		else if (vars->input[i] == '>' && vars->input[i + 1] == '>'
-			&& append_output(vars, i) == -1)
-			return (null_free(&vars->input), 0);
-		else if (vars->input[i] == '>' && output_file(vars, i) == -1)
-			return (null_free(&vars->input), 0);
-		if (vars->input[i] == '\0')
-			break ;
-	}
-	return (1);
-}
-
 int	handle_prompt(t_vars *vars, int condition)
 {
 	int		ret;
@@ -110,15 +54,10 @@ int	handle_prompt(t_vars *vars, int condition)
 	if (!vars->input)
 		return (2);
 	if (ft_strncmp("", vars->input, 2) == 0)
-	{
-		vars->exit_stat = 127;
-		return (1);
-	}
-	quote(vars);
-	if (vars->hist != -1 && condition)
+		return (vars->exit_stat = 127, 1);
+	if (quote(vars), vars->hist != -1 && condition)
 		add_history(vars->input);
-	dolar_parse(vars);
-	if (pipe_parse(vars))
+	if (!dolar_parse(vars) || pipe_parse(vars))
 		return (reset_fds(vars), 1);
 	if (!condition && !vars->input)
 		return (killer(vars), 1);

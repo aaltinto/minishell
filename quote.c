@@ -6,15 +6,28 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:13:08 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/15 16:13:09 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/22 14:46:21 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "minishell.h"
 #include "libft/libft.h"
 #include <stdlib.h>
 #include <readline/readline.h>
+
+int	get_input(char **new_input, t_vars *vars)
+{
+	*new_input = readline("> ");
+	if (!(*new_input))
+	{
+		write(1, "\n", 1);
+		err_msg("Quote error");
+		vars->hist = -1;
+		null_free(&vars->input);
+		return (1);
+	}
+	return (0);
+}
 
 void	wait_close(int quote_check, int type, t_vars *vars)
 {
@@ -24,16 +37,9 @@ void	wait_close(int quote_check, int type, t_vars *vars)
 
 	while (quote_check % 2 == 0)
 	{
-		new_input = readline("> ");
-		if (!new_input)
-		{
-			write(1, "\n", 1);
-			err_msg("Quote error");
-			vars->hist = -1;
-			null_free(&vars->input);
-			return ;
-		}
 		i = -1;
+		if (get_input(&new_input, vars))
+			return ;
 		while (new_input[++i])
 		{
 			if (type && new_input[i] == '\"')

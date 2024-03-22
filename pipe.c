@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:04 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/19 19:20:43 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/22 15:40:13 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,28 @@ int	pipe_piping(int **pipes, int pipe_count, t_vars *vars)
 	return (free(pid), null_free(&vars->input), 1);
 }
 
+int	quote_pass(t_vars *vars, int i, char *quote_type, int *in_quotes)
+{
+	if (vars->input[i] == '\"' || vars->input[i] == '\'')
+	{
+		if (!(*quote_type))
+			(*quote_type) = vars->input[i];
+		if ((*quote_type) == vars->input[i])
+		{
+			(*in_quotes) = !(*in_quotes);
+			if (!(*in_quotes))
+				(*quote_type) = '\0';
+			return (1);
+		}
+	}
+	return (0);
+}
+
 int	pipe_counter(t_vars *vars)
 {
 	int		i;
-	int		pipe_count;
 	int		in_quotes;
+	int		pipe_count;
 	char	quote_type;
 
 	i = -1;
@@ -81,18 +98,8 @@ int	pipe_counter(t_vars *vars)
 	quote_type = '\0';
 	while (vars->input[++i])
 	{
-		if (vars->input[i] == '\"' || vars->input[i] == '\'')
-		{
-			if (!quote_type)
-				quote_type = vars->input[i];
-			if (quote_type == vars->input[i])
-			{
-				in_quotes = !in_quotes;
-				if (!in_quotes)
-					quote_type = '\0';
-				continue ;
-			}
-		}
+		if (quote_pass(vars, i, &quote_type, &in_quotes))
+			continue ;
 		if (!in_quotes && vars->input[i] == '|')
 			pipe_count++;
 	}

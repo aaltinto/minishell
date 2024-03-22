@@ -9,7 +9,9 @@ SRC = main.c\
 	quote.c\
 	exec.c\
 	pipe.c\
+	open_create.c\
 	parse.c\
+	dollar_parse.c\
 	signals.c\
 	heredoc_append.c\
 	input_output.c\

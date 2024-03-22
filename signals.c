@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:13:11 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/17 14:15:09 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/22 14:42:43 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	sig_c(int sig)
 	{
 		printf("\n");
 		rl_on_new_line();
-		//rl_replace_line("", 0);
+		rl_replace_line("", 0);
 		rl_redisplay();
 	}
 	else if (g_l == 42)

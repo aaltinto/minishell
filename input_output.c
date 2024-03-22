@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:42 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/15 16:12:43 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/22 16:35:52 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,7 @@ int	open_file(t_vars *vars, int i)
 	append_doubles(&vars->input, tmp, 1);
 	free_doubles2((void **)tmp, 3);
 	ret = fd_open_operations(vars, var);
-	null_free(&var);
-	return (ret);
+	return (null_free(&var), ret);
 }
 
 static int	fd_output_operations(t_vars *vars, char *var)

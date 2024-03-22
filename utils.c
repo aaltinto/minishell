@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:13:14 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/15 16:13:17 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/22 16:34:35 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,4 +42,16 @@ void	killer(t_vars *vars)
 	null_free(&vars->input);
 	null_free(&vars->output);
 	null_free(&vars->user_pwd);
+}
+
+void	reset_vars(t_vars *vars)
+{
+	vars->file_created = 0;
+	vars->file_opened = 0;
+	null_free(&vars->input);
+	null_free(&vars->output);
+	free_doubles(vars->input_parsed);
+	reset_fds(vars);
+	vars->input_parsed = NULL;
+	vars->hist = 0;
 }

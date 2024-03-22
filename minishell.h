@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:52 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/19 20:03:21 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/22 16:46:59 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	unset(t_vars *vars, int del, int count);
 void	new_env(t_vars *vars);
 
 int		quote(t_vars *vars);
-int		parse(t_vars *vars, int count);
+int		quote_pass(t_vars *vars, int i, char *quote_type, int *in_quotes);
 void	re_init_env(t_vars *vars, int count, int del);
 
 //utils
@@ -78,7 +78,14 @@ int		double_counter(char **str);
 char	**split_string(char *src, char *key);
 char	*strip(char *str);
 int		append_doubles(char **dest, char **src, int condition);
+
+//parsing
+int		parse(t_vars *vars, int count);
 int		dolar_parse(t_vars *vars);
+int		open_fds_parse(t_vars *vars);
+int		exit_status(t_vars *vars, int i);
+int		exec_dollar_cmd(t_vars *vars, int i);
+int		env_find_dollar(t_vars *vars, int i, int j);
 
 //input and output
 int		open_file(t_vars *vars, int i);

@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:46 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/19 20:02:07 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/22 17:26:59 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,18 +66,6 @@ int	prompter(char **env, t_vars *ret)
 	return (append_doubles(&ret->user_pwd, vars, 0), free_doubles(vars), 1);
 }
 
-void	reset_vars(t_vars *vars)
-{
-	vars->file_created = 0;
-	vars->file_opened = 0;
-	null_free(&vars->input);
-	null_free(&vars->output);
-	free_doubles(vars->input_parsed);
-	reset_fds(vars);
-	vars->input_parsed = NULL;
-	vars->hist = 0;
-}
-
 int	opening_ceremony(t_vars *vars, char **env)
 {
 	int		i;
@@ -96,11 +84,8 @@ int	opening_ceremony(t_vars *vars, char **env)
 		free_doubles(tmp);
 	}
 	else
-	{
-		if (chdir("/") != 0)
+		if (chdir("/") != 0 || !set_env(vars, "PWD=", "/"))
 			return (perror("chdir"), 0);
-		set_env(vars, "PWD=", "/");
-	}
 	i = find_in_env(vars->env, "OLDPWD=");
 	if (printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m") && i != -1)
 		return (null_free(&vars->env[i]),
