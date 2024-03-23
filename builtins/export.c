@@ -6,67 +6,13 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:21 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/22 17:26:09 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/23 17:51:04 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 #include "../libft/libft.h"
 #include <stdio.h>
-
-void	print_vars(t_vars *vars)
-{
-	char	**exports;
-	char	*tmp;
-	int		i;
-
-	i = -1;
-	while (vars->env[++i])
-	{
-		tmp = vars->env[i];
-		exports = ft_split(vars->env[i], '=');
-		if (!exports)
-			return ;
-		if (ft_strchr(vars->env[i], '=') && !exports[1])
-			printf("declare -x %s=\"\"\n", exports[0]);
-		else if (!exports[1])
-			printf("declare -x %s\n", exports[0]);
-		else
-			printf("declare -x %s=\"%s\"\n", exports[0],
-				(ft_strchr(vars->env[i], '=') + 1));
-		vars->env[i] = tmp;
-		free_doubles(exports);
-	}
-}
-
-void	check_restore(t_vars *vars, int count)
-{
-	int		i;
-	int		index;
-	int		del;
-	char	**splited;
-	char	**tmp;
-
-	i = 0;
-	del = 0;
-	count = double_counter(vars->env);
-	tmp = vars->input_parsed;
-	while (vars->input_parsed[++i])
-	{
-		splited = ft_split(vars->input_parsed[i], '=');
-		if (!splited || !splited[0])
-			continue ;
-		index = find_in_env(vars->env, strip(splited[0]));
-		free_doubles(splited);
-		if (index == -1)
-			continue ;
-		vars->env[index] = NULL;
-		del++;
-	}
-	if (del)
-		re_init_env(vars, count, del);
-	vars->input_parsed = tmp;
-}
 
 int	err_clean(t_vars *vars, int i)
 {
@@ -82,59 +28,44 @@ int	err_clean(t_vars *vars, int i)
 	return (1);
 }
 
-int	illegal_char_check(char *input, int position)
+int	illegal_char_check(t_vars *vars, int i, char **try)
 {
-	char	**tmp;
-	int		check;
-	int		i;
+	int		j;
+	char	*tmp;
 
-	tmp = ft_split(input, '=');
-	if (!tmp || !tmp[0])
-		return (free_doubles(tmp), 0);
-	if (double_counter(tmp) == 1 && input[0] == '=')
-		return (free_doubles(tmp), 1);
-	if (tmp && position)
+	j = -1;
+	while (vars->input_parsed[i] && try[0][++j])
 	{
-		check = 0;
-		i = -1;
-		while (tmp[0][++i])
-			if (!ft_isalnum(tmp[0][i]))
-				check = 1;
-		free_doubles(tmp);
-		if (check == 0)
+		if ((j == 0 && (ft_isalpha(try[0][j]) || try[0][j] == '_')) || \
+	(j != 0 && (try[0][j] == '=' || try[0][j] == '_' || ft_isalnum(try[0][j]))))
+			continue ;
+		if (vars->input_parsed[i - 1])
+			tmp = ft_strchr(vars->input_parsed[i - 1], '=');
+		if (tmp && ft_strncmp(tmp, "= ", 3) != 0)
+			break ;
+		if (!err_clean(vars, i))
 			return (0);
 	}
-	if (position)
-		return (1);
-	return (0);
+	return (1);
 }
 
 int	check_validity(t_vars *vars)
 {
 	int		i;
-	int		j;
-	char	*tmp;
-	char	*input;
+	char	**try;
 
 	i = 0;
 	while (vars->input_parsed[++i])
 	{
-		j = -1;
-		input = ft_strdup(strip(vars->input_parsed[i]));
-		if (illegal_char_check(input, 0))
-			err_clean(vars, i);
-		while (!vars->input_parsed[i] && input[++j])
-		{
-			if (input[j] != '=' && !ft_isalnum(input[j]))
-				continue ;
-			if (vars->input_parsed[i - 1])
-				tmp = ft_strchr(vars->input_parsed[i - 1], '=');
-			if (tmp && tmp++ && ft_strncmp(tmp, "= ", 3) == 0)
-				break ;
-			if (illegal_char_check(input, 1))
-				err_clean(vars, i);
-		}
-		null_free(&input);
+		try = ft_split(vars->input_parsed[i], '=');
+		if (!try)
+			return (err_msg("Split error"), 0);
+		if (try[0][0] == '=')
+			if (err_clean(vars, i))
+				return (0);
+		if (illegal_char_check(vars, i, try))
+			return (0);
+		free_doubles(try);
 	}
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:46 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/22 17:26:59 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/23 14:43:58 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ int	prompter(char **env, t_vars *ret)
 		vars[0] = ft_strdup("user");
 	else
 		vars[0] = ft_strdup(env[i] + 5);
+	ft_putstr_fd("\x1b[32m", 1);
 	vars[1] = ft_strdup("@");
 	vars[2] = find_work_dir(env);
 	vars[3] = ft_strdup(" $ ");
@@ -126,6 +127,7 @@ int	main(int argc, char **argv, char **env)
 			return (err_msg("Prompter error!"), 1);
 		init_signals();
 		vars.input = readline(vars.user_pwd);
+		ft_putstr_fd("\x1b[0m", 1);
 		init_signals2();
 		null_free(&vars.user_pwd);
 		if (handle_prompt(&vars, 1) == 2)

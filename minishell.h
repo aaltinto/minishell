@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:52 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/22 16:46:59 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/23 17:35:49 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ int		new_cd(t_vars *vars);
 void	*new_pwd(t_vars *vars);
 void	echo(t_vars *vars);
 int		new_export(t_vars *vars);
+void	print_vars(t_vars *vars);
+void	check_restore(t_vars *vars, int count);
 void	unset(t_vars *vars, int del, int count);
 void	new_env(t_vars *vars);
 

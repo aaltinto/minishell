@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:13:05 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/22 17:28:01 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/23 14:23:32 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,15 @@
 
 int	is_builtin(t_vars *vars)
 {
-	if (ft_strncmp(vars->input_parsed[0], "cd ", 3) == 0)
+	if (ft_strncmp(vars->input_parsed[0], "cd ", 2) == 0)
 		return (new_cd(vars));
-	if (ft_strncmp(vars->input_parsed[0], "pwd ", 4) == 0)
+	if (ft_strncmp(vars->input_parsed[0], "pwd ", 3) == 0)
 		return (new_pwd(vars), 1);
-	if (ft_strncmp(vars->input_parsed[0], "echo ", 5) == 0)
+	if (ft_strncmp(vars->input_parsed[0], "echo ", 4) == 0)
 		return (echo(vars), 1);
 	if (ft_strncmp(vars->input_parsed[0], "export ", 6) == 0)
 		return (new_export(vars));
-	if (ft_strncmp(vars->input_parsed[0], "env ", 4) == 0)
+	if (ft_strncmp(vars->input_parsed[0], "env ", 3) == 0)
 		return (new_env(vars), 1);
 	if (ft_strncmp(vars->input_parsed[0], "unset ", 5) == 0)
 		return (unset(vars, 0, double_counter(vars->env)), 1);

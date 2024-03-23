@@ -18,6 +18,7 @@ SRC = main.c\
 	parse_utils.c\
 	builtins/cd.c\
 	builtins/cmd_env.c\
+	builtins/export_utils.c\
 	builtins/export.c\
 	builtins/pwd.c\
 	builtins/echo.c
