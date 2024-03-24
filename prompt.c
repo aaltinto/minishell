@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:13:05 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/23 14:23:32 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/24 17:54:16 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int	handle_prompt(t_vars *vars, int condition)
 		return (reset_fds(vars), 0);
 	ret = something_familiar(vars);
 	if (!ret)
-		path_finder(vars, vars->input_parsed[0], vars->input_parsed, condition);
+		path_finder(vars, vars->input_parsed[0], vars->input_parsed);
 	if (!reset_fds(vars))
 		return (0);
 	if (!condition)

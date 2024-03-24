@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:52 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/23 17:35:49 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/03/24 17:54:07 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ void	killer(t_vars *vars);
 void	free_doubles2(void **str, int j);
 //execute
 int		handle_prompt(t_vars *vars, int condition);
-int		path_finder(t_vars *vars, char *cmd, char **argv, int condition);
-int		pipe_exec(char *path, t_vars *vars, char **argv, int condition);
+int		path_finder(t_vars *vars, char *cmd, char **argv);
+int		pipe_exec(char *path, t_vars *vars, char **argv);
 int		pipe_parse(t_vars *vars);
 
 int		marche(t_vars *vars, char **env, int condition);
@@ -86,7 +86,6 @@ int		parse(t_vars *vars, int count);
 int		dolar_parse(t_vars *vars);
 int		open_fds_parse(t_vars *vars);
 int		exit_status(t_vars *vars, int i);
-int		exec_dollar_cmd(t_vars *vars, int i);
 int		env_find_dollar(t_vars *vars, int i, int j);
 
 //input and output
