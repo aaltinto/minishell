@@ -11,8 +11,8 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "gnl/get_next_line.h"
 #include "libft/libft.h"
+#include <unistd.h>
 #include <stdio.h>
 
 int	wexitstatus(int status)

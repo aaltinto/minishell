@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <stdio.h>
+#include <unistd.h>
 
 int	reset_fds(t_vars *vars)
 {

@@ -13,6 +13,7 @@
 #include "minishell.h"
 #include "libft/libft.h"
 #include <stdlib.h>
+#include <unistd.h>
 #include <readline/readline.h>
 
 int	get_input(char **new_input, t_vars *vars)

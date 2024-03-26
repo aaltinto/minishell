@@ -1,35 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/15 16:12:25 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/19 18:46:40 by aaltinto         ###   ########.fr       */
+/*   Created: 2024/03/15 16:13:07 by aaltinto          #+#    #+#             */
+/*   Updated: 2024/03/23 17:51:04 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-#include <unistd.h>
-#include <stdio.h>
 #include "../libft/libft.h"
 
-void	*new_pwd(t_vars *vars)
+void	unset(t_vars *vars, int del, int count)
 {
-	char	*pwd;
 	int		i;
-	char	**splitted;
+	int		j;
+	char	**exports;
 
-	i = find_in_env(vars->env, "PWD");
-	if (i == -1)
+	if (vars->input_parsed[1] == NULL)
+		return ;
+	i = -1;
+	while (vars->env[++i])
 	{
-		pwd = getcwd(NULL, 0);
-		if (!pwd)
-			return (perror("getcwd"), NULL);
-		return (ft_putendl_fd(pwd, 1), null_free(&pwd), NULL);
+		j = 0;
+		while (vars->input_parsed[++j])
+		{
+			exports = ft_split(vars->env[i], '=');
+			if (ft_strncmp(exports[0], vars->input_parsed[j],
+					ft_strlen(exports[0])) == 0)
+			{
+				free(vars->env[i]);
+				vars->env[i] = NULL;
+				free_doubles(exports);
+				del++;
+				break ;
+			}
+		}
 	}
-	splitted = ft_split(vars->env[i], '=');
-	ft_putendl_fd(splitted[1], 1);
-	return (free_doubles(splitted), NULL);
+	re_init_env(vars, count, del);
 }

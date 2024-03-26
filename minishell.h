@@ -10,15 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #ifndef MINISHELL_H
 # define MINISHELL_H
-
-#include <stdio.h>
-#include "minishell.h"
-#include <unistd.h>
-#include <readline/readline.h>
-#include <readline/history.h>
 
 typedef struct s_vars
 {
@@ -36,7 +29,7 @@ typedef struct s_vars
 	int		file_created;
 }	t_vars;
 
-int g_l;
+int	g_l;
 
 //free and exit
 void	err_msg(char *msg);

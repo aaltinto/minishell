@@ -15,6 +15,25 @@
 #include <unistd.h>
 #include <stdio.h>
 
+char	*cut_parse_quote(int i, int j, int check, char *input)
+{
+	char	*tmp;
+	char	*tmp2;
+
+	if (is_space(input[i + 1]) && check)
+	{
+		tmp = ft_substr(input, i - j, j);
+		if (!tmp)
+			return (NULL);
+		tmp2 = ft_strjoin(tmp, " ");
+		if (!tmp2)
+			return (null_free(&tmp), NULL);
+		return (tmp2);
+	}
+	else
+		return (ft_substr(input, i - j, j));
+}
+
 char	*cut_parse(int i, int j, int check, char *input)
 {
 	char	*tmp;
@@ -60,12 +79,12 @@ int	loop_parsing(t_vars *vars, int *p, int j, int check)
 	char	quote_type;
 
 	i = *p;
-	if (vars->input[i] == 39 || vars->input[i] == 34)
+	if (vars->input[i] == '\"' || vars->input[i] == '\'')
 	{
 		quote_type = vars->input[i];
 		while ((vars->input[++i] != '\0' && quote_type != vars->input[i]))
 			++j;
-		vars->input_parsed[vars->argc++] = cut_parse(i, j, check, vars->input);
+		vars->input_parsed[vars->argc++] = cut_parse_quote(i, j, check, vars->input);
 		if (!vars->input_parsed[vars->argc -1])
 			return (free_doubles(vars->input_parsed), err_msg("Error"), 0);
 	}
@@ -77,6 +96,8 @@ int	loop_parsing(t_vars *vars, int *p, int j, int check)
 		vars->input_parsed[vars->argc++] = cut_parse(i, j, check, vars->input);
 		if (!vars->input_parsed[vars->argc -1] && i--)
 			return (free_doubles(vars->input_parsed), err_msg("Error"), 0);
+		if (is_quote(vars->input[i]))
+			i --;
 	}
 	*p = i;
 	return (1);
@@ -124,7 +145,7 @@ int	dolar_parse(t_vars *vars)
 		else if (vars->input[i] == '$' && vars->input[i + 1] == '?')
 			exit_status(vars, i);
 		else if ((vars->input[i] == '$' && vars->input[i + 1] == 40)
-				|| (vars->input[i] == '$'
+			|| (vars->input[i] == '$'
 				&& !is_space(vars->input[i + 1]) && vars->input[i + 1] != '\0'
 				&& env_find_dollar(vars, i -1, 0) == -1))
 			return (null_free(&vars->input), 0);

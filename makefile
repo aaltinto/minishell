@@ -20,11 +20,11 @@ SRC = main.c\
 	builtins/cmd_env.c\
 	builtins/export_utils.c\
 	builtins/export.c\
+	builtins/unset.c\
 	builtins/pwd.c\
 	builtins/echo.c
 
 LIBFT = libft/libft.a
-GNL = gnl/gnl.a
 OBJ = $(SRC:c=o)
 
 GREEN := \033[0;32m
@@ -41,8 +41,7 @@ all : $(NAME)
 $(NAME) : $(OBJ)
 	$(BUILD_PRINT)
 	@make all -C libft
-	@make all -C gnl
-	@$(CC) $(FLAGS) -o $(NAME) $(OBJ) $(LIBFT) $(GNL) -lreadline
+	@$(CC) $(FLAGS) -o $(NAME) $(OBJ) $(LIBFT) -lreadline
 	@printf "\033[K\r"
 	$(SUCCESS_MSG)
 
@@ -53,13 +52,11 @@ $(NAME) : $(OBJ)
 
 clean :
 	@make clean -C libft
-	@make clean -C gnl
 	$(DELETE_OBJ)
 	@rm -rf *.o
 	@rm -rf builtins/*.o
 fclean : clean
 	@make fclean -C libft
-	@make fclean -C gnl
 	@rm -rf $(NAME)
 
 re : fclean all

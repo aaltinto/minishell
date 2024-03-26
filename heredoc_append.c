@@ -102,6 +102,7 @@ int	heredoc_loop(t_vars *vars, char *delimeter)
 		g_l = 42;
 		signal(SIGINT, sig_c);
 		handle_eof(delimeter, fd);
+		printf("salam");
 		killer(vars);
 		exit(EXIT_SUCCESS);
 	}

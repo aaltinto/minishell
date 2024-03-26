@@ -60,7 +60,8 @@ int	check_validity(t_vars *vars)
 		try = ft_split(vars->input_parsed[i], '=');
 		if (!try)
 			return (err_msg("Split error"), 0);
-		if (try[0][0] == '=')
+		if (ft_strncmp(ft_strchr(vars->input_parsed[i], '='),
+				vars->input_parsed[i], ft_strlen(vars->input_parsed[i])) == 0)
 			if (err_clean(vars, i))
 				return (0);
 		if (illegal_char_check(vars, i, try))
@@ -70,30 +71,29 @@ int	check_validity(t_vars *vars)
 	return (1);
 }
 
-char	*add_to_env(t_vars *vars, int *i)
+char	*add_to_env(t_vars *vars, int *index)
 {
 	char	*check;
-	char	*tmp;
+	char	*ret;
+	int		i;
 
+	i = *index;
 	check = NULL;
-	if (ft_strchr(vars->input_parsed[*i], '=') != 0)
-		check = ft_strchr(vars->input_parsed[*i], '=');
+	if (ft_strchr(vars->input_parsed[i], '=') != 0)
+		check = ft_strchr(vars->input_parsed[i], '=');
 	if (check == NULL || ft_strncmp(check, "= ", 2) == 0
 		|| (!is_space(*check++) && *check != '\0'))
-		return (ft_strdup(strip(vars->input_parsed[*i])));
-	else
+		ret = ft_strdup(strip(vars->input_parsed[i]));
+	else if (vars->input_parsed[i + 1] != NULL)
 	{
-		if (vars->input_parsed[*i + 1] != NULL)
-		{
-			tmp = ft_strjoin(vars->input_parsed[*i],
-					strip(vars->input_parsed[*i + 1]));
-			if (tmp != NULL)
-				return ((*i)++, tmp);
-		}
-		else
-			return (ft_strdup(vars->input_parsed[*i]));
+		ret = ft_strjoin(vars->input_parsed[i],
+				strip(vars->input_parsed[i + 1]));
+		if (ret != NULL)
+			*index = i + 1;
 	}
-	return (NULL);
+	else
+		ret = ft_strdup(vars->input_parsed[i]);
+	return (ret);
 }
 
 int	new_export(t_vars *vars)
@@ -104,7 +104,7 @@ int	new_export(t_vars *vars)
 
 	if (!vars->input_parsed[1])
 		return (print_vars(vars), 1);
-	if (!check_validity(vars))
+	if (check_validity(vars))
 		return (2);
 	check_restore(vars, 0);
 	new_env = dup_env(vars, vars->env);
@@ -123,33 +123,4 @@ int	new_export(t_vars *vars)
 	new_env[++i2] = NULL;
 	free_doubles(vars->env);
 	return (env_init(vars, new_env), free_doubles(new_env), 1);
-}
-
-void	unset(t_vars *vars, int del, int count)
-{
-	int		i;
-	int		j;
-	char	**exports;
-
-	if (vars->input_parsed[1] == NULL)
-		return ;
-	i = -1;
-	while (vars->env[++i])
-	{
-		j = 0;
-		while (vars->input_parsed[++j])
-		{
-			exports = ft_split(vars->env[i], '=');
-			if (ft_strncmp(exports[0], vars->input_parsed[j],
-					ft_strlen(exports[0])) == 0)
-			{
-				free(vars->env[i]);
-				vars->env[i] = NULL;
-				free_doubles(exports);
-				del++;
-				break ;
-			}
-		}
-	}
-	re_init_env(vars, count, del);
 }

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../minishell.h"
+#include <stdio.h>
 #include "../libft/libft.h"
 
 void	print_vars(t_vars *vars)
