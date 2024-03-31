@@ -1,6 +1,6 @@
 NAME = minishell
 CC = gcc
-FLAGS = -Wall -Wextra -Werror -g
+FLAGS = #-Wall -Wextra -Werror -fsanitize=address -g
 SRC = main.c\
 	free_n_exit.c\
 	prompt.c\
@@ -9,6 +9,7 @@ SRC = main.c\
 	quote.c\
 	exec.c\
 	pipe.c\
+	bonus.c\
 	open_create.c\
 	parse.c\
 	dollar_parse.c\
@@ -25,6 +26,7 @@ SRC = main.c\
 	builtins/echo.c
 
 LIBFT = libft/libft.a
+GNL = gnl/gnl.a
 OBJ = $(SRC:c=o)
 
 GREEN := \033[0;32m
@@ -41,7 +43,8 @@ all : $(NAME)
 $(NAME) : $(OBJ)
 	$(BUILD_PRINT)
 	@make all -C libft
-	@$(CC) $(FLAGS) -o $(NAME) $(OBJ) $(LIBFT) -lreadline
+	@make all -C gnl
+	@$(CC) $(FLAGS) -o $(NAME) $(OBJ) $(LIBFT) $(GNL) -lreadline
 	@printf "\033[K\r"
 	$(SUCCESS_MSG)
 
@@ -52,11 +55,13 @@ $(NAME) : $(OBJ)
 
 clean :
 	@make clean -C libft
+	@make clean -C gnl
 	$(DELETE_OBJ)
 	@rm -rf *.o
 	@rm -rf builtins/*.o
 fclean : clean
 	@make fclean -C libft
+	@make fclean -C gnl
 	@rm -rf $(NAME)
 
 re : fclean all

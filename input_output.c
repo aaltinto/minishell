@@ -66,7 +66,7 @@ int	open_file(t_vars *vars, int i)
 	if (!tmp)
 		return (free(var), -1);
 	null_free(&tmp[1]);
-	if (append_doubles(&vars->input, tmp, 1))
+	if (!append_doubles(&vars->input, tmp, 1))
 		return (err_msg("Error"), null_free(&var), free_doubles(tmp), -1);
 	free_doubles2((void **)tmp, 3);
 	ret = fd_open_operations(vars, var);
@@ -77,11 +77,14 @@ static int	fd_output_operations(t_vars *vars, char *var)
 {
 	int		fd;
 	char	*file;
+	char	*tmp;
 
 	if (vars->file_created)
 		if (dup2(vars->origin_stdout, STDOUT_FILENO) == -1)
 			return (perror("dup2"), -1);
-	file = ft_substr(strip(var + 1), 0, ft_strlen(var));
+	tmp = strip(var + 1);
+	file = ft_substr(tmp, 0, ft_strlen(var));
+	null_free(&tmp);
 	free(var);
 	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	null_free(&file);

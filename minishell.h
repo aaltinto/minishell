@@ -93,4 +93,7 @@ void	sig_c(int sig);
 void	init_signals(void);
 void	init_signals2(void);
 
+//bonus
+int		wildcard(t_vars *vars, int i, int rev);
+
 #endif

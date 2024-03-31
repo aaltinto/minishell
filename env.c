@@ -64,7 +64,7 @@ int	re_init_env(t_vars *vars, int count, int del)
 	j = 0;
 	if (del == 0)
 		return (0);
-	new_env = ft_calloc(sizeof(char *), (count - del + 1));
+	new_env = malloc(sizeof(char *) * (count - del + 1));
 	if (!new_env)
 		return (0);
 	while (count >= ++i)
@@ -77,6 +77,7 @@ int	re_init_env(t_vars *vars, int count, int del)
 		j++;
 	}
 	free_doubles(vars->env);
+	new_env[--j] = NULL;
 	if (!env_init(vars, new_env))
 		return (free_doubles(new_env), 0);
 	return (1);

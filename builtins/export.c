@@ -26,7 +26,6 @@ int	illegal_char_check(char *str)
 		if ((i == 0 && (ft_isalpha(str[i]) || str[i] == '_')) || \
 	(i != 0 && (str[i] == '=' || str[i] == '_' || ft_isalnum(str[i]))))
 			continue ;
-
 		err = ft_strjoin("export: invalid identifier found: ", str);
 		if (!err)
 			return (err_msg("strjoin error"), 1);
@@ -43,17 +42,44 @@ int	check_validity(char *export)
 
 	split = ft_split(export, '=');
 	if (illegal_char_check(split[0]))
-		return (1);
+		return (free_doubles(split), 1);
 	return (free_doubles(split), 0);
 }
 
-char	*add_to_env(t_vars *vars, int *index)
+char	*append_args(t_vars *vars, int	*index)
 {
 	char	**append;
 	char	*ret;
 	char	*tmp;
 	int		i;
 	int		j;
+
+	i = *index;
+	tmp = NULL;
+	ret = NULL;
+	append = ft_calloc(sizeof(char *), vars->argc + 1);
+	if (append == 0)
+		return (err_msg("malloc error"), NULL);
+	j = -1;
+	while (vars->input_parsed[i] && tmp == NULL)
+	{
+		tmp = ft_strchr(vars->input_parsed[i], ' ');
+		append[++j] = ft_strdup(vars->input_parsed[i]);
+		if (!append[j])
+			return (free_doubles(append), err_msg("malloc error"), NULL);
+		i++;
+	}
+	append[++j] = NULL;
+	append_doubles(&ret, append, 0);
+	*index = i;
+	return (free_doubles(append), ret);
+}
+
+char	*add_to_env(t_vars *vars, int *index)
+{
+	char	*ret;
+	char	*tmp;
+	int		i;
 
 	i = *index;
 	ret = NULL;
@@ -66,23 +92,7 @@ char	*add_to_env(t_vars *vars, int *index)
 			return (err_msg("malloc error"), NULL);
 	}
 	else
-	{
-		append = ft_calloc(sizeof(char *), vars->argc + 1);
-		if (append == 0)
-			return (err_msg("malloc error"), NULL);
-		j = -1;
-		while (vars->input_parsed[i] && tmp == NULL)
-		{
-			tmp = ft_strchr(vars->input_parsed[i], ' ');
-			append[++j] = ft_strdup(vars->input_parsed[i]);
-			if (!append[j])
-				return (free_doubles(append), err_msg("malloc error"), NULL);
-			i++;
-		}
-		append[++j] = NULL;
-		append_doubles(&ret, append, 0);
-		free_doubles(append);
-	}
+		ret = append_args(vars, &i);
 	*index = i;
 	return (ret);
 }
@@ -106,13 +116,15 @@ int	new_export(t_vars *vars)
 		if (!vars->input_parsed[i])
 			continue ;
 		new_env[++i2] = add_to_env(vars, &i);
-		i--;
-		if (!new_env[i2])
+		if (i-- && !new_env[i2])
 			return (free_doubles(new_env), err_msg("Something wrong"), 2);
 		if (check_validity(new_env[i2]))
 			null_free(&new_env[i2]);
 	}
 	new_env[++i2] = NULL;
 	free_doubles(vars->env);
-	return (env_init(vars, new_env), free_doubles(new_env), 1);
+	env_init(vars, new_env);
+	free_doubles(new_env);
+	write(1, "a\n", 2);
+	return (1);
 }

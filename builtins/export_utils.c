@@ -46,6 +46,7 @@ void	check_restore(t_vars *vars, int count)
 	int		del;
 	char	**splited;
 	char	**tmp;
+	char	*tmp2;
 
 	i = 0;
 	del = 0;
@@ -56,7 +57,9 @@ void	check_restore(t_vars *vars, int count)
 		splited = ft_split(vars->input_parsed[i], '=');
 		if (!splited || !splited[0])
 			continue ;
-		index = find_in_env(vars->env, strip(splited[0]));
+		tmp2 = strip(splited[0]);
+		index = find_in_env(vars->env, tmp2);
+		null_free(&tmp2);
 		free_doubles(splited);
 		if (index == -1)
 			continue ;

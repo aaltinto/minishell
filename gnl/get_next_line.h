@@ -1,23 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_calloc.c                                        :+:      :+:    :+:   */
+/*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaltinto <aaltinto@student.42kocaeli.com.  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/07 14:16:14 by aaltinto          #+#    #+#             */
-/*   Updated: 2023/07/07 14:32:39 by aaltinto         ###   ########.tr       */
+/*   Created: 2023/08/02 13:39:31 by aaltinto          #+#    #+#             */
+/*   Updated: 2023/08/02 13:39:38 by aaltinto         ###   ########.tr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#ifndef GET_NEXT_LINE_H
+# define GET_NEXT_LINE_H
 
-void	*ft_calloc(size_t count, size_t size)
-{
-	void	*dest;
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 4
+# endif
 
-	dest = (void *)malloc(count * size);
-	if (!dest)
-		return ((void *)0);
-	return (ft_bzero(dest, count * size), dest);
-}
+# include <unistd.h>
+# include <stdlib.h>
+# include <fcntl.h>
+
+char	*get_next_line(int fd);
+char	*ft_substr2(char const *s, size_t start, size_t len);
+size_t	ft_strlen2(const char *s);
+char	*ft_strjoin2(char *str, char *buf);
+void	*free_str(char **str, int i);
+char	*ft_strdup2(const char *s);
+#endif

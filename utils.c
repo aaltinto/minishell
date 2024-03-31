@@ -27,11 +27,11 @@ int	double_counter(char **str)
 {
 	int	i;
 
-	i = -1;
+	i = 0;
 	if (!str)
 		return (0);
-	while (str[++i])
-		;
+	while (str[i])
+		i++;
 	return (i);
 }
 

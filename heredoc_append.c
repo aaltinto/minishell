@@ -21,11 +21,14 @@ static int	fd_append_operations(t_vars *vars, char *var)
 {
 	int		fd;
 	char	*file;
+	char	*tmp;
 
 	if (vars->file_created)
 		if (dup2(vars->origin_stdout, STDOUT_FILENO) == -1)
 			return (perror("dup2"), -1);
-	file = ft_substr(strip(var + 2), 0, ft_strlen(var));
+	tmp = strip(var + 2);
+	file = ft_substr(tmp, 0, ft_strlen(var));
+	null_free(&tmp);
 	if (!file)
 		return (err_msg("Error"), -1);
 	fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0644);
@@ -50,6 +53,7 @@ int	append_output(t_vars *vars, int i)
 	int		check;
 	char	*var;
 	char	**tmp;
+	char	*tmp2;
 
 	j = 3;
 	check = 1;
@@ -63,7 +67,9 @@ int	append_output(t_vars *vars, int i)
 	var = ft_substr(vars->input, i - j, j);
 	if (!var)
 		return (err_msg("Error"), -1);
-	tmp = split_string(strip(vars->input), var);
+	tmp2 = strip(vars->input);
+	tmp = split_string(tmp2, var);
+	null_free(&tmp2);
 	if (!tmp)
 		return (null_free(&var), -1);
 	null_free(&tmp[1]);
@@ -127,6 +133,7 @@ int	heredoc(t_vars *vars, int i)
 	char	*var;
 	char	*delimeter;
 	char	**tmps;
+	char	*tmp;
 
 	j = 3;
 	check = 1;
@@ -139,14 +146,17 @@ int	heredoc(t_vars *vars, int i)
 	var = ft_substr(vars->input, i - j, j);
 	if (!var)
 		return (err_msg("Error"), 0);
-	tmps = split_string(strip(vars->input), var);
+	tmp = strip(vars->input);
+	tmps = split_string(tmp, var);
+	null_free(&tmp);
 	if (!tmps)
 		return (err_msg("Error!"), null_free(&var), 0);
 	null_free(&tmps[1]);
 	if (!append_doubles(&vars->input, tmps, 1))
 		return (err_msg("Error"), null_free(&var), free_doubles(tmps), 0);
 	free_doubles(tmps);
-	delimeter = ft_substr(strip(var + 2), 0, ft_strlen(var));
+	tmp = strip(var + 2);
+	delimeter = ft_substr(tmp, 0, ft_strlen(var));
 	null_free(&var);
 	if (!delimeter)
 		return (err_msg("Error"), 0);

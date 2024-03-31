@@ -134,5 +134,6 @@ int	main(int argc, char **argv, char **env)
 			break ;
 	}
 	killer(&vars);
+	//system("leaks minishell");
 	return (0);
 }

@@ -99,6 +99,8 @@ int	loop_parsing(t_vars *vars, int *p, int j, int check)
 		if (is_quote(vars->input[i]))
 			i --;
 	}
+	if (vars->input[i] == '\0')
+		return (-1);
 	*p = i;
 	return (1);
 }
@@ -106,6 +108,7 @@ int	loop_parsing(t_vars *vars, int *p, int j, int check)
 int	parse(t_vars *vars, int count)
 {
 	int		i;
+	int		ret;
 	int		check;
 
 	(void)count;
@@ -116,8 +119,11 @@ int	parse(t_vars *vars, int count)
 	vars->argc = 0;
 	while (vars->input[++i] != '\0')
 	{
-		if (!loop_parsing(vars, &i, 0, check))
+		ret= loop_parsing(vars, &i, 0, check);
+		if (!ret)
 			return (0);
+		if (ret == -1)
+			break ;
 		if (vars->input[0] == '\0')
 			return (0);
 	}
@@ -142,6 +148,10 @@ int	dolar_parse(t_vars *vars)
 		if (quote_pass(vars, i, &quote_type, &in_quotes)
 			|| (in_quotes && quote_type == '\''))
 			continue ;
+		else if (vars->input[i] == '*')
+			wildcard(vars, i, 1);
+		else if (vars->input[i] == ' ' && vars->input[i + 1] == '*')
+			wildcard(vars, ++i, 0);
 		else if (vars->input[i] == '$' && vars->input[i + 1] == '?')
 		{
 			if (!exit_status(vars, i))

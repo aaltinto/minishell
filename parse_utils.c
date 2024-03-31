@@ -44,17 +44,23 @@ char	**split_string(char *src, char *key)
 
 char	*strip(char *str)
 {
-	char	*end;
+	int		i;
+	int		j;
 
-	while (*str != '\0' && is_space((unsigned char)*str))
-		str++;
-	if (*str == '\0')
-		return (str);
-	end = str + ft_strlen(str) - 1;
-	while (*str != '\0' && end > str && is_space((unsigned char)*end))
-		end--;
-	*(end + 1) = '\0';
-	return (str);
+	i = ft_strlen(str) - 1;
+	j = 0;
+	while (i >= 0 && is_space(str[i]))
+	{
+		i--;
+		j++;
+	}
+	i = 0;
+	while (str[i] && is_space(str[i]))
+	{
+		i++;
+		j++;
+	}
+	return (ft_substr(str, i, ft_strlen(str) - j));
 }
 
 int	null_check(char **src)

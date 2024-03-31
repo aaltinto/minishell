@@ -19,6 +19,7 @@ int	child_process(int **pipes, int pipe_count, t_vars *vars, int i)
 {
 	t_vars	new_vars;
 	char	**argv;
+	char	*tmp;
 	int		j;
 
 	argv = ft_split(vars->input, '|');
@@ -40,7 +41,9 @@ int	child_process(int **pipes, int pipe_count, t_vars *vars, int i)
 	}
 	if (!marche(&new_vars, vars->env, 0))
 		return (free_doubles(argv), 0);
-	new_vars.input = ft_strdup(strip(argv[i]));
+	tmp = strip(argv[i]);
+	new_vars.input = ft_strdup(tmp);
+	null_free(&tmp);
 	free_doubles(argv);
 	if (!new_vars.input)
 		return (killer(&new_vars), exit(EXIT_FAILURE), 0);

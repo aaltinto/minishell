@@ -18,19 +18,25 @@
 
 int	is_builtin(t_vars *vars)
 {
-	if (ft_strncmp(vars->input_parsed[0], "cd ", 2) == 0)
-		return (new_cd(vars));
-	if (ft_strncmp(vars->input_parsed[0], "pwd ", 3) == 0)
-		return (new_pwd(vars));
-	if (ft_strncmp(vars->input_parsed[0], "echo ", 4) == 0)
-		return (echo(vars), 1);
-	if (ft_strncmp(vars->input_parsed[0], "export ", 6) == 0)
-		return (new_export(vars));
-	if (ft_strncmp(vars->input_parsed[0], "env ", 3) == 0)
-		return (new_env(vars), 1);
-	if (ft_strncmp(vars->input_parsed[0], "unset ", 5) == 0)
-		return (unset(vars, 0, double_counter(vars->env)));
-	return (-1);
+	char	*input;
+	int		ret;
+
+	input = strip(vars->input_parsed[0]);
+	if (ft_strncmp(input, "cd", 2) == 0)
+		ret = new_cd(vars);
+	else if (ft_strncmp(input, "pwd", 4) == 0)
+		ret = new_pwd(vars);
+	else if (ft_strncmp(input, "echo", 5) == 0)
+		ret = (echo(vars), 1);
+	else if (ft_strncmp(input, "export", 7) == 0)
+		ret = (new_export(vars));
+	else if (ft_strncmp(input, "env", 4) == 0)
+		ret = (new_env(vars), 1);
+	else if (ft_strncmp(input, "unset", 6) == 0)
+		ret = (unset(vars, 0, double_counter(vars->env)));
+	else
+		ret = -1;
+	return (null_free(&input), ret);
 }
 
 int	something_familiar(t_vars *vars)
@@ -41,7 +47,7 @@ int	something_familiar(t_vars *vars)
 		return (printf("See ya 🫡\n"), 2);
 	else if (ft_strncmp("hi", vars->input_parsed[0], 3) == 0)
 		return (printf("hi baby 😘\n"), 1);
-	else if (is_builtin(vars) != 2)
+	else if (is_builtin(vars) != -1)
 		return (1);
 	else
 		return (0);

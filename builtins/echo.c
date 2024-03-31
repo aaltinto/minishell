@@ -17,6 +17,7 @@
 void	echo(t_vars *vars)
 {
 	int		i;
+	char	*tmp;
 
 	if (!vars->input_parsed[1])
 	{
@@ -29,6 +30,8 @@ void	echo(t_vars *vars)
 		i++;
 	while (vars->input_parsed[++i])
 		ft_putstr_fd(vars->input_parsed[i], 1);
-	if (ft_strncmp(strip(vars->input_parsed[1]), "-n", 3) != 0)
+	tmp = strip(vars->input_parsed[1]);
+	if (ft_strncmp(tmp, "-n", 3) != 0)
 		ft_putstr_fd("\n", 1);
+	free(tmp);
 }
