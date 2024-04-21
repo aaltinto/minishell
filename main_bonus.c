@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alialtintoprak <alialtintoprak@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:46 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/04/16 16:15:50 by alialtintop      ###   ########.fr       */
+/*   Updated: 2024/04/13 17:25:47 by alialtintop      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,17 +61,33 @@ int	prompter(char **env, t_vars *ret)
 	vars[2] = find_work_dir(env);
 	vars[3] = ft_strdup(" $ ");
 	if (!vars[0] || !vars[1] || !vars[2] || !vars[3])
-		return (err_msg("strdup error"), free_doubles(vars), 1);
+		return (err_msg("Strdup error"), free_doubles(vars), 1);
 	vars[4] = NULL;
 	return (append_doubles(&ret->user_pwd, vars, 0), free_doubles(vars), 1);
 }
 
-int	opening_ceremony(t_vars *vars)
+int	opening_ceremony(t_vars *vars, char **env)
 {
 	int		i;
+	char	**tmp;
 
+	tmp = NULL;
+	i = find_in_env(env, "HOME=");
+	if (i != -1)
+	{
+		tmp = ft_split(vars->env[i], '=');
+		if (!tmp)
+			return (err_msg("ft_split error!"), 0);
+		if (chdir(tmp[1]) != 0)
+			return (perror("chdir"), 0);
+		set_env(vars, "PWD=", tmp[1]);
+		free_doubles(tmp);
+	}
+	else
+		if (chdir("/") != 0 || !set_env(vars, "PWD=", "/"))
+			return (perror("chdir"), 0);
 	i = find_in_env(vars->env, "OLDPWD=");
-	//printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m");
+	printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m");
 	if (i != -1)
 		return (null_free(&vars->env[i]),
 			re_init_env(vars, double_counter(vars->env), 1), 1);
@@ -90,9 +106,9 @@ int	marche(t_vars *vars, char **env, int condition)
 	vars->file_opened = 0;
 	vars->exit_stat = 0;
 	vars->hist = 0;
-	vars->bonus = 0;
+	vars->bonus = 1;
 	if (condition)
-		return (opening_ceremony(vars));
+		return (opening_ceremony(vars, env));
 	return (1);
 }
 
@@ -119,6 +135,5 @@ int	main(int argc, char **argv, char **env)
 	}
 	exit_setter(&vars);
 	killer(&vars);
-	system("leaks minishel");
 	return (vars.exit_stat);
 }

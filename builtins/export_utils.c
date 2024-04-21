@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alialtintoprak <alialtintoprak@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 17:33:26 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/23 17:46:08 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/04/13 16:02:16 by alialtintop      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,19 +39,18 @@ void	print_vars(t_vars *vars)
 	}
 }
 
-void	check_restore(t_vars *vars, int count)
+int	check_restore(t_vars *vars, int count, char **input)
 {
 	int		i;
 	int		index;
 	int		del;
 	char	**splited;
-	char	**tmp;
 	char	*tmp2;
 
 	i = 0;
 	del = 0;
 	count = double_counter(vars->env);
-	tmp = vars->input_parsed;
+	input = vars->input_parsed;
 	while (vars->input_parsed[++i])
 	{
 		splited = ft_split(vars->input_parsed[i], '=');
@@ -59,14 +58,12 @@ void	check_restore(t_vars *vars, int count)
 			continue ;
 		tmp2 = strip(splited[0]);
 		index = find_in_env(vars->env, tmp2);
-		null_free(&tmp2);
-		free_doubles(splited);
-		if (index == -1)
+		if (free_doubles(splited) && null_free(&tmp2) && index == -1)
 			continue ;
 		vars->env[index] = NULL;
 		del++;
 	}
 	if (del)
 		re_init_env(vars, count, del);
-	vars->input_parsed = tmp;
+	return (vars->input_parsed = input, 1);
 }

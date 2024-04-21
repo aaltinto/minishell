@@ -1,21 +1,26 @@
 NAME = minishell
 CC = gcc
-FLAGS = #-fsanitize=address -g #-Wall -Wextra -Werror 
+FLAGS =  -Wall -Wextra -Werror -g #-fsanitize=address -g
 SRC = main.c\
 	free_n_exit.c\
-	prompt.c\
+	prompt_bonus.c\
 	env.c\
 	utils.c\
+	utils_2.c\
 	quote.c\
 	exec.c\
 	pipe.c\
-	bonus.c\
+	pipe_utils.c\
+	wildcard.c\
+	wildcard_utils.c\
 	logic_op.c\
+	logic_utils.c\
 	open_create.c\
 	parse.c\
 	dollar_parse.c\
+	append.c\
+	heredoc.c\
 	signals.c\
-	heredoc_append.c\
 	input_output.c\
 	parse_utils.c\
 	builtins/cd.c\
@@ -24,6 +29,7 @@ SRC = main.c\
 	builtins/export.c\
 	builtins/unset.c\
 	builtins/pwd.c\
+	builtins/exit.c\
 	builtins/echo.c
 
 LIBFT = libft/libft.a

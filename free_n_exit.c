@@ -14,43 +14,58 @@
 #include "libft/libft.h"
 #include <stdlib.h>
 
+int	killer(t_vars *vars)
+{
+	free_doubles(vars->env);
+	free_doubles(vars->input_parsed);
+	null_free(&vars->input);
+	null_free(&vars->output);
+	null_free(&vars->user_pwd);
+	return (1);
+}
+
 void	err_msg(char *msg)
 {
 	ft_putendl_fd(msg, 2);
 }
 
-void	free_doubles(char **str)
+int	free_doubles(char **str)
 {
 	int	i;
 
 	if (!str)
-		return ;
+		return (1);
 	i = -1;
 	while (str[++i])
 		null_free(&str[i]);
 	free(str);
 	str = NULL;
+	return (1);
 }
 
-void	free_doubles2(void **str, int j)
+void	free_doubles2(void ***str, int j)
 {
-	int	i;
+	int		i;
+	void	**tmp;
 
-	if (!str)
+	tmp = *str;
+	if (!tmp)
 		return ;
 	i = -1;
 	while (j > ++i)
 	{
-		null_free((char **)&str[i]);
+		null_free((char **)&tmp[i]);
 	}
-	free(str);
-	str = NULL;
+	free(tmp);
+	tmp = NULL;
+	*str = tmp;
 }
 
-void	null_free(char **var)
+int	null_free(char **var)
 {
 	if (!*var)
-		return ;
+		return (1);
 	free(*var);
 	*var = NULL;
+	return (1);
 }

@@ -44,7 +44,7 @@ int	open_fds_parse(t_vars *vars)
 			continue ;
 		else if ((vars->input[i] == '<' && vars->input[i + 1] == '<' && \
 		vars->input[i + 2] != '<' && ++i && heredoc(vars, ++i) == 0)
-			|| (vars->input[i] == '<' && open_file(vars, i -1) == -1))
+			|| (vars->input[i] == '<' && open_file(vars, --i) == -1))
 			return (null_free(&vars->input), 0);
 		else if ((vars->input[i] == '>' && vars->input[i + 1] == '>'
 				&& append_output(vars, i) == -1) || (vars->input[i] == '>'

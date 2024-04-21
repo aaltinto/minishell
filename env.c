@@ -48,7 +48,7 @@ char	**dup_env(t_vars *vars, char **to_dup)
 	{
 		new_env[i] = ft_strdup(to_dup[i]);
 		if (!new_env[i])
-			return (err_msg("Error"), NULL);
+			return (err_msg("strdup error"), NULL);
 	}
 	new_env[i] = NULL;
 	return (new_env);
@@ -61,9 +61,9 @@ int	re_init_env(t_vars *vars, int count, int del)
 	int		j;
 
 	i = -1;
-	j = 0;
+	j = -1;
 	if (del == 0)
-		return (0);
+		return (1);
 	new_env = malloc(sizeof(char *) * (count - del + 1));
 	if (!new_env)
 		return (0);
@@ -71,16 +71,15 @@ int	re_init_env(t_vars *vars, int count, int del)
 	{
 		if (!vars->env[i])
 			continue ;
-		new_env[j] = ft_strdup(vars->env[i]);
+		new_env[++j] = ft_strdup(vars->env[i]);
 		if (!new_env[j])
 			return (free_doubles(new_env), 0);
-		j++;
 	}
 	free_doubles(vars->env);
-	new_env[--j] = NULL;
+	new_env[j] = NULL;
 	if (!env_init(vars, new_env))
-		return (free_doubles(new_env), 0);
-	return (1);
+		return (free_doubles2((void ***)&new_env, (count - del + 1)), 0);
+	return (free_doubles2((void ***)&new_env, (count - del + 1)), 1);
 }
 
 int	find_in_env(char **env, char *to_find)

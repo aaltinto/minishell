@@ -16,6 +16,23 @@
 #include <unistd.h>
 #include <readline/readline.h>
 
+int	quote_pass(t_vars *vars, int i, char *quote_type, int *in_quotes)
+{
+	if (vars->input[i] == '\"' || vars->input[i] == '\'')
+	{
+		if (!(*quote_type))
+			(*quote_type) = vars->input[i];
+		if ((*quote_type) == vars->input[i])
+		{
+			(*in_quotes) = !(*in_quotes);
+			if (!(*in_quotes))
+				(*quote_type) = '\0';
+			return (1);
+		}
+	}
+	return (0);
+}
+
 int	get_input(char **new_input, t_vars *vars)
 {
 	*new_input = readline("> ");

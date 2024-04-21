@@ -38,43 +38,43 @@ int	pipe_exec(char *path, t_vars *vars, char **argv)
 	}
 	waitpid(p_id, &status, 0);
 	vars->exit_stat = wexitstatus(status);
-	return (1);
+	return (vars->exit_stat);
+}
+
+int	check_command(char *cmd, char *tmp, char **argv, t_vars *vars)
+{
+	char	*this_is_the_way;
+
+	this_is_the_way = ft_strjoin(cmd, tmp);
+	if (!this_is_the_way)
+		return (err_msg("Join error"), -1);
+	if (access(this_is_the_way, F_OK) == 0)
+		return (null_free(&tmp), pipe_exec(this_is_the_way, vars, argv),
+			null_free(&this_is_the_way), 1);
+	return (null_free(&this_is_the_way), 0);
 }
 
 int	execute(t_vars *vars, char *cmd, char **argv, char	**split_path)
 {
-	char	*this_is_the_way;
 	char	*tmp;
 	char	*tmp2;
 	int		i;
 
 	i = -1;
+	if (access(cmd, F_OK) == 0)
+		return (pipe_exec(cmd, vars, argv), 1);
 	tmp = ft_strjoin("/", cmd);
 	if (!tmp)
 		return (err_msg("Join error"), -1);
 	while (split_path && split_path[++i])
-	{
-		this_is_the_way = ft_strjoin(split_path[i], tmp);
-		if (!this_is_the_way)
-			return (err_msg("Join error"), -1);
-		if (access(this_is_the_way, F_OK) == 0)
-			return (null_free(&tmp), pipe_exec(this_is_the_way, vars, argv),
-				null_free(&this_is_the_way), 1);
-		null_free(&this_is_the_way);
-	}
+		if (check_command(split_path[i], tmp, argv, vars))
+			return (1);
 	tmp2 = getcwd(NULL, 0);
 	if (!tmp2)
 		return (perror("getcwd"), -1);
-	this_is_the_way = ft_strjoin(tmp2, tmp);
-	if (!this_is_the_way)
-		return (err_msg("Join error"), -1);
-	if (access(this_is_the_way, F_OK) == 0)
-		return (pipe_exec(this_is_the_way, vars, argv),
-			null_free(&this_is_the_way), null_free(&tmp), null_free(&tmp2), 1);
-	null_free(&this_is_the_way);
-	null_free(&tmp);
-	null_free(&tmp2);
-	return (0);
+	if (check_command(tmp2, tmp, argv, vars))
+		return (1);
+	return (null_free(&tmp), null_free(&tmp2), 0);
 }
 
 int	path_finder(t_vars *vars, char *cmd, char **argv)

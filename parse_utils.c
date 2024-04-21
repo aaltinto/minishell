@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alialtintoprak <alialtintoprak@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:55 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/15 17:16:10 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/04/16 15:48:21 by alialtintop      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,22 +44,20 @@ char	**split_string(char *src, char *key)
 
 char	*strip(char *str)
 {
+	int	start;
+	int	end;
+
+	start = 0;
+	end = ft_strlen(str) -1;
 	if (!str)
-        return NULL; // Check for NULL pointer
-    int i = ft_strlen(str) - 1;
-    int j = 0;
-    while (i >= 0 && is_space(str[i]))
-    {
-        i--;
-        j++;
-    }
-    i = 0;
-    while (str[i] && is_space(str[i]))
-    {
-        i++;
-        j++;
-    }
-    return ft_substr(str, i, ft_strlen(str) - j);
+		return (NULL);
+	while (is_space(str[start]))
+		start++;
+	if (start >= end)
+		return (ft_strdup(str));
+	while (is_space(str[end]))
+		end--;
+	return (ft_substr(str, start, end - start + 1));
 }
 
 int	null_check(char **src)
@@ -94,9 +92,8 @@ int	append_doubles(char **dest, char **src, int condition)
 	while (++i < max_index)
 		if (src[i])
 			len += ft_strlen(src[i]);
-	if (condition && null_check(src))
-		return (null_free(&(*dest)), 1);
-	null_free(&(*dest));
+	if (null_free(&(*dest)), condition && null_check(src))
+		return (1);
 	*dest = ft_calloc(len + 1, sizeof(char));
 	if (!(*dest))
 		return (err_msg("Allocation error!"), 0);
@@ -105,4 +102,24 @@ int	append_doubles(char **dest, char **src, int condition)
 		if (src[i])
 			ft_strlcat(*dest, src[i], len + 1);
 	return (1);
+}
+
+int	check_origin(t_vars *vars)
+{
+	int	check;
+
+	check = 0;
+	if (!vars->input)
+		return (-1);
+	if (ft_strncmp(vars->input, "", 1) == 0)
+		return (-1);
+	if (ft_strncmp(vars->input, "echo ", 5) == 0
+		|| ft_strncmp(vars->input, "export ", 6) == 0
+		|| ft_strncmp(vars->input, "exit ", 5) == 0)
+		check = 1;
+	vars->input_parsed
+		= (char **)ft_calloc(ft_strlen(vars->input) + 1, sizeof(char *));
+	if (!vars->input_parsed)
+		return (err_msg("Allocation Error"), -1);
+	return (check);
 }

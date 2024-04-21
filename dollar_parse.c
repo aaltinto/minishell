@@ -29,10 +29,10 @@ int	exit_status(t_vars *vars, int i)
 	null_free(&tmp[1]);
 	tmp[1] = ft_itoa(vars->exit_stat);
 	if (!tmp[1])
-		return (err_msg("Error"), 0);
+		return (err_msg("itoa error"), 0);
 	if (!append_doubles(&vars->input, tmp, 1))
-		return (free_doubles2((void **)tmp, 3), err_msg("Error"), 0);
-	free_doubles2((void **)tmp, 3);
+		return (free_doubles2((void ***)&tmp, 3), 0);
+	free_doubles2((void ***)&tmp, 3);
 	return (1);
 }
 
@@ -61,6 +61,35 @@ int	env_find_dollar(t_vars *vars, int i, int j)
 		return (free_doubles(tmp), -1);
 	vars->env = original;
 	if (!append_doubles(&vars->input, tmp, 1) || !vars->input)
-		return (free_doubles2((void **)tmp, 3), -1);
-	return (free_doubles2((void **)tmp, 3), 1);
+		return (free_doubles2((void ***)&tmp, 3), -1);
+	return (free_doubles2((void ***)&tmp, 3), 1);
+}
+
+int	dolar_parse(t_vars *vars, int i)
+{
+	char	quote_type;
+	int		in_quotes;
+
+	if (!vars->input)
+		return (0);
+	quote_type = 0;
+	in_quotes = 0;
+	while (vars->input[++i])
+	{
+		if (quote_pass(vars, i, &quote_type, &in_quotes)
+			|| (in_quotes && quote_type == '\''))
+			continue ;
+		else if (vars->input[i] == '$' && vars->input[i + 1] == '?')
+		{
+			if (!exit_status(vars, i))
+				return (null_free(&vars->input), 0);
+		}
+		else if ((vars->input[i] == '$' && !is_quote(vars->input[i + 1]) \
+		&& vars->input[i + 1] != '\0' && !is_space(vars->input[i + 1])
+				&& env_find_dollar(vars, i -1, 0) == -1))
+			return (null_free(&vars->input), 0);
+		if (!vars->input || vars->input[i] == '\0')
+			break ;
+	}
+	return (1);
 }

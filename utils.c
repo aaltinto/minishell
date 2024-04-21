@@ -35,18 +35,31 @@ int	double_counter(char **str)
 	return (i);
 }
 
-int	killer(t_vars *vars)
+char	*destroy_quotes(char *str)
 {
-	free_doubles(vars->env);
-	free_doubles(vars->input_parsed);
-	null_free(&vars->input);
-	null_free(&vars->output);
-	null_free(&vars->user_pwd);
-	return (1);
+	char	*ret;
+	int		i;
+	int		j;
+
+	ret = malloc(ft_strlen(str));
+	if (!ret)
+		return (err_msg("Allocation error"), NULL);
+	i = -1;
+	j = 0;
+	while (str[++i] != '\0')
+	{
+		if (is_quote(str[i]))
+			continue ;
+		ret[j] = str[i];
+		j++;
+	}
+	ret[j] = '\0';
+	return (ret);
 }
 
 void	reset_vars(t_vars *vars)
 {
+	reset_fds(vars);
 	vars->file_created = 0;
 	vars->file_opened = 0;
 	null_free(&vars->input);

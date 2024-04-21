@@ -32,38 +32,42 @@ int	get_oldpwd(t_vars *vars)
 	return (1);
 }
 
+int	create_line(t_vars *vars, char *tmp, int i)
+{
+	char	**new_env;
+
+	new_env = dup_env(vars, vars->env);
+	if (!new_env)
+		return (0);
+	i = double_counter(vars->env);
+	new_env[i] = ft_strdup(tmp);
+	if (!new_env[i])
+		return (err_msg("Malloc error"), free_doubles(new_env), 0);
+	new_env[++i] = NULL;
+	if (free_doubles(vars->env) && !env_init(vars, new_env))
+		return (free_doubles(new_env), 0);
+	free_doubles2((void ***)&new_env, i + vars->argc - 1);
+	return (1);
+}
+
 int	set_env(t_vars *vars, char *to_find, char *to_set)
 {
 	int		i;
 	char	*tmp;
-	char	**new_env;
 
 	i = find_in_env(vars->env, to_find);
 	tmp = ft_strjoin(to_find, to_set);
-	if (i != -1)
+	if (!tmp)
+		return (err_msg("Malloc error"), 0);
+	if (i != -1 && null_free(&vars->env[i]))
 	{
-		free(vars->env[i]);
-		if (!tmp)
-			return (err_msg("Malloc error"), 0);
 		vars->env[i] = ft_strdup(tmp);
+		if (!vars->env[i])
+			return (err_msg("Malloc error"), 0);
 	}
 	else
-	{
-		new_env = dup_env(vars, vars->env);
-		if (!new_env)
+		if (!create_line(vars, tmp, i))
 			return (0);
-		i = double_counter(vars->env);
-		if (!tmp)
-			return (err_msg("Malloc error"), 0);
-		new_env[i] = ft_strdup(tmp);
-		if (!new_env[i])
-			return (err_msg("Malloc error"), free_doubles(new_env), 0);
-		new_env[++i] = NULL;
-		free_doubles(vars->env);
-		if (!env_init(vars, new_env))
-			return (free_doubles(new_env), 0);
-		free_doubles2((void **)new_env, i + vars->argc - 1);
-	}
 	return (null_free(&tmp), 1);
 }
 
@@ -90,10 +94,18 @@ int	new_cd(t_vars *vars)
 {
 	char	*old_path;
 	char	*new_path;
+	int		i;
 
 	old_path = getcwd(NULL, 0);
 	if (!old_path)
-		return (perror("getcwd"), 0);
+	{
+		perror("getcwd");
+		i = find_in_env(vars->env, "PWD=");
+		if (i == -1)
+			old_path = ft_strdup("..");
+		else
+			old_path = ft_strdup(vars->env[i] + 4);
+	}
 	if (ft_strncmp(vars->input_parsed[1], "-", 2) == 0)
 		return (null_free(&old_path), get_oldpwd(vars));
 	if (chdir(vars->input_parsed[1]) != 0)
@@ -101,9 +113,7 @@ int	new_cd(t_vars *vars)
 	new_path = getcwd(NULL, 0);
 	if (!new_path)
 		return (perror("minishell: getcwd"), null_free(&old_path), 0);
-	if (!set_env(vars, "PWD=", new_path))
-		return (null_free(&old_path), 0);
-	if (!set_env(vars, "OLDPWD=", old_path))
+	if (!set_env(vars, "PWD=", new_path) || !set_env(vars, "OLDPWD=", old_path))
 		return (null_free(&old_path), 0);
 	return (null_free(&old_path), 1);
 }

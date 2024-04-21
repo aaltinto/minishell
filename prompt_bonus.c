@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   prompt.c                                           :+:      :+:    :+:   */
+/*   prompt_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alialtintoprak <alialtintoprak@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:13:05 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/04/16 12:32:58 by alialtintop      ###   ########.fr       */
+/*   Updated: 2024/04/16 15:51:57 by alialtintop      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,31 +45,34 @@ int	something_familiar(t_vars *vars)
 {
 	char	*tmp;
 
-	if (vars->input_parsed == NULL)
+	if (vars->input_parsed == NULL || is_empty(vars->input_parsed[0]))
 		return (1);
 	tmp = strip(vars->input_parsed[0]);
 	if (!tmp)
-		return (err_msg("Error"), 0);
+		return (err_msg("Strip error"), 0);
 	if (ft_strncmp("exit", tmp, 4) == 0)
-		return (2);
+		return (null_free(&tmp), 2);
 	else if (ft_strncmp("hi", tmp, 3) == 0)
-		return (printf("hi baby 😘\n"), 1);
+		return (null_free(&tmp), printf("hi baby 😘\n"), 1);
 	else if (is_builtin(vars) != -1)
-		return (1);
+		return (null_free(&tmp), 1);
 	else
-		return (0);
+		return (null_free(&tmp), 0);
 }
 
 int	check_input(t_vars *vars, int condition)
 {
-	int		i;
 	int		in_quote;
 	char	quotes;
+	int		i;
 
 	if (ft_strncmp("", vars->input, 2) == 0)
 		return (vars->exit_stat = 127, 1);
 	if (quote(vars), vars->hist != -1 && condition)
 		add_history(vars->input);
+	vars->bonus = 1;
+	if (!wildcard_parse(vars))
+		return (0);
 	i = -1;
 	in_quote = 0;
 	quotes = 0;
@@ -77,8 +80,12 @@ int	check_input(t_vars *vars, int condition)
 	{
 		quote_pass (vars, i, &quotes, &in_quote);
 		if (!in_quote && vars->input[i] == '&')
-			return (err_msg(SYNTAX_ERR), 0);
+			if (vars->input[++i] != '&' || vars->input[i + 1] == '&'
+				|| vars->input[i + 1] == '|')
+				return (err_msg(SYNTAX_ERR), 0);
 	}
+	if (!seek_operator(vars))
+		return (0);
 	return (3);
 }
 

@@ -20,7 +20,7 @@ int	unset(t_vars *vars, int del, int count)
 	char	**exports;
 
 	if (vars->input_parsed[1] == NULL)
-		return (0);
+		return (1);
 	i = -1;
 	while (vars->env[++i])
 	{
@@ -32,12 +32,8 @@ int	unset(t_vars *vars, int del, int count)
 				return (err_msg("allocation error"), 0);
 			if (ft_strncmp(exports[0], vars->input_parsed[j],
 					ft_strlen(exports[0])) == 0)
-			{
-				null_free(&vars->env[i]);
-				free_doubles(exports);
-				del++;
-				break ;
-			}
+				if (null_free(&vars->env[i]), free_doubles(exports), del++)
+					break ;
 		}
 	}
 	return (re_init_env(vars, count, del));
