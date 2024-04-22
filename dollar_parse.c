@@ -31,8 +31,8 @@ int	exit_status(t_vars *vars, int i)
 	if (!tmp[1])
 		return (err_msg("itoa error"), 0);
 	if (!append_doubles(&vars->input, tmp, 1))
-		return (free_doubles2((void ***)&tmp, 3), 0);
-	free_doubles2((void ***)&tmp, 3);
+		return (free_doubles2((void **)tmp, 3), 0);
+	free_doubles2((void **)tmp, 3);
 	return (1);
 }
 
@@ -61,8 +61,8 @@ int	env_find_dollar(t_vars *vars, int i, int j)
 		return (free_doubles(tmp), -1);
 	vars->env = original;
 	if (!append_doubles(&vars->input, tmp, 1) || !vars->input)
-		return (free_doubles2((void ***)&tmp, 3), -1);
-	return (free_doubles2((void ***)&tmp, 3), 1);
+		return (free_doubles2((void **)tmp, 3), -1);
+	return (free_doubles2((void **)tmp, 3), 1);
 }
 
 int	dolar_parse(t_vars *vars, int i)

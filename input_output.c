@@ -21,13 +21,18 @@ static int	fd_open_operations(t_vars *vars, char *var)
 {
 	int		fd;
 	char	*file;
+	char	*tmp;
 
 	if (vars->file_opened)
 		if (dup2(vars->origin_stdin, STDIN_FILENO) == -1)
 			return (perror("dup2"), -1);
-	file = ft_substr(strip(var + 1), 0, ft_strlen(var) -1);
-	if (!file)
+	tmp = ft_substr(var, 1, ft_strlen(var) -1);
+	if (!tmp)
 		return (err_msg("Substr error"), -1);
+	file = strip(tmp);
+	null_free(&tmp);
+	if (!file)
+		return (err_msg("strip error"), -1);
 	fd = open(file, O_RDONLY);
 	null_free(&file);
 	if (fd < 0)
@@ -77,24 +82,24 @@ int	open_file(t_vars *vars, int i)
 	char	*var;
 	char	**tmp;
 	char	*tmp2;
+	char	*stripped;
 
 	var = find_keyword(vars, i, 0);
 	if (!var)
 		return (-1);
-	tmp = split_string(strip(vars->input), var);
+	stripped = strip(vars->input);
+	tmp = split_string(stripped, var);
+	null_free(&stripped);
 	if (!tmp)
 		return (free(var), -1);
 	null_free(&tmp[1]);
 	if (!append_doubles(&vars->input, tmp, 1))
 		return (null_free(&var), free_doubles(tmp), -1);
-	free_doubles2((void ***)&tmp, 3);
+	free_doubles2((void **)tmp, 3);
 	tmp2 = destroy_quotes(var);
 	null_free(&var);
 	ret = fd_open_operations(vars, tmp2);
-	if (ret == -1)
-		vars->exit_stat = 1;
-	else
-		vars->exit_stat = 0;
+	vars->exit_stat = (ret != -1);
 	return (null_free(&tmp2), ret);
 }
 
@@ -107,8 +112,8 @@ static int	fd_output_operations(t_vars *vars, char *var)
 	if (vars->file_created)
 		if (dup2(vars->origin_stdout, STDOUT_FILENO) == -1)
 			return (perror("dup2"), -1);
-	tmp = strip(var + 1);
-	file = ft_substr(tmp, 0, ft_strlen(var));
+	tmp = ft_substr(var, 1, (ft_strlen(var) -1));
+	file = strip(tmp);
 	null_free(&tmp);
 	free(var);
 	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
@@ -132,17 +137,20 @@ int	output_file(t_vars *vars, int i)
 	char	*var;
 	char	**tmp;
 	char	*tmp2;
+	char	*stripped;
 
 	var = find_keyword(vars, i, 1);
 	if (!var)
 		return (-1);
-	tmp = split_string(strip(vars->input), var);
+	stripped = strip(vars->input);
+	tmp = split_string(stripped, var);
+	null_free(&stripped);
 	if (!tmp)
 		return (null_free(&var), -1);
 	null_free(&tmp[1]);
 	if (!append_doubles(&vars->input, tmp, 1))
 		return (free_doubles(tmp), -1);
-	free_doubles(tmp);
+	free_doubles2((void **)tmp, 3);
 	tmp2 = destroy_quotes(var);
 	null_free(&var);
 	return (fd_output_operations(vars, tmp2));

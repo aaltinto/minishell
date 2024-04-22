@@ -75,11 +75,11 @@ int	re_init_env(t_vars *vars, int count, int del)
 		if (!new_env[j])
 			return (free_doubles(new_env), 0);
 	}
-	free_doubles(vars->env);
-	new_env[j] = NULL;
-	if (!env_init(vars, new_env))
-		return (free_doubles2((void ***)&new_env, (count - del + 1)), 0);
-	return (free_doubles2((void ***)&new_env, (count - del + 1)), 1);
+	free_doubles2((void **)vars->env, count);
+	new_env[++j] = NULL;
+	env_init(vars, new_env);
+	free_doubles(new_env);
+	return (1);
 }
 
 int	find_in_env(char **env, char *to_find)

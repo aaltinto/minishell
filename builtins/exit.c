@@ -69,14 +69,15 @@ int	exit_setter(t_vars *vars)
 		return (vars->exit_stat = 1, 0);
 	num = double_counter(split);
 	if (num <= 1)
-		return (vars->exit_stat = 0, 1);
+		return (free_doubles(split), vars->exit_stat = 0, 1);
 	else if (num >= 3)
-		return (err_msg("Too many arguments"), vars->exit_stat = 1, 0);
+		return (free_doubles(split), err_msg("Too many arguments"),
+				vars->exit_stat = 1, 0);
 	if (!check_digits(vars, split))
 		return (free_doubles(split), 0);
 	num = ft_atoi(split[1]);
 	if (num > 255)
 		num = num % 256;
 	vars->exit_stat = num;
-	return (num);
+	return (free_doubles(split), num);
 }

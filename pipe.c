@@ -82,6 +82,7 @@ int	child_process(int **pipes, int pipe_count, t_vars *vars, int i)
 int	pipe_piping(int **pipes, int pipe_count, t_vars *vars, int i)
 {
 	pid_t	*pid;
+	int		j;
 
 	vars->input_parsed = split_pipes(vars, pipe_count, -1);
 	if (!vars->input_parsed)
@@ -102,9 +103,10 @@ int	pipe_piping(int **pipes, int pipe_count, t_vars *vars, int i)
 		if (close(pipes[i][0]) == -1 || close(pipes[i][1]) == -1)
 			return (perror("close"), vars->exit_stat = 1, 0);
 	i = -1;
+	j = 0;
 	while (++i < pipe_count + 1)
-		waitpid(pid[i], &g_l, 0);
-	vars->exit_stat = wexitstatus(g_l);
+		waitpid(pid[i], &j, 0);
+	vars->exit_stat = wexitstatus(j);
 	return (free(pid), null_free(&vars->input), 1);
 }
 
@@ -128,10 +130,10 @@ int	pipe_parse(t_vars *vars, int i)
 		pipes[i] = malloc(sizeof(int) * 2);
 		if (!pipes[i])
 			return (err_msg("allocation error"),
-				free_doubles2((void ***)&pipes, pipe_count), 0);
+				free_doubles2((void **)pipes, pipe_count), 0);
 		if (pipe(pipes[i]) == -1)
 			return (perror("pipe"), 0);
 	}
 	pipe_piping(pipes, pipe_count, vars, -1);
-	return (free_doubles2((void ***)&pipes, pipe_count), 1);
+	return (free_doubles2((void **)pipes, pipe_count), 1);
 }

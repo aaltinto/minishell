@@ -20,7 +20,6 @@ SRC = main.c\
 	dollar_parse.c\
 	append.c\
 	heredoc.c\
-	signals.c\
 	input_output.c\
 	parse_utils.c\
 	builtins/cd.c\

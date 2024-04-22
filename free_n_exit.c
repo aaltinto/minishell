@@ -43,22 +43,19 @@ int	free_doubles(char **str)
 	return (1);
 }
 
-void	free_doubles2(void ***str, int j)
+void	free_doubles2(void **str, int j)
 {
 	int		i;
-	void	**tmp;
 
-	tmp = *str;
-	if (!tmp)
+	if (!str)
 		return ;
 	i = -1;
-	while (j > ++i)
+	while (j >= ++i)
 	{
-		null_free((char **)&tmp[i]);
+		if (str[i])
+			null_free((char **)&str[i]);
 	}
-	free(tmp);
-	tmp = NULL;
-	*str = tmp;
+	free(str);
 }
 
 int	null_free(char **var)

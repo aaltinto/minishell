@@ -68,7 +68,6 @@ int	heredoc_loop(t_vars *vars, char *delimeter)
 		return (1);
 	if (pid == 0)
 	{
-		g_l = 42;
 		signal(SIGINT, sig_c);
 		handle_eof(delimeter, fd);
 		killer(vars);

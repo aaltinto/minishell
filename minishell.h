@@ -13,6 +13,7 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <sys/wait.h>
 # define SYNTAX_ERR "minishell: syntax error near unexpected token"
 
 typedef struct s_vars
@@ -33,14 +34,12 @@ typedef struct s_vars
 	int		file_created;
 }	t_vars;
 
-int	g_l;
-
 //free and exit
 void	err_msg(char *msg);
 int		free_doubles(char **str);
 int		null_free(char **var);
 int		killer(t_vars *vars);
-void	free_doubles2(void ***str, int j);
+void	free_doubles2(void **str, int j);
 //execute
 int		handle_prompt(t_vars *vars, int condition);
 int		path_finder(t_vars *vars, char *cmd, char **argv);

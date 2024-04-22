@@ -16,6 +16,9 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "libft/libft.h"
+#include <stdlib.h>
+
+int	g_l;
 
 char	*find_work_dir(char **env)
 {
@@ -68,13 +71,15 @@ int	prompter(char **env, t_vars *ret)
 
 int	opening_ceremony(t_vars *vars)
 {
-	int		i;
+	int	i;
+	int	count;
 
+	count = double_counter(vars->env);
 	i = find_in_env(vars->env, "OLDPWD=");
 	//printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m");
 	if (i != -1)
 		return (null_free(&vars->env[i]),
-			re_init_env(vars, double_counter(vars->env), 1), 1);
+			re_init_env(vars, (count), 1), 1);
 	return (1);
 }
 
@@ -94,6 +99,43 @@ int	marche(t_vars *vars, char **env, int condition)
 	if (condition)
 		return (opening_ceremony(vars));
 	return (1);
+}
+
+void	sig_c(int sig)
+{
+	(void)sig;
+	if (!g_l)
+	{
+		printf("\n");
+		rl_on_new_line();
+		//rl_replace_line("", 0);
+		rl_redisplay();
+	}
+	else if (g_l == 42)
+	{
+		printf("\n");
+		exit(EXIT_FAILURE);
+	}
+}
+
+void	sig_backslash(int sig)
+{
+	(void)sig;
+	printf("Quit: 3\n");
+}
+
+void	init_signals(void)
+{
+	g_l = 0;
+	signal(SIGINT, sig_c);
+	signal(SIGQUIT, SIG_IGN);
+}
+
+void	init_signals2(void)
+{
+	g_l = 1;
+	signal(SIGINT, sig_c);
+	signal(SIGQUIT, sig_backslash);
 }
 
 int	main(int argc, char **argv, char **env)
@@ -119,6 +161,5 @@ int	main(int argc, char **argv, char **env)
 	}
 	exit_setter(&vars);
 	killer(&vars);
-	system("leaks minishel");
 	return (vars.exit_stat);
 }

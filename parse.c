@@ -47,7 +47,7 @@ char	*cut_parse(int i, int j, int check, char *input)
 		tmp2 = ft_strjoin(tmp, " ");
 		if (!tmp2)
 			return (null_free(&tmp), NULL);
-		return (tmp2);
+		return (null_free(&tmp), tmp2);
 	}
 	else
 		return (ft_substr(input, i - j, j));
@@ -116,9 +116,9 @@ int	parse(t_vars *vars, int count)
 		if (vars->input[0] == '\0')
 			return (0);
 	}
-	if (ft_strncmp(vars->input_parsed[vars->argc], "", 2) != 0)
+	if (ft_strncmp(vars->input_parsed[vars->argc], "", 1) != 0)
 		vars->argc++;
-	vars->input_parsed[vars->argc] = NULL;
+	vars->input_parsed[++vars->argc] = NULL;
 	vars->argc = double_counter(vars->input_parsed);
 	return (null_free(&vars->input), 1);
 }

@@ -41,7 +41,7 @@ char	*destroy_quotes(char *str)
 	int		i;
 	int		j;
 
-	ret = malloc(ft_strlen(str));
+	ret = malloc(ft_strlen(str) + 1);
 	if (!ret)
 		return (err_msg("Allocation error"), NULL);
 	i = -1;

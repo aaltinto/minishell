@@ -46,7 +46,7 @@ int	create_line(t_vars *vars, char *tmp, int i)
 	new_env[++i] = NULL;
 	if (free_doubles(vars->env) && !env_init(vars, new_env))
 		return (free_doubles(new_env), 0);
-	free_doubles2((void ***)&new_env, i + vars->argc - 1);
+	free_doubles2((void **)new_env, i + vars->argc - 1);
 	return (1);
 }
 
@@ -114,6 +114,6 @@ int	new_cd(t_vars *vars)
 	if (!new_path)
 		return (perror("minishell: getcwd"), null_free(&old_path), 0);
 	if (!set_env(vars, "PWD=", new_path) || !set_env(vars, "OLDPWD=", old_path))
-		return (null_free(&old_path), 0);
-	return (null_free(&old_path), 1);
+		return (null_free(&new_path), null_free(&old_path), 0);
+	return (null_free(&new_path), null_free(&old_path), 1);
 }
