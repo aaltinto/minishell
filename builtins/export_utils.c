@@ -39,7 +39,7 @@ void	print_vars(t_vars *vars)
 	}
 }
 
-int	check_restore(t_vars *vars, int count, char **input)
+int	check_restore(t_vars *vars, int count)
 {
 	int		i;
 	int		index;
@@ -50,11 +50,10 @@ int	check_restore(t_vars *vars, int count, char **input)
 	i = 0;
 	del = 0;
 	count = double_counter(vars->env);
-	input = vars->input_parsed;
 	while (vars->input_parsed[++i])
 	{
 		splited = ft_split(vars->input_parsed[i], '=');
-		if (!splited || !splited[0])
+		if ((!splited || !splited[0]) && free_doubles(splited))
 			continue ;
 		tmp2 = strip(splited[0]);
 		index = find_in_env(vars->env, tmp2);
@@ -63,7 +62,5 @@ int	check_restore(t_vars *vars, int count, char **input)
 		vars->env[index] = NULL;
 		del++;
 	}
-	if (del)
-		re_init_env(vars, count, del);
-	return (vars->input_parsed = input, 1);
+	return (re_init_env(vars, count, del));
 }

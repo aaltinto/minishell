@@ -16,8 +16,8 @@
 
 int	killer(t_vars *vars)
 {
-	free_doubles(vars->env);
 	free_doubles(vars->input_parsed);
+	free_doubles(vars->env);
 	null_free(&vars->input);
 	null_free(&vars->output);
 	null_free(&vars->user_pwd);
@@ -52,7 +52,7 @@ void	free_doubles2(void **str, int j)
 	i = -1;
 	while (j >= ++i)
 	{
-		if (str[i])
+		if (str[i] != NULL)
 			null_free((char **)&str[i]);
 	}
 	free(str);

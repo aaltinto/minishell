@@ -86,7 +86,7 @@ int	exec_commands(char **commands, t_vars *vars)
 	{
 		check = 0;
 		marche(&child[++i2], vars->env, 0);
-		if (executer(&child, commands, i, i2))
+		if (executer(&child, commands, i, i2) && killer(&child[i2]))
 			continue ;
 		check = 1;
 	}
@@ -95,7 +95,34 @@ int	exec_commands(char **commands, t_vars *vars)
 	return (vars->exit_stat = child[i2].exit_stat, free(child), 1);
 }
 
-int	split_commands(t_vars *vars, char ***commands, int in_para)
+int	check_para(t_vars *vars)
+{
+	int	i;
+	int	inpara;
+
+	i = -1;
+	inpara = 0;
+	while (vars->input[++i])
+	{
+		if (vars->input[i] == 40)
+		{
+			inpara ++;
+			vars->input[i] = 32;
+		}
+		if (vars->input[i] == 41)
+		{
+			if (!inpara)
+				return (err_msg("paranthesis error"), null_free(&vars->input), 0);
+			inpara --;
+			vars->input[i] = 32;
+		}
+	}
+	if (inpara != 0)
+		return (err_msg("paranthesis error"), null_free(&vars->input), 0);
+	return (1);
+}
+
+int	split_commands(t_vars *vars, char ***commands)
 {
 	int		i;
 	int		j;
@@ -103,15 +130,13 @@ int	split_commands(t_vars *vars, char ***commands, int in_para)
 
 	i = 0;
 	index = -1;
-	in_para = 0;
+	if (!check_para(vars))
+		return (0);
 	while (vars->input[i] != '\0')
 	{
-		if (!in_para)
-			j = 0;
-		if (!check_parantheses(vars, &j, i, &in_para))
+		j = 0;
+		if (!split_coms(vars, &j, i))
 			return (0);
-		if (vars->input[i + j] != '\0' && in_para && j++)
-			continue ;
 		(*commands)[++index] = ft_substr(vars->input, i, j);
 		if ((*commands)[index] == NULL)
 			return (err_msg("malloc error"), 0);
@@ -119,8 +144,6 @@ int	split_commands(t_vars *vars, char ***commands, int in_para)
 		if (vars->input[i] != '\0')
 			i++;
 	}
-	if (in_para)
-		return (err_msg("parentheses error"), null_free(&vars->input), 0);
 	return ((*commands)[++index] = NULL, 1);
 }
 
@@ -139,9 +162,9 @@ int	seek_operator(t_vars *vars)
 	commands = malloc(sizeof(char *) * (count + 2));
 	if (!commands)
 		return (err_msg("Malloc error"), 0);
-	if (!split_commands(vars, &commands, 0))
+	commands[0] = NULL;
+	if (!split_commands(vars, &commands))
 		return (free_doubles(commands), 0);
-	delete_para(&commands);
 	if (!exec_commands(commands, vars))
 		return (null_free(&vars->input), free_doubles(commands), 0);
 	return (null_free(&vars->input), free_doubles(commands), 1);

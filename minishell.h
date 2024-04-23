@@ -60,7 +60,7 @@ int		new_pwd(t_vars *vars);
 void	echo(t_vars *vars);
 int		new_export(t_vars *vars, int ret);
 void	print_vars(t_vars *vars);
-int		check_restore(t_vars *vars, int count, char **input);
+int		check_restore(t_vars *vars, int count);
 int		unset(t_vars *vars, int del, int count);
 void	new_env(t_vars *vars);
 
@@ -110,8 +110,7 @@ int		exec_ls(t_vars *vars);
 int		transform_output(t_vars *vars);
 int		wildcard_parse(t_vars *vars);
 int		seek_operator(t_vars *vars);
-int		check_parantheses(t_vars *vars, int *p, int i, int *in_para);
+int		split_coms(t_vars *vars, int *p, int i);
 int		is_logic(int chr, int chr2);
-void	delete_para(char ***var);
 
 #endif

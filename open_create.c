@@ -13,6 +13,7 @@
 #include "minishell.h"
 #include <stdio.h>
 #include <unistd.h>
+#include "libft/libft.h"
 
 int	reset_fds(t_vars *vars)
 {
@@ -32,6 +33,7 @@ int	open_fds_parse(t_vars *vars)
 	int		i;
 	char	quote_type;
 	int		in_quotes;
+	int		count;
 
 	if (!vars->input)
 		return (0);
@@ -50,7 +52,8 @@ int	open_fds_parse(t_vars *vars)
 				&& append_output(vars, i) == -1) || (vars->input[i] == '>'
 				&& output_file(vars, i) == -1))
 			return (null_free(&vars->input), 0);
-		if (vars->input[i] == '\0')
+		count = ft_strlen(vars->input);
+		if (count <= i)
 			break ;
 	}
 	return (1);

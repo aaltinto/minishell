@@ -28,7 +28,7 @@ char	*cut_parse_quote(int i, int j, int check, char *input)
 		tmp2 = ft_strjoin(tmp, " ");
 		if (!tmp2)
 			return (null_free(&tmp), NULL);
-		return (tmp2);
+		return (null_free(&tmp), tmp2);
 	}
 	else
 		return (ft_substr(input, i - j, j));

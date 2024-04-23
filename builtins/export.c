@@ -46,7 +46,7 @@ int	check_validity(t_vars *vars, char *export)
 	if (!split)
 		return (err_msg("Split error"), 0);
 	if (ft_strncmp(split[0], "", 1) == 0 || !split[0])
-		return (err_msg("not a valid identifier!"), 1);
+		return (free_doubles(split), err_msg("not a valid identifier!"), 1);
 	tmp = strip(split[0]);
 	if (illegal_char_check(tmp))
 		return (free_doubles(split), null_free(&tmp), 1);
@@ -112,7 +112,7 @@ int	new_export(t_vars *vars, int ret)
 
 	if (!vars->input_parsed[1])
 		return (print_vars(vars), 1);
-	check_restore(vars, 0, vars->input_parsed);
+	check_restore(vars, 0);
 	new_env = dup_env(vars, vars->env);
 	if (!new_env)
 		return (2);
@@ -123,7 +123,7 @@ int	new_export(t_vars *vars, int ret)
 		if (!vars->input_parsed[i])
 			continue ;
 		new_env[++i2] = add_to_env(vars, &i);
-		if (i-- && !new_env[i2])
+		if (!new_env[i2])
 			return (free_doubles(new_env), err_msg("Something wrong"), 2);
 		if (check_validity(vars, new_env[i2]) && null_free(&new_env[i2]))
 			ret = 0;

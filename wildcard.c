@@ -137,7 +137,7 @@ int	wildcard(t_vars *vars, int i, int rev)
 	if (!find_list(vars, var, rev))
 		return (null_free(&var_tmp), null_free(&var), 0);
 	if (null_free(&var) && !vars->output)
-		return (1);
+		return (null_free(&var_tmp), 1);
 	tmp = split_string(vars->input, var_tmp);
 	if (null_free(&var_tmp) && !tmp)
 		return (err_msg("Error"), 0);

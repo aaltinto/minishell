@@ -148,6 +148,8 @@ int	output_file(t_vars *vars, int i)
 	if (!tmp)
 		return (null_free(&var), -1);
 	null_free(&tmp[1]);
+	for (int i = 0; i <= 2; i++)
+		printf("tmp: %s\n", tmp[i]);
 	if (!append_doubles(&vars->input, tmp, 1))
 		return (free_doubles(tmp), -1);
 	free_doubles2((void **)tmp, 3);
