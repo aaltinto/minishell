@@ -143,8 +143,8 @@ int	wildcard(t_vars *vars, int i, int rev)
 		return (err_msg("Error"), 0);
 	null_free(&tmp[1]);
 	tmp[1] = ft_strdup(vars->output);
-	if (!tmp[1])
+	if (null_free(&vars->output) && !tmp[1])
 		return (free_doubles(tmp), 0);
 	i = append_doubles(&vars->input, tmp, 1);
-	return (free_doubles(tmp), i);
+	return (free_doubles2((void **)tmp, 3), i);
 }

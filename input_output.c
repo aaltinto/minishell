@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input_output.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bakgun <bakgun@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:42 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/22 16:35:52 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/04/24 17:01:26 by bakgun           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,10 @@ static int	fd_open_operations(t_vars *vars, char *var)
 	if (!tmp)
 		return (err_msg("Substr error"), -1);
 	file = strip(tmp);
-	null_free(&tmp);
-	if (!file)
+	if (null_free(&tmp) && !file)
 		return (err_msg("strip error"), -1);
 	fd = open(file, O_RDONLY);
-	null_free(&file);
-	if (fd < 0)
+	if (null_free(&file) && fd < 0)
 		return (perror(file), -1);
 	vars->origin_stdin = dup(STDIN_FILENO);
 	if (vars->origin_stdin == -1)
@@ -63,7 +61,7 @@ char	*find_keyword(t_vars *vars, int i, int condition)
 	while (vars->input[++i] && (in_quotes
 			|| (check || !is_space(vars->input[i]))))
 	{
-		quote_pass(vars, i, &quote, &in_quotes);
+		quote_pass(vars->input, i, &quote, &in_quotes);
 		j++;
 		if (j != 1 && !is_space(vars->input[i]))
 			check = 0;
@@ -96,7 +94,7 @@ int	open_file(t_vars *vars, int i)
 	if (!append_doubles(&vars->input, tmp, 1))
 		return (null_free(&var), free_doubles(tmp), -1);
 	free_doubles2((void **)tmp, 3);
-	tmp2 = destroy_quotes(var);
+	tmp2 = destroy_quotes(var, 1);
 	null_free(&var);
 	ret = fd_open_operations(vars, tmp2);
 	vars->exit_stat = (ret != -1);
@@ -148,12 +146,10 @@ int	output_file(t_vars *vars, int i)
 	if (!tmp)
 		return (null_free(&var), -1);
 	null_free(&tmp[1]);
-	for (int i = 0; i <= 2; i++)
-		printf("tmp: %s\n", tmp[i]);
 	if (!append_doubles(&vars->input, tmp, 1))
 		return (free_doubles(tmp), -1);
 	free_doubles2((void **)tmp, 3);
-	tmp2 = destroy_quotes(var);
+	tmp2 = destroy_quotes(var, 1);
 	null_free(&var);
 	return (fd_output_operations(vars, tmp2));
 }

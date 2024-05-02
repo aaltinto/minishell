@@ -52,13 +52,11 @@ int	env_find_dollar(t_vars *vars, int i, int j)
 	tmp = split_string(vars->input, var);
 	if (!tmp)
 		return (null_free(&var), -1);
-	j = find_in_env(vars->env, var + 1);
+	j = find_in_env(vars->env, var + 1, double_counter(vars->env));
 	null_free(&var);
 	null_free(&tmp[1]);
 	if (j != -1)
 		tmp[1] = ft_strdup(ft_strchr(vars->env[j], '=') + 1);
-	if (!tmp[1])
-		return (free_doubles(tmp), -1);
 	vars->env = original;
 	if (!append_doubles(&vars->input, tmp, 1) || !vars->input)
 		return (free_doubles2((void **)tmp, 3), -1);
@@ -76,7 +74,7 @@ int	dolar_parse(t_vars *vars, int i)
 	in_quotes = 0;
 	while (vars->input[++i])
 	{
-		if (quote_pass(vars, i, &quote_type, &in_quotes)
+		if (quote_pass(vars->input, i, &quote_type, &in_quotes)
 			|| (in_quotes && quote_type == '\''))
 			continue ;
 		else if (vars->input[i] == '$' && vars->input[i + 1] == '?')

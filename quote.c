@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quote.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bakgun <bakgun@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:13:08 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/22 14:46:21 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/04/24 16:42:27 by bakgun           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,16 @@
 #include "libft/libft.h"
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdio.h>
 #include <readline/readline.h>
 
-int	quote_pass(t_vars *vars, int i, char *quote_type, int *in_quotes)
+int	quote_pass(char *str, int i, char *quote_type, int *in_quotes)
 {
-	if (vars->input[i] == '\"' || vars->input[i] == '\'')
+	if (str[i] == '\"' || str[i] == '\'')
 	{
 		if (!(*quote_type))
-			(*quote_type) = vars->input[i];
-		if ((*quote_type) == vars->input[i])
+			(*quote_type) = str[i];
+		if ((*quote_type) == str[i])
 		{
 			(*in_quotes) = !(*in_quotes);
 			if (!(*in_quotes))

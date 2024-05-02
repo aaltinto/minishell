@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alialtintoprak <alialtintoprak@student.    +#+  +:+       +#+        */
+/*   By: bakgun <bakgun@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:58 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/04/16 15:50:27 by alialtintop      ###   ########.fr       */
+/*   Updated: 2024/04/24 17:28:10 by bakgun           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,110 +15,120 @@
 #include <unistd.h>
 #include <stdio.h>
 
-char	*cut_parse_quote(int i, int j, int check, char *input)
+int	new_count(char ***ret, int count)
+{
+	int	i;
+	int	j;
+
+	i = -1;
+	j = 0;
+	while (count > ++i)
+	{
+		if (!(*ret)[i])
+			continue ;
+		j++;
+	}
+	return (j);
+}
+
+int	strip_spaces(t_vars *vars)
 {
 	char	*tmp;
-	char	*tmp2;
 
-	if (is_space(input[i + 1]) && check)
-	{
-		tmp = ft_substr(input, i - j, j);
-		if (!tmp)
-			return (NULL);
-		tmp2 = ft_strjoin(tmp, " ");
-		if (!tmp2)
-			return (null_free(&tmp), NULL);
-		return (null_free(&tmp), tmp2);
-	}
-	else
-		return (ft_substr(input, i - j, j));
-}
-
-char	*cut_parse(int i, int j, int check, char *input)
-{
-	char	*tmp;
-	char	*tmp2;
-
-	if (is_space(input[i]) && check)
-	{
-		tmp = ft_substr(input, i - j, j);
-		if (!tmp)
-			return (NULL);
-		tmp2 = ft_strjoin(tmp, " ");
-		if (!tmp2)
-			return (null_free(&tmp), NULL);
-		return (null_free(&tmp), tmp2);
-	}
-	else
-		return (ft_substr(input, i - j, j));
-}
-
-int	loop_parsing2(t_vars *vars, int j, int check)
-{
-	char	quote_type;
-
-	if (vars->input[vars->i] == '\"' || vars->input[vars->i] == '\'')
-	{
-		quote_type = vars->input[vars->i];
-		while ((vars->input[++(vars->i)] != '\0'
-				&& quote_type != vars->input[vars->i]))
-			++j;
-		vars->input_parsed[++vars->argc] = cut_parse_quote(vars->i, j, check, \
-			vars->input);
-		if (!vars->input_parsed[vars->argc])
-			return (free_doubles(vars->input_parsed),
-				err_msg("Parse error"), 0);
-		vars->i++;
-	}
-	return (1); 
-}
-
-int	loop_parsing(t_vars *vars, int j, int check)
-{
-	if (!loop_parsing2(vars, j, check))
+	tmp = strip(vars->input);
+	if (!tmp)
+		return (err_msg("strip error"), 0);
+	if (is_space(tmp[0]))
 		return (0);
-	if (!is_space(vars->input[vars->i]))
-	{
-		while (vars->input[vars->i] != '\0' && (!is_space(vars->input[vars->i])
-				&& !is_quote(vars->input[vars->i]) && ++(vars->i)))
-			++j;
-		vars->input_parsed[++vars->argc]
-			= cut_parse(vars->i, j, check, vars->input);
-		if (!vars->input_parsed[vars->argc] && (vars->i)--)
-			return (free_doubles(vars->input_parsed),
-				err_msg("Parse error"), 0);
-		if (is_quote(vars->input[vars->i]))
-			vars->i --;
-	}
-	if (vars->input[vars->i] == '\0')
-		return (-1);
+	null_free(&vars->input);
+	vars->input = ft_strdup(tmp);
+	if (!vars->input)
+		return (err_msg("strdup error"), 0);
+	null_free(&tmp);
 	return (1);
 }
 
-int	parse(t_vars *vars, int count)
+char	**destroy_spaces(char ***ret, int count)
 {
-	int		ret;
-	int		check;
+	int		i;
+	int		j;
+	int		n_count;
+	char	**tmp;
 
-	(void)count;
-	check = check_origin(vars);
-	if (check == -1)
-		return (0);
-	vars->i = -1;
-	vars->argc = -1;
-	while (vars->input[++(vars->i)] != '\0')
+	n_count = new_count(ret, count);
+	if (n_count < 1)
+		return (NULL);
+	tmp = ft_calloc(n_count + 1, sizeof(char *));
+	if (!tmp)
+		return (err_msg("Allocation error"), free_doubles2((void **)(*ret),
+			count), NULL);
+	i = -1;
+	j = -1;
+	while (count > ++i)
 	{
-		ret = loop_parsing(vars, 0, check);
-		if (!ret)
-			return (0);
-		if (ret == -1)
-			break ;
-		if (vars->input[0] == '\0')
+		if (!(*ret)[i] || !ft_strncmp((*ret)[i], "", 2))
+			continue ;
+		tmp[++j] = ft_strdup((*ret)[i]);
+		if (!tmp[j])
+			return (err_msg("Allocation error"), free_doubles(tmp),
+				free_doubles2((void **)(*ret), count), NULL);
+	}
+	tmp[++j] = NULL;
+	return (free_doubles2((void **)(*ret), count), tmp);
+}
+
+int	slice_parse(t_vars *vars, char ***ret, int count)
+{
+	int		i;
+	int		j;
+	char	quote;
+	int		in_quotes;
+
+	i = -1;
+	j = 0;
+	quote = 0;
+	in_quotes = 0;
+	while (vars->input[++i])
+	{
+		quote_pass(vars->input, i, &quote, &in_quotes);
+		if (!in_quotes && is_space(vars->input[i]))
+		{
+			(*ret)[++count] = ft_substr(vars->input, i - j, j);
+			if (!(*ret)[count])
+				return (err_msg("substr error"), 0);
+			j = 0;
+			continue ;
+		}
+		j++;
+	}
+	(*ret)[++count] = ft_substr(vars->input, i - j, j);
+	(*ret)[++count] = NULL;
+	return (count);
+}
+
+int	parse(t_vars *vars, int i, int j)
+{
+	char	**ret;
+	int		count;
+
+	if (!strip_spaces(vars))
+		return (null_free(&vars->input), 0);
+	ret = ft_calloc(sizeof(char *), ft_strlen(vars->input) + 1);
+	if (!ret)
+		return (err_msg("Calloc error"), 0);
+	count = slice_parse(vars, &ret, -1);
+	if (!count)
+		return (free_doubles(ret), 0);
+	ret = destroy_spaces(&ret, count);
+	if (ret)
+		vars->input_parsed = malloc(sizeof(char *) * (double_counter(ret) + 2));
+	if (!vars->input_parsed)
+		return (err_msg("Malloc error"), 0);
+	while (ret[++i])
+	{
+		vars->input_parsed[++j] = destroy_quotes(ret[i], 1);
+		if (!vars->input_parsed[j])
 			return (0);
 	}
-	if (ft_strncmp(vars->input_parsed[vars->argc], "", 1) != 0)
-		vars->argc++;
-	vars->input_parsed[++vars->argc] = NULL;
-	vars->argc = double_counter(vars->input_parsed);
-	return (null_free(&vars->input), 1);
+	return (vars->input_parsed[++j] = NULL, free_doubles(ret), 1);
 }

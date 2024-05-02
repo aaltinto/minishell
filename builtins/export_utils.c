@@ -56,9 +56,10 @@ int	check_restore(t_vars *vars, int count)
 		if ((!splited || !splited[0]) && free_doubles(splited))
 			continue ;
 		tmp2 = strip(splited[0]);
-		index = find_in_env(vars->env, tmp2);
+		index = find_in_env(vars->env, tmp2, count);
 		if (free_doubles(splited) && null_free(&tmp2) && index == -1)
 			continue ;
+		null_free(&vars->env[index]);
 		vars->env[index] = NULL;
 		del++;
 	}

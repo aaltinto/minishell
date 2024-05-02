@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alialtintoprak <alialtintoprak@student.    +#+  +:+       +#+        */
+/*   By: bakgun <bakgun@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 15:37:30 by alialtintop       #+#    #+#             */
-/*   Updated: 2024/04/16 16:14:16 by alialtintop      ###   ########.fr       */
+/*   Updated: 2024/04/24 17:00:33 by bakgun           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,49 +35,24 @@ int	check_digits(t_vars *vars, char **split)
 	return (1);
 }
 
-char	**input_reparse(t_vars *vars)
-{
-	char	*tmp;
-	char	**split;
-	char	*input;
-
-	tmp = NULL;
-	if (!append_doubles(&tmp, vars->input_parsed, 0))
-		return (NULL);
-	input = destroy_quotes(tmp);
-	null_free(&tmp);
-	if (!input)
-		return (NULL);
-	split = ft_split(input, ' ');
-	null_free(&input);
-	if (!split)
-		return (err_msg("Split error"), NULL);
-	return (split);
-}
-
 int	exit_setter(t_vars *vars)
 {
 	int		num;
-	char	**split;
+	int		count;
 
 	if (!vars->input_parsed)
-		return (ft_putendl_fd("\nexit", 1), 1);
-	if (vars->argc <= 1)
 		return (ft_putendl_fd("exit", 1), 1);
-	split = input_reparse(vars);
-	if (!split)
-		return (vars->exit_stat = 1, 0);
-	num = double_counter(split);
-	if (num <= 1)
-		return (free_doubles(split), vars->exit_stat = 0, 1);
-	else if (num >= 3)
-		return (free_doubles(split), err_msg("Too many arguments"),
-				vars->exit_stat = 1, 0);
-	if (!check_digits(vars, split))
-		return (free_doubles(split), 0);
-	num = ft_atoi(split[1]);
+	count = double_counter(vars->input_parsed);
+	if (count == 1)
+		return (0);
+	if (count > 2)
+		return (err_msg("too many arguments"), 0);
+	if (!check_digits(vars, vars->input_parsed))
+		return (0);
+	printf("exit\n");
+	num = ft_atoi(vars->input_parsed[1]);
 	if (num > 255)
 		num = num % 256;
 	vars->exit_stat = num;
-	return (free_doubles(split), num);
+	return (num);
 }

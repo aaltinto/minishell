@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alialtintoprak <alialtintoprak@student.    +#+  +:+       +#+        */
+/*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:46 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/04/16 16:15:50 by alialtintop      ###   ########.fr       */
+/*   Updated: 2024/04/26 17:47:15 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@
 #include "libft/libft.h"
 #include <stdlib.h>
 
-int	g_l;
-
 char	*find_work_dir(char **env)
 {
 	char	**split;
@@ -30,7 +28,7 @@ char	*find_work_dir(char **env)
 	pwd = getcwd(NULL, 0);
 	if (!pwd)
 		return (perror("getcwd"), ft_strdup(".. "));
-	i = find_in_env(env, "HOME=");
+	i = find_in_env(env, "HOME=", double_counter(env));
 	if (i != -1 && ft_strncmp(pwd, env[i] + 5, ft_strlen(env[i])) == 0)
 		ret = ft_strdup(" ~");
 	else if (ft_strncmp(pwd, "/", 2) == 0)
@@ -55,7 +53,7 @@ int	prompter(char **env, t_vars *ret)
 	vars = malloc(sizeof(char *) * 6);
 	if (!vars)
 		return (0);
-	i = find_in_env(env, "USER=");
+	i = find_in_env(env, "USER=", double_counter(env));
 	if (i == -1)
 		vars[0] = ft_strdup("user");
 	else
@@ -75,8 +73,8 @@ int	opening_ceremony(t_vars *vars)
 	int	count;
 
 	count = double_counter(vars->env);
-	i = find_in_env(vars->env, "OLDPWD=");
-	//printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m");
+	i = find_in_env(vars->env, "OLDPWD=", double_counter(vars->env));
+	printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m");
 	if (i != -1)
 		return (null_free(&vars->env[i]),
 			re_init_env(vars, (count), 1), 1);
@@ -101,43 +99,6 @@ int	marche(t_vars *vars, char **env, int condition)
 	return (1);
 }
 
-void	sig_c(int sig)
-{
-	(void)sig;
-	if (!g_l)
-	{
-		printf("\n");
-		rl_on_new_line();
-		//rl_replace_line("", 0);
-		rl_redisplay();
-	}
-	else if (g_l == 42)
-	{
-		printf("\n");
-		exit(EXIT_FAILURE);
-	}
-}
-
-void	sig_backslash(int sig)
-{
-	(void)sig;
-	printf("Quit: 3\n");
-}
-
-void	init_signals(void)
-{
-	g_l = 0;
-	signal(SIGINT, sig_c);
-	signal(SIGQUIT, SIG_IGN);
-}
-
-void	init_signals2(void)
-{
-	g_l = 1;
-	signal(SIGINT, sig_c);
-	signal(SIGQUIT, sig_backslash);
-}
-
 int	main(int argc, char **argv, char **env)
 {
 	t_vars	vars;
@@ -159,7 +120,7 @@ int	main(int argc, char **argv, char **env)
 		if (handle_prompt(&vars, 1) == 2)
 			break ;
 	}
-	exit_setter(&vars);
+	exit(exit_setter(&vars));
 	killer(&vars);
 	return (vars.exit_stat);
 }

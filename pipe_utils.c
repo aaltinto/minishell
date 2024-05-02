@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alialtintoprak <alialtintoprak@student.    +#+  +:+       +#+        */
+/*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 15:37:19 by alialtintop       #+#    #+#             */
-/*   Updated: 2024/04/16 14:13:28 by alialtintop      ###   ########.fr       */
+/*   Updated: 2024/04/26 17:47:43 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	pipe_counter(t_vars *vars)
 	quote_type = '\0';
 	while (vars->input[++i])
 	{
-		if (quote_pass(vars, i, &quote_type, &in_quotes))
+		if (quote_pass(vars->input, i, &quote_type, &in_quotes))
 			continue ;
 		if (!in_quotes && vars->input[i] == '|')
 		{
@@ -48,4 +48,12 @@ char	**pipe_checker(char **ret)
 		if (is_empty(ret[i]))
 			return (err_msg(SYNTAX_ERR), NULL);
 	return (ret);
+}
+
+int	input_parse_fill(t_vars *vars, int pipe_count)
+{
+	vars->input_parsed = split_pipes(vars, pipe_count, -1);
+	if (!vars->input_parsed)
+		return (null_free(&vars->input), 0);
+	return (1);
 }

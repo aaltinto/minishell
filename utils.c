@@ -35,26 +35,31 @@ int	double_counter(char **str)
 	return (i);
 }
 
-char	*destroy_quotes(char *str)
+char	*destroy_quotes(char *str, int check)
 {
 	char	*ret;
 	int		i;
 	int		j;
+	int		in_quotes;
+	char	quote;
 
+	(void)check;
 	ret = malloc(ft_strlen(str) + 1);
 	if (!ret)
 		return (err_msg("Allocation error"), NULL);
 	i = -1;
-	j = 0;
+	j = -1;
+	in_quotes = 0;
+	quote = 0;
 	while (str[++i] != '\0')
 	{
-		if (is_quote(str[i]))
-			continue ;
-		ret[j] = str[i];
-		j++;
+		quote_pass(str, i, &quote, &in_quotes);
+		if (in_quotes && quote != str[i])
+			ret[++j] = str[i];
+		else if (!is_quote(str[i]))
+			ret[++j] = str[i];
 	}
-	ret[j] = '\0';
-	return (ret);
+	return (ret[++j] = '\0', ret);
 }
 
 void	reset_vars(t_vars *vars)

@@ -32,15 +32,16 @@ char	**split_pipes(t_vars *vars, int pipe_count, int i)
 		j = 0;
 		while (vars->input[i] && (in_quotes || vars->input[i] != '|'))
 		{
-			quote_pass(vars, i++, &quote, &in_quotes);
+			quote_pass(vars->input, i++, &quote, &in_quotes);
 			j++;
 		}
 		ret[++i2] = ft_substr(vars->input, i - j, j);
 		if (!ret[i2])
 			return (err_msg("substr error"), NULL);
+		if (vars->input[i] == '\0')
+			break ;
 	}
-	ret[++i2] = NULL;
-	return (pipe_checker(ret));
+	return (ret[++i2] = NULL, pipe_checker(ret));
 }
 
 int	create_newvars(t_vars *vars, char **argv, int i)
@@ -84,9 +85,6 @@ int	pipe_piping(int **pipes, int pipe_count, t_vars *vars, int i)
 	pid_t	*pid;
 	int		j;
 
-	vars->input_parsed = split_pipes(vars, pipe_count, -1);
-	if (!vars->input_parsed)
-		return (null_free(&vars->input), 0);
 	pid = malloc(sizeof(pid_t) * (pipe_count + 1));
 	if (!pid)
 		return (err_msg("allocation error"), 0);
@@ -128,12 +126,13 @@ int	pipe_parse(t_vars *vars, int i)
 	while (++i < pipe_count)
 	{
 		pipes[i] = malloc(sizeof(int) * 2);
-		if (!pipes[i])
-			return (err_msg("allocation error"),
-				free_doubles2((void **)pipes, pipe_count), 0);
+		if (!pipes[i] && err_msg("allocation error"))
+			return (free_doubles2((void **)pipes, pipe_count), 0);
 		if (pipe(pipes[i]) == -1)
 			return (perror("pipe"), 0);
 	}
-	pipe_piping(pipes, pipe_count, vars, -1);
+	if (!input_parse_fill(vars, pipe_count)
+		|| !pipe_piping(pipes, pipe_count, vars, -1))
+		return (0);
 	return (free_doubles2((void **)pipes, pipe_count), 1);
 }

@@ -82,17 +82,19 @@ int	re_init_env(t_vars *vars, int count, int del)
 	return (1);
 }
 
-int	find_in_env(char **env, char *to_find)
+int	find_in_env(char **env, char *to_find, int count)
 {
 	int		i;
 	char	**tmp;
 
 	i = -1;
-	while (env[++i])
+	while (count >= ++i)
 	{
+		if (!env[i])
+			continue ;
 		tmp = ft_split(env[i], '=');
 		if (!tmp)
-			return (err_msg("Malloc error"), -1);
+			return (err_msg("split error"), -1);
 		if (ft_strncmp(tmp[0], to_find, ft_strlen(tmp[0])) == 0)
 			return (free_doubles(tmp), i);
 		free_doubles(tmp);

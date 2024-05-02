@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   prompt.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alialtintoprak <alialtintoprak@student.    +#+  +:+       +#+        */
+/*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:13:05 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/04/16 12:32:58 by alialtintop      ###   ########.fr       */
+/*   Updated: 2024/04/26 17:51:47 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "libft/libft.h"
 #include <unistd.h>
-#include <readline/history.h>
 #include <stdio.h>
+#include <readline/history.h>
 
 int	is_builtin(t_vars *vars)
 {
@@ -75,7 +75,7 @@ int	check_input(t_vars *vars, int condition)
 	quotes = 0;
 	while (vars->input[++i])
 	{
-		quote_pass (vars, i, &quotes, &in_quote);
+		quote_pass (vars->input, i, &quotes, &in_quote);
 		if (!in_quote && vars->input[i] == '&')
 			return (err_msg(SYNTAX_ERR), 0);
 	}
@@ -96,10 +96,10 @@ int	handle_prompt(t_vars *vars, int condition)
 		return (killer(vars), 1);
 	if (!vars->input)
 		return (reset_fds(vars));
-	ret = open_fds_parse(vars);
+	ret = open_fds_parse(vars, 0, 0);
 	if (ret == 0)
 		return (vars->exit_stat = 1, 0);
-	if (!parse(vars, 0))
+	if (!parse(vars, -1, -1))
 		return (reset_fds(vars), 0);
 	ret = something_familiar(vars);
 	if (!ret)

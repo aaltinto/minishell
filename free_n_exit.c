@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_n_exit.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bakgun <bakgun@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:37 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/03/16 13:59:57 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/04/24 16:59:34 by bakgun           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,10 @@ int	killer(t_vars *vars)
 	return (1);
 }
 
-void	err_msg(char *msg)
+int	err_msg(char *msg)
 {
 	ft_putendl_fd(msg, 2);
+	return (1);
 }
 
 int	free_doubles(char **str)
@@ -43,19 +44,21 @@ int	free_doubles(char **str)
 	return (1);
 }
 
-void	free_doubles2(void **str, int j)
+int	free_doubles2(void **str, int j)
 {
 	int		i;
 
 	if (!str)
-		return ;
+		return (1);
 	i = -1;
-	while (j >= ++i)
+	while (j > ++i)
 	{
 		if (str[i] != NULL)
 			null_free((char **)&str[i]);
 	}
 	free(str);
+	str = NULL;
+	return (1);
 }
 
 int	null_free(char **var)

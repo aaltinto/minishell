@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   prompt_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alialtintoprak <alialtintoprak@student.    +#+  +:+       +#+        */
+/*   By: bakgun <bakgun@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:13:05 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/04/16 15:51:57 by alialtintop      ###   ########.fr       */
+/*   Updated: 2024/04/24 16:42:01 by bakgun           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "libft/libft.h"
 #include <unistd.h>
-#include <readline/history.h>
 #include <stdio.h>
+#include <readline/history.h>
 
 int	is_builtin(t_vars *vars)
 {
@@ -78,7 +78,7 @@ int	check_input(t_vars *vars, int condition)
 	quotes = 0;
 	while (vars->input[++i])
 	{
-		quote_pass (vars, i, &quotes, &in_quote);
+		quote_pass (vars->input, i, &quotes, &in_quote);
 		if (!in_quote && vars->input[i] == '&')
 			if (vars->input[++i] != '&' || vars->input[i + 1] == '&'
 				|| vars->input[i + 1] == '|')
@@ -100,20 +100,19 @@ int	handle_prompt(t_vars *vars, int condition)
 	if (!dolar_parse(vars, -1) || pipe_parse(vars, -1))
 		return (reset_fds(vars), 1);
 	if (!condition && !vars->input)
-		return (killer(vars), 1);
+		return (1);
 	if (!vars->input)
 		return (reset_fds(vars));
-	ret = open_fds_parse(vars);
+	ret = open_fds_parse(vars, 0, 0);
 	if (ret == 0)
 		return (vars->exit_stat = 1, 0);
-	if (!parse(vars, 0))
+	if (!parse(vars, -1, -1))
 		return (reset_fds(vars), 0);
 	ret = something_familiar(vars);
 	if (!ret)
 		path_finder(vars, vars->input_parsed[0], vars->input_parsed);
+	reset_vars(vars);
 	if (!reset_fds(vars))
 		return (0);
-	if (!condition)
-		killer(vars);
 	return (ret);
 }

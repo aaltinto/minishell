@@ -21,7 +21,7 @@ int	new_pwd(t_vars *vars)
 	int		i;
 	char	**splitted;
 
-	i = find_in_env(vars->env, "PWD");
+	i = find_in_env(vars->env, "PWD", double_counter(vars->env));
 	if (i == -1)
 	{
 		pwd = getcwd(NULL, 0);

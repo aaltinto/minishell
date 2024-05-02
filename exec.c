@@ -85,7 +85,7 @@ int	path_finder(t_vars *vars, char *cmd, char **argv)
 
 	if (argv == NULL)
 		return (0);
-	i = find_in_env(vars->env, "PATH=");
+	i = find_in_env(vars->env, "PATH=", double_counter(vars->env));
 	if (i != -1)
 	{
 		split_path = ft_split(vars->env[i], ':');
@@ -101,5 +101,5 @@ int	path_finder(t_vars *vars, char *cmd, char **argv)
 		return (free_doubles(split_path), 0);
 	free_doubles(split_path);
 	err = ft_strjoin("minishell: command not found: ", cmd);
-	return (err_msg(err), null_free(&err), 0);
+	return (vars->exit_stat = 127, err_msg(err), null_free(&err), 0);
 }

@@ -21,7 +21,7 @@ int	get_oldpwd(t_vars *vars)
 	int		i;
 	char	**tmp;
 
-	i = find_in_env(vars->env, "OLDPWD=");
+	i = find_in_env(vars->env, "OLDPWD=", double_counter(vars->env));
 	if (i == -1)
 		return (err_msg("minishell: cd: OLDPWD not set"), 0);
 	tmp = ft_split(vars->env[i], '=');
@@ -55,7 +55,7 @@ int	set_env(t_vars *vars, char *to_find, char *to_set)
 	int		i;
 	char	*tmp;
 
-	i = find_in_env(vars->env, to_find);
+	i = find_in_env(vars->env, to_find, double_counter(vars->env));
 	tmp = ft_strjoin(to_find, to_set);
 	if (!tmp)
 		return (err_msg("Malloc error"), 0);
@@ -77,7 +77,7 @@ char	*get_env(t_vars *vars, char *to_find)
 	char	**splitted;
 	char	*tmp;
 
-	i = find_in_env(vars->env, to_find);
+	i = find_in_env(vars->env, to_find, double_counter(vars->env));
 	if (i == -1)
 		return (NULL);
 	splitted = ft_split(vars->env[i], '=');
@@ -100,7 +100,7 @@ int	new_cd(t_vars *vars)
 	if (!old_path)
 	{
 		perror("getcwd");
-		i = find_in_env(vars->env, "PWD=");
+		i = find_in_env(vars->env, "PWD=", double_counter(vars->env));
 		if (i == -1)
 			old_path = ft_strdup("..");
 		else

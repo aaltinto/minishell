@@ -90,7 +90,7 @@ int	wildcard_parse(t_vars *vars)
 	in_quotes = 0;
 	while (vars->input[++i])
 	{
-		if (quote_pass(vars, i, &quote_type, &in_quotes) || in_quotes)
+		if (quote_pass(vars->input, i, &quote_type, &in_quotes) || in_quotes)
 			continue ;
 		else if (vars->input[i] == '*')
 		{

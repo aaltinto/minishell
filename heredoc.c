@@ -46,10 +46,11 @@ int	handle_eof(char *delimeter, int *fd)
 				ft_strlen(delimeter)) == 0)
 			break ;
 		ft_putendl_fd(new_input, fd[1]);
+		null_free(&new_input);
 	}
 	if (!new_input)
 		ft_putchar_fd('\n', 1);
-	return (1);
+	return (null_free(&new_input), 1);
 }
 
 int	heredoc_loop(t_vars *vars, char *delimeter)
@@ -68,6 +69,7 @@ int	heredoc_loop(t_vars *vars, char *delimeter)
 		return (1);
 	if (pid == 0)
 	{
+		g_l = 42;
 		signal(SIGINT, sig_c);
 		handle_eof(delimeter, fd);
 		killer(vars);
@@ -98,12 +100,12 @@ int	heredoc(t_vars *vars, int i)
 	if (null_free(&tmp) && !tmps)
 		return (null_free(&var), 0);
 	if (null_free(&tmps[1]) && !append_doubles(&vars->input, tmps, 1))
-		return (null_free(&var), free_doubles(tmps), 0);
+		return (null_free(&var), free_doubles2((void **)tmps, 3), 0);
 	tmp = strip(var + 2);
-	if (free_doubles(tmps) && !tmp)
+	if (free_doubles2((void **)tmps, 3) && !tmp)
 		return (null_free(&tmp), null_free(&var), 0);
 	deli = ft_substr(tmp, 0, ft_strlen(var));
-	if (null_free(&var) && !deli)
+	if (null_free(&var) && null_free(&tmp) && !deli)
 		return (err_msg("Substr error"), 0);
 	return (heredoc_loop(vars, deli), null_free(&deli), vars->input != NULL);
 }

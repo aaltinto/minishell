@@ -30,7 +30,7 @@ static int	fd_append_operations(t_vars *vars, char *var)
 	null_free(&tmp);
 	if (!file)
 		return (err_msg("Error"), -1);
-	fd = open(file, O_WRONLY | O_APPEND, 0644);
+	fd = open(file, O_WRONLY | O_APPEND | O_CREAT, 0644);
 	if (fd < 0)
 		return (perror(file), null_free(&file), -1);
 	null_free(&file);
@@ -61,7 +61,7 @@ static char	*substract_var(t_vars *vars, int i)
 	while (vars->input[++i] && (in_quotes || (check || !is_space(vars->input[i] \
 	))))
 	{
-		quote_pass(vars, i, &quote, &in_quotes);
+		quote_pass(vars->input, i, &quote, &in_quotes);
 		if (j++ && !is_space(vars->input[i]))
 			check = 0;
 	}
@@ -94,7 +94,7 @@ int	append_output(t_vars *vars, int i)
 	if (null_free(&tmp[1]), !append_doubles(&vars->input, tmp, 1))
 		return (err_msg("Error!"), null_free(&var), free_doubles(tmp), -1);
 	free_doubles2((void **)tmp, 3);
-	tmp2 = destroy_quotes(var);
+	tmp2 = destroy_quotes(var, 1);
 	j = fd_append_operations(vars, tmp2);
 	return (null_free(&var), null_free(&tmp2), j);
 }
