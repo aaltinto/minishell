@@ -59,7 +59,7 @@ int		exit_setter(t_vars *vars);
 int		new_cd(t_vars *vars);
 int		new_pwd(t_vars *vars);
 void	echo(t_vars *vars);
-int		new_export(t_vars *vars, int ret);
+int		new_export(t_vars *vars, int ret, int i);
 void	print_vars(t_vars *vars);
 int		check_restore(t_vars *vars, int count);
 int		unset(t_vars *vars, int del, int count);

@@ -36,7 +36,7 @@ int	illegal_char_check(char *str)
 	return (0);
 }
 
-int	check_validity(t_vars *vars, char *export)
+int	check_val(t_vars *vars, char *export)
 {
 	char	**split;
 	char	*tmp;
@@ -53,9 +53,8 @@ int	check_validity(t_vars *vars, char *export)
 	return (free_doubles(split), null_free(&tmp), 0);
 }
 
-int	new_export(t_vars *vars, int ret)
+int	new_export(t_vars *vars, int ret, int i)
 {
-	int		i;
 	int		i2;
 	char	**new_env;
 
@@ -66,17 +65,19 @@ int	new_export(t_vars *vars, int ret)
 	if (!new_env)
 		return (2);
 	i2 = double_counter(new_env) - 1;
-	i = 0;
 	while ((vars->argc + 1) > ++i)
 	{
 		if (!vars->input_parsed[i])
 			continue ;
+		if (check_val(vars, vars->input_parsed[i]))
+		{
+			ret = 0;
+			continue ;
+		}
 		new_env[++i2] = ft_strdup(vars->input_parsed[i]);
 		if (!new_env[i2])
 			return (free_doubles(new_env), err_msg("Something wrong"), 2);
-		if (check_validity(vars, new_env[i2]) && null_free(&new_env[i2]))
-			ret = 0;
 	}
 	return (new_env[++i2] = NULL, free_doubles(vars->env), env_init(vars, \
-	new_env), free_doubles(new_env), ret);
+	new_env), free_doubles2((void **)new_env, i2), ret);
 }

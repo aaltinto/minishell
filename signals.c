@@ -11,9 +11,8 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <stdint.h>
+#include "libft/libft.h"
 #include <signal.h>
-#include <stdlib.h>
 #include <stdio.h>
 #include <readline/readline.h>
 
@@ -36,8 +35,9 @@ void	sig_c(int sig)
 
 void	sig_backslash(int sig)
 {
-	(void)sig;
-	printf("Quit: 3\n");
+	ft_putstr_fd("Quit: ", 2);
+	ft_putnbr_fd(sig, 2);
+	ft_putstr_fd("\n", 2);
 }
 
 void	init_signals(void)

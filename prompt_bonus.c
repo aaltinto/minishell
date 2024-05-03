@@ -29,7 +29,7 @@ int	is_builtin(t_vars *vars)
 	else if (ft_strncmp(input, "echo", 5) == 0)
 		ret = (echo(vars), 1);
 	else if (ft_strncmp(input, "export", 7) == 0)
-		ret = (new_export(vars, 1));
+		ret = (new_export(vars, 1, 0));
 	else if (ft_strncmp(input, "env", 4) == 0)
 		ret = (new_env(vars), 1);
 	else if (ft_strncmp(input, "unset", 6) == 0)

@@ -29,7 +29,7 @@ int	is_builtin(t_vars *vars)
 	else if (ft_strncmp(input, "echo", 5) == 0)
 		ret = (echo(vars), 1);
 	else if (ft_strncmp(input, "export", 7) == 0)
-		ret = (new_export(vars, 1));
+		ret = (new_export(vars, 1, 0));
 	else if (ft_strncmp(input, "env", 4) == 0)
 		ret = (new_env(vars), 1);
 	else if (ft_strncmp(input, "unset", 6) == 0)
@@ -51,13 +51,13 @@ int	something_familiar(t_vars *vars)
 	if (!tmp)
 		return (err_msg("Error"), 0);
 	if (ft_strncmp("exit", tmp, 4) == 0)
-		return (2);
+		return (null_free(&tmp), 2);
 	else if (ft_strncmp("hi", tmp, 3) == 0)
-		return (printf("hi baby 😘\n"), 1);
+		return (printf("hi baby 😘\n"), null_free(&tmp), 1);
 	else if (is_builtin(vars) != -1)
-		return (1);
+		return (null_free(&tmp), 1);
 	else
-		return (0);
+		return (null_free(&tmp), 0);
 }
 
 int	check_input(t_vars *vars, int condition)
@@ -70,6 +70,8 @@ int	check_input(t_vars *vars, int condition)
 		return (vars->exit_stat = 127, 1);
 	if (quote(vars), vars->hist != -1 && condition)
 		add_history(vars->input);
+	if (!vars->input)
+		return (1);
 	i = -1;
 	in_quote = 0;
 	quotes = 0;
@@ -92,8 +94,6 @@ int	handle_prompt(t_vars *vars, int condition)
 		return (1);
 	if (!dolar_parse(vars, -1) || pipe_parse(vars, -1))
 		return (reset_fds(vars), 1);
-	if (!condition && !vars->input)
-		return (killer(vars), 1);
 	if (!vars->input)
 		return (reset_fds(vars));
 	ret = open_fds_parse(vars, 0, 0);
@@ -106,7 +106,5 @@ int	handle_prompt(t_vars *vars, int condition)
 		path_finder(vars, vars->input_parsed[0], vars->input_parsed);
 	if (!reset_fds(vars))
 		return (0);
-	if (!condition)
-		killer(vars);
 	return (ret);
 }

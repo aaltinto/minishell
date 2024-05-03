@@ -1,7 +1,8 @@
 NAME = minishell
-NAME_B = minishell_b
+NAME_B = minishell_bonus
 CC = gcc
 FLAGS =  -Wall -Wextra -Werror -g #-fsanitize=address -g
+
 SRC = main.c\
 	free_n_exit.c\
 	prompt.c\
@@ -80,7 +81,7 @@ $(NAME) : $(OBJ)
 	$(BUILD_PRINT)
 	@make all -C libft
 	@make all -C gnl
-	@$(CC) $(FLAGS) -o $(NAME) $(OBJ) $(LIBFT) $(GNL) -lreadline
+	@$(CC) $(FLAGS) $(OBJ) $(LIBFT) $(GNL) -lreadline -o $(NAME) 
 	@printf "\033[K\r"
 	$(SUCCESS_MSG)
 
@@ -95,8 +96,7 @@ $(NAME_B) : $(OBJ_B)
 	$(BUILD_PRINT)
 	@make all -C libft
 	@make all -C gnl
-	@$(CC) $(FLAGS) -o $(NAME_B) $(OBJ_B) $(LIBFT) $(GNL) -lreadline
-	@printf "\033[K\r"
+	@$(CC) $(FLAGS) $(OBJ_B) $(LIBFT) $(GNL) -lreadline -o $(NAME)
 	$(SUCCESS_MSG)
 
 %.o: %.c
@@ -110,9 +110,12 @@ clean :
 	$(DELETE_OBJ)
 	@rm -rf *.o
 	@rm -rf builtins/*.o
+
 fclean : clean
 	@make fclean -C libft
 	@make fclean -C gnl
-	@rm -rf $(NAME) || rm -rf $(NAME_B)
+	@rm -rf $(NAME)
 
 re : fclean all
+
+.PHONY: all bonus clean fclean re
