@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alialtintoprak <alialtintoprak@student.    +#+  +:+       +#+        */
+/*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:21 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/04/13 16:01:57 by alialtintop      ###   ########.fr       */
+/*   Updated: 2024/05/05 14:35:34 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

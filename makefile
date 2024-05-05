@@ -1,26 +1,26 @@
 NAME = minishell
 NAME_B = minishell_bonus
-CC = gcc
+CC = clang
 FLAGS =  -Wall -Wextra -Werror -g #-fsanitize=address -g
 
-SRC = main.c\
-	free_n_exit.c\
-	prompt.c\
-	env.c\
-	utils.c\
-	utils_2.c\
-	quote.c\
-	exec.c\
-	pipe.c\
-	pipe_utils.c\
-	open_create.c\
-	parse.c\
-	dollar_parse.c\
-	append.c\
-	heredoc.c\
-	signals.c\
-	input_output.c\
-	parse_utils.c\
+SRC =	src/main.c\
+	src/free_n_exit.c\
+	src/prompt.c\
+	src/env.c\
+	src/utils.c\
+	src/utils_2.c\
+	src/quote.c\
+	src/exec.c\
+	src/pipe.c\
+	src/pipe_utils.c\
+	src/open_create.c\
+	src/parse.c\
+	src/dollar_parse.c\
+	src/append.c\
+	src/heredoc.c\
+	src/signals.c\
+	src/input_output.c\
+	src/parse_utils.c\
 	builtins/cd.c\
 	builtins/cmd_env.c\
 	builtins/export_utils.c\
@@ -30,28 +30,23 @@ SRC = main.c\
 	builtins/exit.c\
 	builtins/echo.c
 
-SRC_B = main.c\
-	free_n_exit.c\
-	prompt_bonus.c\
-	env.c\
-	utils.c\
-	utils_2.c\
-	quote.c\
-	exec.c\
-	pipe.c\
-	pipe_utils.c\
-	wildcard.c\
-	wildcard_utils.c\
-	logic_op.c\
-	logic_utils.c\
-	open_create.c\
-	parse.c\
-	dollar_parse.c\
-	append.c\
-	heredoc.c\
-	signals.c\
-	input_output.c\
-	parse_utils.c\
+SRC_B =	src/main.c\
+	src/free_n_exit.c\
+	src/env.c\
+	src/utils.c\
+	src/utils_2.c\
+	src/quote.c\
+	src/exec.c\
+	src/pipe.c\
+	src/pipe_utils.c\
+	src/open_create.c\
+	src/parse.c\
+	src/dollar_parse.c\
+	src/append.c\
+	src/heredoc.c\
+	src/signals.c\
+	src/input_output.c\
+	src/parse_utils.c\
 	builtins/cd.c\
 	builtins/cmd_env.c\
 	builtins/export_utils.c\
@@ -59,7 +54,12 @@ SRC_B = main.c\
 	builtins/unset.c\
 	builtins/pwd.c\
 	builtins/exit.c\
-	builtins/echo.c
+	builtins/echo.c\
+	bns/logic_op.c\
+	bns/logic_utils.c\
+	bns/prompt_bonus.c\
+	bns/wildcard_utils.c\
+	bns/wildcard.c
 
 LIBFT = libft/libft.a
 GNL = gnl/gnl.a
@@ -108,7 +108,7 @@ clean :
 	@make clean -C libft
 	@make clean -C gnl
 	$(DELETE_OBJ)
-	@rm -rf *.o
+	@rm -rf $(OBJ) && rm -rf $(OBJ_B)
 	@rm -rf builtins/*.o
 
 fclean : clean

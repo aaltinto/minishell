@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaltinto <aaltinto@student.42kocaeli.com.  +#+  +:+       +#+        */
+/*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/02 13:39:05 by aaltinto          #+#    #+#             */
-/*   Updated: 2023/08/02 13:39:09 by aaltinto         ###   ########.tr       */
+/*   Updated: 2024/05/05 14:37:56 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ static char	*integrate_str(char *str, char *buf)
 	free_str(&str, 0);
 	return (res);
 }
-
 
 char	*get_next_line(int fd)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alialtintoprak <alialtintoprak@student.    +#+  +:+       +#+        */
+/*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 17:33:26 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/04/13 16:02:16 by alialtintop      ###   ########.fr       */
+/*   Updated: 2024/05/05 14:35:28 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	check_restore(t_vars *vars, int count)
 		if ((!splited || !splited[0]) && free_doubles(splited))
 			continue ;
 		tmp2 = strip(splited[0]);
-		index = find_in_env(vars->env, tmp2, count);
+		index = find_in_env_var(vars->env, tmp2, count);
 		if (free_doubles(splited) && null_free(&tmp2) && index == -1)
 			continue ;
 		null_free(&vars->env[index]);

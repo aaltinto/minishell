@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bakgun <bakgun@student.42.fr>              +#+  +:+       +#+        */
+/*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:52 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/04/24 13:46:56 by bakgun           ###   ########.fr       */
+/*   Updated: 2024/05/05 14:40:38 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ char	*get_env(t_vars *vars, char *to_find);
 int		set_env(t_vars *vars, char *to_find, char *to_set);
 int		env_init(t_vars *vars, char **env);
 char	**dup_env(t_vars *vars, char **to_dup);
+int		find_in_env_var(char **env, char *to_find, int count);
 
 //builtins
 int		exit_setter(t_vars *vars);
@@ -76,7 +77,7 @@ int		re_init_env(t_vars *vars, int count, int del);
 
 //utils
 int		reset_fds(t_vars *vars);
-void	reset_vars(t_vars *vars);
+int		reset_vars(t_vars *vars);
 int		is_quote(char c);
 int		is_space(char c);
 int		is_empty(char *str);
@@ -113,9 +114,10 @@ int		exec_ls(t_vars *vars);
 int		transform_output(t_vars *vars);
 int		wildcard_parse(t_vars *vars);
 int		seek_operator(t_vars *vars);
-int		split_coms(t_vars *vars, int *p, int i);
+int		split_cmds(t_vars *vars, int *p, int i);
 int		is_logic(int chr, int chr2);
 int		check_commands(char **commands, t_vars **child);
-int		check_para(t_vars *vars);
+int		in_para(t_vars *vars, int i, int *para);
+int		destroy_para(t_vars *vars, int para);
 
 #endif
