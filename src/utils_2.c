@@ -36,7 +36,8 @@ int	in_para(t_vars *vars, int i, int *para)
 			(*para)++;
 		if (vars->input[i] == 41)
 			(*para)--;
-		if (vars->input[i] == 40 && !ft_isalnum(vars->input[i + 1]))
+		if (vars->input[i] == 40 && vars->input[i + 1] != '\0'
+			&& !ft_isalnum(vars->input[i + 1]))
 		{
 			j = i + 1;
 			while (vars->input[++j])
@@ -65,7 +66,7 @@ int	destroy_para(t_vars *vars, int para)
 	while (vars->input[++i])
 	{
 		if (!in_para(vars, i, &para))
-			return (1);
+			return (null_free(&dest), 1);
 		if (vars->input[i] == 40 || vars->input[i] == 41)
 			continue ;
 		dest[++j] = vars->input[i];

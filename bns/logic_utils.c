@@ -58,4 +58,3 @@ int	check_commands(char **commands, t_vars **child)
 		return (err_msg("Malloc error"), 1);
 	return (0);
 }
-
