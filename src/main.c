@@ -69,16 +69,30 @@ int	prompter(char **env, t_vars *ret)
 
 int	opening_ceremony(t_vars *vars)
 {
-	int	i;
-	int	count;
+	int		i;
+	int		count;
+	char	**split;
+	char	*num;
 
 	count = double_counter(vars->env);
+	i = find_in_env(vars->env, "SHLVL=", double_counter(vars->env));
+	if (i != -1)
+	{
+		split = ft_split(vars->env[i], '=');
+		if (!split)
+			return (err_msg("split error"), 0);
+		num = ft_itoa(ft_atoi(split[1]) + 1);
+		if (null_free(&vars->env[i]), free_doubles(split), !num)
+			return (err_msg("itoa error"), 0);
+		vars->env[i] = ft_strjoin("SHLVL=", num);
+		if (null_free(&num), !vars->env[i])
+			return (err_msg("join error"), 0);
+	}
 	i = find_in_env(vars->env, "OLDPWD=", double_counter(vars->env));
-	printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m");
 	if (i != -1)
 		return (null_free(&vars->env[i]),
 			re_init_env(vars, (count), 1), 1);
-	return (1);
+	return (printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m"), 1);
 }
 
 int	marche(t_vars *vars, char **env, int condition)

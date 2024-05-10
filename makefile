@@ -1,6 +1,6 @@
 NAME = minishell
 NAME_B = minishell_bonus
-CC = clang
+CC = gcc
 FLAGS =  -Wall -Wextra -Werror -g #-fsanitize=address -g
 
 SRC =	src/main.c\
