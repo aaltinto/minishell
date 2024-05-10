@@ -90,8 +90,8 @@ int	opening_ceremony(t_vars *vars)
 	}
 	i = find_in_env(vars->env, "OLDPWD=", double_counter(vars->env));
 	if (i != -1)
-		return (null_free(&vars->env[i]),
-			re_init_env(vars, (count), 1), 1);
+		return (printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m"),
+			null_free(&vars->env[i]), re_init_env(vars, (count), 1), 1);
 	return (printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m"), 1);
 }
 
@@ -134,7 +134,7 @@ int	main(int argc, char **argv, char **env)
 		if (handle_prompt(&vars, 1) == 2)
 			break ;
 	}
-	exit(exit_setter(&vars));
 	killer(&vars);
+	exit(exit_setter(&vars));
 	return (vars.exit_stat);
 }
