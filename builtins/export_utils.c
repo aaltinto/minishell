@@ -14,27 +14,55 @@
 #include <stdio.h>
 #include "../libft/libft.h"
 
-void	print_vars(t_vars *vars)
+void	swap(char **a, char **b)
+{
+	char	*temp;	
+
+	temp = *a;
+	*a = *b;
+	*b = temp;
+}
+
+int	bubblesort(t_vars *vars, int n)
+{
+	int		i;
+	int		j;
+	char	**arr;
+
+	arr = dup_env(vars, vars->env);
+	if (!arr)
+		return (0);
+	i = -1;
+	while (++i < n - 1)
+	{
+		j = -1;
+		while (++j < n - i - 1)
+			if (ft_strncmp(arr[j], arr[j + 1], ft_strlen(arr[j])) > 0)
+				swap(&arr[j], &arr[j + 1]);
+	}
+	print_vars(arr);
+	return (free_doubles(arr), 1);
+}
+
+void	print_vars(char **arr)
 {
 	char	**exports;
 	char	*tmp;
 	int		i;
 
 	i = -1;
-	while (vars->env[++i])
+	while (arr[++i])
 	{
-		tmp = vars->env[i];
-		exports = ft_split(vars->env[i], '=');
+		exports = ft_split(arr[i], '=');
 		if (!exports)
 			return ;
-		if (ft_strchr(vars->env[i], '=') && !exports[1])
+		if (ft_strchr(arr[i], '=') && !exports[1])
 			printf("declare -x %s=\"\"\n", exports[0]);
 		else if (!exports[1])
 			printf("declare -x %s\n", exports[0]);
 		else
 			printf("declare -x %s=\"%s\"\n", exports[0],
-				(ft_strchr(vars->env[i], '=') + 1));
-		vars->env[i] = tmp;
+				(ft_strchr(arr[i], '=') + 1));
 		free_doubles(exports);
 	}
 }

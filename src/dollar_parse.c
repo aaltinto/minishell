@@ -48,7 +48,7 @@ int	env_find_dollar(t_vars *vars, int i, int j)
 		j++;
 	var = ft_substr(vars->input, i - j, j);
 	if (!var)
-		return (-1);
+		return (err_msg("Substr error"), -1);
 	tmp = split_string(vars->input, var);
 	if (!tmp)
 		return (null_free(&var), -1);

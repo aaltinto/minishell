@@ -52,7 +52,10 @@ int	executer(t_vars **child, char **commands, int i, int i2)
 			return (err_msg("substr error"), -1);
 	}
 	else
-		(*child)[i2].input = ft_strdup(commands[i]);
+	{
+		(*child)[i2].input = NULL;
+		if (!(*child)[i2].input)
+	}		return (err_msg("Strdup error"), -1);
 	if (i == 0 || (commands[i] != NULL && ((commands[i][0] == '&' \
 		&& (*child)[i2 - 1].exit_stat == 0) || (commands[i][0] == '|'
 		&& (*child)[i2 - 1].exit_stat == 1))))

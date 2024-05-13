@@ -59,7 +59,7 @@ int	new_export(t_vars *vars, int ret, int i)
 	char	**new_env;
 
 	if (!vars->input_parsed[1])
-		return (print_vars(vars), 1);
+		return (bubblesort(vars, double_counter(vars->env)), 1);
 	if (!check_restore(vars, 0))
 		return (0);
 	new_env = dup_env(vars, vars->env);
