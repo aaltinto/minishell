@@ -24,7 +24,7 @@ char	**split_string(char *src, char *key)
 
 	result = ft_calloc(3, sizeof(char *));
 	if (result == NULL)
-		return (err_msg("Memory allocation failed\n"), NULL);
+		return (err_msg("Memory allocation failed"), NULL);
 	found = ft_strnstr(src, key, ft_strlen(src));
 	if (found == NULL)
 		return (NULL);
@@ -102,24 +102,4 @@ int	append_doubles(char **dest, char **src, int condition)
 		if (src[i])
 			ft_strlcat(*dest, src[i], len + 1);
 	return (1);
-}
-
-int	check_origin(t_vars *vars)
-{
-	int	check;
-
-	check = 0;
-	if (!vars->input)
-		return (-1);
-	if (ft_strncmp(vars->input, "", 1) == 0)
-		return (-1);
-	if (ft_strncmp(vars->input, "echo ", 5) == 0
-		|| ft_strncmp(vars->input, "export ", 6) == 0
-		|| ft_strncmp(vars->input, "exit ", 5) == 0)
-		check = 1;
-	vars->input_parsed
-		= (char **)ft_calloc(ft_strlen(vars->input) + 1, sizeof(char *));
-	if (!vars->input_parsed)
-		return (err_msg("Allocation Error"), -1);
-	return (check);
 }

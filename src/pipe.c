@@ -24,6 +24,8 @@ char	**split_pipes(t_vars *vars, int pipe_count, int i)
 	char	**ret;
 
 	ret = malloc(sizeof(char *) * (pipe_count + 2));
+	if (!ret)
+		return (err_msg("Malloc error"), (void *)0);
 	i2 = -1;
 	in_quotes = 0;
 	quote = 0;
@@ -87,7 +89,7 @@ int	pipe_piping(int **pipes, int pipe_count, t_vars *vars, int i)
 
 	pid = malloc(sizeof(pid_t) * (pipe_count + 1));
 	if (!pid)
-		return (err_msg("allocation error"), 0);
+		return (err_msg("allocation error"), null_free(&vars->input), 0);
 	while (++i < pipe_count + 1)
 	{
 		pid[i] = fork();
@@ -122,17 +124,17 @@ int	pipe_parse(t_vars *vars, int i)
 		return (0);
 	pipes = malloc(sizeof(int *) * pipe_count);
 	if (!pipes)
-		return (err_msg("allocation error"), 0);
+		return (err_msg("allocation error"), null_free(&vars->input), 0);
 	while (++i < pipe_count)
 	{
 		pipes[i] = malloc(sizeof(int) * 2);
-		if (!pipes[i] && err_msg("allocation error"))
+		if (!pipes[i] && err_msg("allocation error") && null_free(&vars->input))
 			return (free_doubles2((void **)pipes, pipe_count), 0);
 		if (pipe(pipes[i]) == -1)
 			return (perror("pipe"), 0);
 	}
 	if (!input_parse_fill(vars, pipe_count)
 		|| !pipe_piping(pipes, pipe_count, vars, -1))
-		return (0);
+		return (free_doubles2((void **)pipes, pipe_count), 0);
 	return (free_doubles2((void **)pipes, pipe_count), 1);
 }

@@ -84,7 +84,7 @@ int		is_empty(char *str);
 int		double_counter(char **str);
 char	**split_string(char *src, char *key);
 char	*strip(char *tmp);
-char	*destroy_quotes(char *str, int check);
+char	*destroy_quotes(char *str);
 int		append_doubles(char **dest, char **src, int condition);
 
 //parsing

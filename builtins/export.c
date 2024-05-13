@@ -60,7 +60,8 @@ int	new_export(t_vars *vars, int ret, int i)
 
 	if (!vars->input_parsed[1])
 		return (print_vars(vars), 1);
-	check_restore(vars, 0);
+	if (!check_restore(vars, 0))
+		return (0);
 	new_env = dup_env(vars, vars->env);
 	if (!new_env)
 		return (2);

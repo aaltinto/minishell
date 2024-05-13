@@ -35,7 +35,7 @@ int	double_counter(char **str)
 	return (i);
 }
 
-char	*destroy_quotes(char *str, int check)
+char	*destroy_quotes(char *str)
 {
 	char	*ret;
 	int		i;
@@ -43,7 +43,6 @@ char	*destroy_quotes(char *str, int check)
 	int		in_quotes;
 	char	quote;
 
-	(void)check;
 	ret = malloc(ft_strlen(str) + 1);
 	if (!ret)
 		return (err_msg("Allocation error"), NULL);

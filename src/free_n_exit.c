@@ -17,7 +17,9 @@
 int	killer(t_vars *vars)
 {
 	free_doubles(vars->input_parsed);
+	vars->input_parsed = NULL;
 	free_doubles(vars->env);
+	vars->env = NULL;
 	null_free(&vars->input);
 	null_free(&vars->output);
 	null_free(&vars->user_pwd);

@@ -52,7 +52,7 @@ int	prompter(char **env, t_vars *ret)
 
 	vars = malloc(sizeof(char *) * 5);
 	if (!vars)
-		return (0);
+		return (err_msg("Malloc error"), 0);
 	i = find_in_env(env, "USER=", double_counter(env));
 	if (i == -1)
 		vars[0] = ft_strdup("user");
@@ -126,7 +126,7 @@ int	main(int argc, char **argv, char **env)
 	{
 		reset_vars(&vars);
 		if (!prompter(vars.env, &vars) || !vars.user_pwd)
-			return (err_msg("Prompter error!"), 1);
+			exit (EXIT_FAILURE);
 		init_signals();
 		vars.input = readline(vars.user_pwd);
 		init_signals2();

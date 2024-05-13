@@ -49,7 +49,7 @@ int	executer(t_vars **child, char **commands, int i, int i2)
 	{
 		(*child)[i2].input = ft_substr(commands[i], 1, ft_strlen(commands[i]));
 		if ((*child)[i2].input == NULL)
-			return (err_msg("error message"), -1);
+			return (err_msg("substr error"), -1);
 	}
 	else
 		(*child)[i2].input = ft_strdup(commands[i]);

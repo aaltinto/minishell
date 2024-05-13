@@ -123,12 +123,12 @@ int	parse(t_vars *vars, int i, int j)
 	if (ret)
 		vars->input_parsed = malloc(sizeof(char *) * (double_counter(ret) + 2));
 	if (!vars->input_parsed)
-		return (err_msg("Malloc error"), 0);
+		return (err_msg("Malloc error"), free_doubles(ret), 0);
 	while (ret[++i])
 	{
-		vars->input_parsed[++j] = destroy_quotes(ret[i], 1);
+		vars->input_parsed[++j] = destroy_quotes(ret[i]);
 		if (!vars->input_parsed[j])
-			return (0);
+			return (free_doubles(ret), 0);
 	}
 	return (vars->input_parsed[++j] = NULL, free_doubles(ret), 1);
 }

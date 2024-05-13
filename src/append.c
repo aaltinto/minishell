@@ -94,7 +94,7 @@ int	append_output(t_vars *vars, int i)
 	if (null_free(&tmp[1]), !append_doubles(&vars->input, tmp, 1))
 		return (err_msg("Error!"), null_free(&var), free_doubles(tmp), -1);
 	free_doubles2((void **)tmp, 3);
-	tmp2 = destroy_quotes(var, 1);
+	tmp2 = destroy_quotes(var);
 	j = fd_append_operations(vars, tmp2);
 	return (null_free(&var), null_free(&tmp2), j);
 }

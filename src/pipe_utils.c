@@ -46,7 +46,7 @@ char	**pipe_checker(char **ret)
 	i = -1;
 	while (ret[++i])
 		if (is_empty(ret[i]))
-			return (err_msg(SYNTAX_ERR), NULL);
+			return (err_msg(SYNTAX_ERR), free_doubles(ret), NULL);
 	return (ret);
 }
 

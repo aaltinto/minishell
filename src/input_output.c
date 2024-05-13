@@ -94,7 +94,7 @@ int	open_file(t_vars *vars, int i)
 	if (!append_doubles(&vars->input, tmp, 1))
 		return (null_free(&var), free_doubles(tmp), -1);
 	free_doubles2((void **)tmp, 3);
-	tmp2 = destroy_quotes(var, 1);
+	tmp2 = destroy_quotes(var);
 	null_free(&var);
 	ret = fd_open_operations(vars, tmp2);
 	vars->exit_stat = (ret != -1);
@@ -149,7 +149,7 @@ int	output_file(t_vars *vars, int i)
 	if (!append_doubles(&vars->input, tmp, 1))
 		return (free_doubles(tmp), -1);
 	free_doubles2((void **)tmp, 3);
-	tmp2 = destroy_quotes(var, 1);
+	tmp2 = destroy_quotes(var);
 	null_free(&var);
 	return (fd_output_operations(vars, tmp2));
 }

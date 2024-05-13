@@ -66,7 +66,8 @@ int	re_init_env(t_vars *vars, int count, int del)
 		return (1);
 	new_env = malloc(sizeof(char *) * (count - del + 1));
 	if (!new_env)
-		return (0);
+		return (err_msg("Malloc error: env corrupted!"),
+			free_doubles2((void **)vars->env, count), 0);
 	while (count >= ++i)
 	{
 		if (!vars->env[i])

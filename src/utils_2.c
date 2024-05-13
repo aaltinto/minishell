@@ -60,7 +60,7 @@ int	destroy_para(t_vars *vars, int para)
 
 	dest = malloc(sizeof(char) * (ft_strlen(vars->input) + 1));
 	if (!dest)
-		return (err_msg("malloc error"), 1);
+		return (err_msg("Malloc error"), 1);
 	i = -1;
 	j = -1;
 	while (vars->input[++i])
