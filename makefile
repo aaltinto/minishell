@@ -1,7 +1,7 @@
 NAME = minishell
 NAME_B = minishell_bonus
 CC = gcc
-FLAGS = # -Wall -Wextra -Werror -g #-fsanitize=address -g
+FLAGS =  -Wall -Wextra -Werror -fsanitize=address -g
 
 SRC =	src/main.c\
 	src/free_n_exit.c\

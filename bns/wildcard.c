@@ -61,9 +61,11 @@ int	find_in_list(t_vars *vars, char *var, char **split, char **list)
 			if (ft_strlen(tmp) != ft_strlen(var))
 				continue ;
 			tmp = ft_strdup(split[i]);
+			if (!tmp)
+				return (err_msg("Strdup error"), 0);
 			list[++j] = ft_strjoin(tmp, " ");
 			if (null_free(&tmp) && !list[j])
-				return (err_msg("strdup error"), 0);
+				return (err_msg("Strjoin error"), 0);
 		}
 		tmp = NULL;
 	}
@@ -133,7 +135,7 @@ int	wildcard(t_vars *vars, int i, int rev)
 		return (0);
 	var_tmp = ft_strdup(var);
 	if (!var_tmp)
-		return (null_free(&var), err_msg("Error"), 0);
+		return (null_free(&var), err_msg("Strdup error"), 0);
 	if (!find_list(vars, var, rev))
 		return (null_free(&var_tmp), null_free(&var), 0);
 	if (null_free(&var) && !vars->output)

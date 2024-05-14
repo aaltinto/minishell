@@ -37,7 +37,7 @@ char	**split_pipes(t_vars *vars, int pipe_count, int i)
 			quote_pass(vars->input, i++, &quote, &in_quotes);
 			j++;
 		}
-		ret[++i2] = NULL;
+		ret[++i2] = ft_substr(vars->input, i - j, j);
 		if (!ret[i2])
 			return (err_msg("substr error"), free_doubles(ret), NULL);
 		if (vars->input[i] == '\0')

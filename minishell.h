@@ -49,7 +49,6 @@ int		pipe_parse(t_vars *vars, int i);
 
 int		marche(t_vars *vars, char **env, int condition);
 int		find_in_env(char **env, char *to_find, int count);
-char	*get_env(t_vars *vars, char *to_find);
 int		set_env(t_vars *vars, char *to_find, char *to_set);
 int		env_init(t_vars *vars, char **env);
 char	**dup_env(t_vars *vars, char **to_dup);

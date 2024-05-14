@@ -68,7 +68,9 @@ int	transform_output(t_vars *vars)
 	{
 		if (splitted[i + 1] == NULL)
 			break ;
-		tmp = ft_strdup(splitted[i]);
+		tmp = NULL;
+		if (!tmp)
+			return (free_doubles(splitted), err_msg("Strdup error"), 0);
 		null_free(&splitted[i]);
 		splitted[i] = ft_strjoin(tmp, " ");
 		null_free(&tmp);

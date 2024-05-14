@@ -47,7 +47,6 @@ int	bubblesort(t_vars *vars, int n)
 void	print_vars(char **arr)
 {
 	char	**exports;
-	char	*tmp;
 	int		i;
 
 	i = -1;
