@@ -48,6 +48,8 @@ int	check_val(t_vars *vars, char *export)
 	if (ft_strncmp(split[0], "", 1) == 0 || !split[0])
 		return (free_doubles(split), err_msg("not a valid identifier!"), 1);
 	tmp = strip(split[0]);
+	if (!tmp)
+		return (err_msg("Strip error"), free_doubles(split), 0);
 	if (illegal_char_check(tmp))
 		return (free_doubles(split), null_free(&tmp), 1);
 	return (free_doubles(split), null_free(&tmp), 0);

@@ -62,7 +62,7 @@ int	prompter(char **env, t_vars *ret)
 	vars[2] = find_work_dir(env);
 	vars[3] = ft_strdup(" $ ");
 	if (!vars[0] || !vars[1] || !vars[2] || !vars[3])
-		return (err_msg("strdup error"), free_doubles(vars), 1);
+		return (err_msg("strdup error"), free_doubles2((void **)vars, 4), 1);
 	vars[4] = NULL;
 	return (append_doubles(&ret->user_pwd, vars, 0), free_doubles(vars), 1);
 }
@@ -127,9 +127,9 @@ int	main(int argc, char **argv, char **env)
 		reset_vars(&vars);
 		if (!prompter(vars.env, &vars) || !vars.user_pwd)
 			exit (EXIT_FAILURE);
-		init_signals();
+		//init_signals();
 		vars.input = readline(vars.user_pwd);
-		init_signals2();
+		//init_signals2();
 		null_free(&vars.user_pwd);
 		if (handle_prompt(&vars, 1) == 2)
 			break ;

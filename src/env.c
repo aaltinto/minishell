@@ -27,7 +27,7 @@ int	env_init(t_vars *vars, char **env)
 	{
 		vars->env[i] = ft_strdup(env[i]);
 		if (!vars->env[i])
-			return (free_doubles(vars->env), err_msg("env couldn't set"), 0);
+			return (free_doubles(vars->env), err_msg("Strdup error"), 0);
 	}
 	vars->env[i] = NULL;
 	return (1);
@@ -48,7 +48,7 @@ char	**dup_env(t_vars *vars, char **to_dup)
 	{
 		new_env[i] = ft_strdup(to_dup[i]);
 		if (!new_env[i])
-			return (err_msg("strdup error"), NULL);
+			return (err_msg("strdup error"), free_doubles(new_env), NULL);
 	}
 	new_env[i] = NULL;
 	return (new_env);
@@ -74,13 +74,12 @@ int	re_init_env(t_vars *vars, int count, int del)
 			continue ;
 		new_env[++j] = ft_strdup(vars->env[i]);
 		if (!new_env[j])
-			return (free_doubles(new_env), 0);
+			return (free_doubles(new_env), 
+				err_msg("Strdup error: env corrupted!"),
+				free_doubles2((void **)vars->env, count), 0);
 	}
-	free_doubles2((void **)vars->env, count);
-	new_env[++j] = NULL;
-	env_init(vars, new_env);
-	free_doubles(new_env);
-	return (1);
+	return (new_env[++j] = NULL, free_doubles2((void **)vars->env, count),
+		env_init(vars, new_env), free_doubles(new_env));
 }
 
 int	find_in_env(char **env, char *to_find, int count)

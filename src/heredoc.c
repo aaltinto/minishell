@@ -69,8 +69,8 @@ int	heredoc_loop(t_vars *vars, char *delimeter)
 		return (1);
 	if (pid == 0)
 	{
-		g_l = 42;
-		signal(SIGINT, sig_c);
+		//g_l = 42;
+		//signal(SIGINT, sig_c);
 		handle_eof(delimeter, fd);
 		killer(vars);
 		exit(EXIT_SUCCESS);
@@ -93,7 +93,7 @@ int	heredoc(t_vars *vars, int i)
 		return (0);
 	tmp = strip(vars->input);
 	if (!tmp)
-		return (null_free(&var), 0);
+		return (err_msg("Strip error"), null_free(&var), 0);
 	tmps = split_string(tmp, var);
 	if (!tmps)
 		return (null_free(&var), null_free(&tmp), 0);
@@ -103,7 +103,7 @@ int	heredoc(t_vars *vars, int i)
 		return (null_free(&var), free_doubles2((void **)tmps, 3), 0);
 	tmp = strip(var + 2);
 	if (free_doubles2((void **)tmps, 3) && !tmp)
-		return (null_free(&tmp), null_free(&var), 0);
+		return (err_msg("Strip error"), null_free(&tmp), null_free(&var), 0);
 	deli = ft_substr(tmp, 0, ft_strlen(var));
 	if (null_free(&var) && null_free(&tmp) && !deli)
 		return (err_msg("Substr error"), 0);

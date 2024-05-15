@@ -37,14 +37,13 @@ int	strip_spaces(t_vars *vars)
 
 	tmp = strip(vars->input);
 	if (!tmp)
-		return (err_msg("strip error"), 0);
+		return (err_msg("Strip error"), 0);
 	if (is_space(tmp[0]))
 		return (0);
 	null_free(&vars->input);
 	vars->input = ft_strdup(tmp);
-	if (!vars->input)
-		return (err_msg("strdup error"), 0);
-	null_free(&tmp);
+	if (null_free(&tmp), !vars->input)
+		return (err_msg("Strdup error"), 0);
 	return (1);
 }
 
@@ -95,7 +94,7 @@ int	slice_parse(t_vars *vars, char ***ret, int count)
 		{
 			(*ret)[++count] = ft_substr(vars->input, i - j, j);
 			if (!(*ret)[count])
-				return (err_msg("substr error"), 0);
+				return (err_msg("Substr error"), 0);
 			j = 0;
 			continue ;
 		}

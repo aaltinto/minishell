@@ -58,22 +58,26 @@ int	transform_output(t_vars *vars)
 	char	**splitted;
 	char	*tmp;
 	int		i;
+	int		count;
 
 	splitted = ft_split(vars->output, '\n');
 	null_free(&vars->output);
 	if (!splitted)
 		return (perror("split"), 0);
 	i = -1;
+	count = double_counter(splitted);
 	while (splitted[++i])
 	{
 		if (splitted[i + 1] == NULL)
 			break ;
-		tmp = NULL;
+		tmp = ft_strdup(splitted[i]);
 		if (!tmp)
 			return (free_doubles(splitted), err_msg("Strdup error"), 0);
 		null_free(&splitted[i]);
 		splitted[i] = ft_strjoin(tmp, " ");
-		null_free(&tmp);
+		if (null_free(&tmp) && !splitted[i])
+			return (err_msg("Strjoin error"),
+				free_doubles2((void **)splitted, count), 0);
 	}
 	return (append_doubles(&vars->output, splitted, 0),
 		free_doubles(splitted), 1);

@@ -53,10 +53,12 @@ int	env_find_dollar(t_vars *vars, int i, int j)
 	if (!tmp)
 		return (null_free(&var), -1);
 	j = find_in_env(vars->env, var + 1, double_counter(vars->env));
-	null_free(&var);
-	null_free(&tmp[1]);
-	if (j != -1)
+	if (null_free(&var), null_free(&tmp[1]), j != -1)
+	{
 		tmp[1] = ft_strdup(ft_strchr(vars->env[j], '=') + 1);
+		if (!tmp[1])
+			return (err_msg("Strdup error"), free_doubles2((void **)tmp, 3), -1);
+	}
 	vars->env = original;
 	if (!append_doubles(&vars->input, tmp, 1) || !vars->input)
 		return (free_doubles2((void **)tmp, 3), -1);

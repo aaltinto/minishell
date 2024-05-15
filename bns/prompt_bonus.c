@@ -22,6 +22,8 @@ int	is_builtin(t_vars *vars)
 	int		ret;
 
 	input = strip(vars->input_parsed[0]);
+	if (!input)
+		return (err_msg("Strip error"), vars->exit_stat = 1, 0);
 	if (ft_strncmp(input, "cd", 2) == 0)
 		ret = new_cd(vars);
 	else if (ft_strncmp(input, "pwd", 4) == 0)

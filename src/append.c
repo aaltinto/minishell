@@ -26,6 +26,8 @@ static int	fd_append_operations(t_vars *vars, char *var)
 		if (dup2(vars->origin_stdout, STDOUT_FILENO) == -1)
 			return (perror("dup2"), -1);
 	tmp = strip(var + 2);
+	if (!tmp)
+		return (err_msg("Strip error"), -1);
 	file = ft_substr(tmp, 0, ft_strlen(var));
 	null_free(&tmp);
 	if (!file)
@@ -85,7 +87,7 @@ int	append_output(t_vars *vars, int i)
 		return (err_msg("Error"), -1);
 	tmp2 = strip(vars->input);
 	if (!tmp2)
-		return (null_free(&var), 0);
+		return (null_free(&var), err_msg("Strip error"), 0);
 	tmp = split_string(tmp2, var);
 	if (!tmp)
 		return (null_free(&var), null_free(&tmp2), 0);

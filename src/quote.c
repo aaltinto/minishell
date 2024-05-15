@@ -48,7 +48,7 @@ int	get_input(char **new_input, t_vars *vars)
 	return (0);
 }
 
-void	wait_close(int quote_check, int type, t_vars *vars)
+int	wait_close(int quote_check, int type, t_vars *vars)
 {
 	char	*new_input;
 	char	*tmp;
@@ -58,7 +58,7 @@ void	wait_close(int quote_check, int type, t_vars *vars)
 	{
 		i = -1;
 		if (get_input(&new_input, vars))
-			return ;
+			return (0);
 		while (new_input[++i])
 		{
 			if (type && new_input[i] == '\"')
@@ -67,13 +67,13 @@ void	wait_close(int quote_check, int type, t_vars *vars)
 				quote_check++;
 		}
 		tmp = ft_strjoin(vars->input, "\n");
-		null_free(&vars->input);
+		if (null_free(&vars->input), !tmp && null_free(&new_input))
+			return (err_msg("Strjoin error"), 0);
 		vars->input = ft_strjoin(tmp, new_input);
-		null_free(&tmp);
-		null_free(&new_input);
+		if (null_free(&tmp) && null_free(&new_input) && !vars->input)
+			return (err_msg("Strjoin error"), 0);
 	}
-	if (!quote(vars))
-		return ;
+	return (quote(vars));
 }
 
 int	quote(t_vars *vars)
@@ -101,6 +101,6 @@ int	quote(t_vars *vars)
 		}
 	}
 	if (in_quote != 0)
-		wait_close(2, in_quote != 2, vars);
+		return (wait_close(2, in_quote != 2, vars));
 	return (in_quote != 0);
 }

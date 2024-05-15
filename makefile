@@ -1,7 +1,7 @@
 NAME = minishell
 NAME_B = minishell_bonus
 CC = gcc
-FLAGS =  -Wall -Wextra -Werror -fsanitize=address -g
+FLAGS =  -Wall -Wextra -Werror -g #-fsanitize=address -g
 
 SRC =	src/main.c\
 	src/free_n_exit.c\
@@ -18,7 +18,6 @@ SRC =	src/main.c\
 	src/dollar_parse.c\
 	src/append.c\
 	src/heredoc.c\
-	src/signals.c\
 	src/input_output.c\
 	src/parse_utils.c\
 	builtins/cd.c\
@@ -28,7 +27,8 @@ SRC =	src/main.c\
 	builtins/unset.c\
 	builtins/pwd.c\
 	builtins/exit.c\
-	builtins/echo.c
+	builtins/echo.c\
+	#src/signals.c
 
 SRC_B =	src/main.c\
 	src/free_n_exit.c\
@@ -44,7 +44,6 @@ SRC_B =	src/main.c\
 	src/dollar_parse.c\
 	src/append.c\
 	src/heredoc.c\
-	src/signals.c\
 	src/input_output.c\
 	src/parse_utils.c\
 	builtins/cd.c\
@@ -59,7 +58,8 @@ SRC_B =	src/main.c\
 	bns/logic_utils.c\
 	bns/prompt_bonus.c\
 	bns/wildcard_utils.c\
-	bns/wildcard.c
+	bns/wildcard.c\
+	#src/signals.c
 
 LIBFT = libft/libft.a
 GNL = gnl/gnl.a

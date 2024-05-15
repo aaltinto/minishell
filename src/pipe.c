@@ -51,16 +51,17 @@ int	create_newvars(t_vars *vars, char **argv, int i)
 	t_vars	new_vars;
 	char	*tmp;
 
+	(void)i;
 	if (!marche(&new_vars, vars->env, 0))
 		return (free_doubles(argv), exit(EXIT_FAILURE), 0);
 	tmp = strip(argv[i]);
 	free_doubles(argv);
 	if (!tmp)
-		return (err_msg("strip error"), killer(&new_vars),
+		return (err_msg("Strip error"), killer(&new_vars),
 			exit(EXIT_FAILURE), 0);
 	new_vars.input = ft_strdup(tmp);
 	if (null_free(&tmp) && !new_vars.input)
-		return (killer(&new_vars), exit(EXIT_FAILURE), 0);
+		return (killer(&new_vars), err_msg("Strdup error"), exit(EXIT_FAILURE), 0);
 	handle_prompt(&new_vars, 0);
 	return (reset_fds(vars), exit(new_vars.exit_stat), 1);
 }

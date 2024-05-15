@@ -31,7 +31,7 @@ static int	fd_open_operations(t_vars *vars, char *var)
 		return (err_msg("Substr error"), -1);
 	file = strip(tmp);
 	if (null_free(&tmp) && !file)
-		return (err_msg("strip error"), -1);
+		return (err_msg("Strip error"), -1);
 	fd = open(file, O_RDONLY);
 	if (null_free(&file) && fd < 0)
 		return (perror(file), -1);
@@ -86,6 +86,8 @@ int	open_file(t_vars *vars, int i)
 	if (!var)
 		return (-1);
 	stripped = strip(vars->input);
+	if (!stripped)
+		return (err_msg("Strip error"), null_free(&var), -1);
 	tmp = split_string(stripped, var);
 	null_free(&stripped);
 	if (!tmp)
@@ -111,12 +113,13 @@ static int	fd_output_operations(t_vars *vars, char *var)
 		if (dup2(vars->origin_stdout, STDOUT_FILENO) == -1)
 			return (perror("dup2"), -1);
 	tmp = ft_substr(var, 1, (ft_strlen(var) -1));
+	if (null_free(&var) && !tmp)
+		return (err_msg("Substr error"), -1);
 	file = strip(tmp);
-	null_free(&tmp);
-	free(var);
+	if (null_free(&tmp) && !file)
+		return (err_msg("Strip error"), null_free(&tmp), -1);
 	fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
-	null_free(&file);
-	if (fd < 0)
+	if (null_free(&file) && fd < 0)
 		return (perror("minishell"), -1);
 	vars->origin_stdout = dup(STDOUT_FILENO);
 	if (vars->origin_stdout == -1)
@@ -126,8 +129,7 @@ static int	fd_output_operations(t_vars *vars, char *var)
 	vars->file_created = 1;
 	if (!vars->input)
 		return (close(fd), -1);
-	close(fd);
-	return (1);
+	return (close(fd), 1);
 }
 
 int	output_file(t_vars *vars, int i)
@@ -141,6 +143,8 @@ int	output_file(t_vars *vars, int i)
 	if (!var)
 		return (-1);
 	stripped = strip(vars->input);
+	if (!stripped)
+		return (err_msg("Strip error"), null_free(&var), -1);
 	tmp = split_string(stripped, var);
 	null_free(&stripped);
 	if (!tmp)

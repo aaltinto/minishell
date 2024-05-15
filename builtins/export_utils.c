@@ -83,6 +83,8 @@ int	check_restore(t_vars *vars, int count)
 		if ((!splited || !splited[0]) && free_doubles(splited))
 			continue ;
 		tmp2 = strip(splited[0]);
+		if (!tmp2)
+			return (err_msg("Strip error"), free_doubles(splited), 0);
 		index = find_in_env_var(vars->env, tmp2, count);
 		if (free_doubles(splited) && null_free(&tmp2) && index == -1)
 			continue ;

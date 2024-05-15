@@ -22,7 +22,9 @@ int	is_builtin(t_vars *vars)
 	int		ret;
 
 	input = strip(vars->input_parsed[0]);
-	if (ft_strncmp(input, "cd", 2) == 0)
+	if (!input && err_msg("Strip error"))
+		ret = 0;
+	else if (ft_strncmp(input, "cd", 2) == 0)
 		ret = new_cd(vars);
 	else if (ft_strncmp(input, "pwd", 4) == 0)
 		ret = new_pwd(vars);
@@ -49,7 +51,7 @@ int	something_familiar(t_vars *vars)
 		return (1);
 	tmp = strip(vars->input_parsed[0]);
 	if (!tmp)
-		return (err_msg("Error"), 0);
+		return (err_msg("Error"), 1);
 	if (ft_strncmp("exit", tmp, 4) == 0)
 		return (null_free(&tmp), 2);
 	else if (ft_strncmp("hi", tmp, 3) == 0)
