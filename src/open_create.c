@@ -31,7 +31,6 @@ int	reset_fds(t_vars *vars)
 int	open_fds_parse(t_vars *vars, int in_quotes, char quote_type)
 {
 	int		i;
-	int		count;
 
 	if (!vars->input)
 		return (0);
@@ -40,16 +39,17 @@ int	open_fds_parse(t_vars *vars, int in_quotes, char quote_type)
 	{
 		if (quote_pass(vars->input, i, &quote_type, &in_quotes) || in_quotes)
 			continue ;
-		else if (((vars->input[i] == '<' && vars->input[i + 1] == '<' && \
-		vars->input[i + 2] != '<' && ++i && heredoc(vars, ++i) == 0) \
-			|| (vars->input[i] == '<' && open_file(vars, i - 1) == -1)))
+		else if ((vars->input[i] == '<' && vars->input[i + 1] == '<' && \
+		vars->input[i + 2] != '<' && ++i && heredoc(vars, ++i) == 0)
+			|| (ft_strlen(vars->input) >= (size_t)i && vars->input[i] == '<'
+			&& open_file(vars, i - 1) == -1)))
 			return (null_free(&vars->input), 0);
-		else if (((vars->input[i] == '>' && vars->input[i + 1] == '>' \
-				&& append_output(vars, i) == -1) || (vars->input[i] == '>' \
+		else if (((vars->input[i] == '>' && vars->input[i + 1] == '>'
+				&& append_output(vars, i) == -1) 
+				|| (ft_strlen(vars->input) >= (size_t)i && vars->input[i] == '>'
 				&& output_file(vars, i) == -1)))
 			return (null_free(&vars->input), 0);
-		count = ft_strlen(vars->input);
-		if (count -1 <= i + 1)
+		if (ft_strlen(vars->input) -1 <= i + 1)
 			break ;
 	}
 	return (1);

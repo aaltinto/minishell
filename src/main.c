@@ -127,9 +127,9 @@ int	main(int argc, char **argv, char **env)
 		reset_vars(&vars);
 		if (!prompter(vars.env, &vars) || !vars.user_pwd)
 			exit (EXIT_FAILURE);
-		init_signals();
+		//init_signals();
 		vars.input = readline(vars.user_pwd);
-		init_signals2();
+		//init_signals2();
 		null_free(&vars.user_pwd);
 		if (handle_prompt(&vars, 1) == 2)
 			break ;
