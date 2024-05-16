@@ -57,11 +57,12 @@ int	something_familiar(t_vars *vars)
 	else if (ft_strncmp("hi", tmp, 3) == 0)
 		return (null_free(&tmp), printf("hi baby 😘\n"), 1);
 	else if ((ft_strncmp(vars->input_parsed[0], "export", 7) == 0 && \
-	!vars->input_parsed[1] && bubblesort(vars, double_counter(vars->env)))
-		|| (is_builtin(vars) != -1))
+	!vars->input_parsed[1]))
+		return (bubblesort(vars, double_counter(vars->env)));
+	else if ((is_builtin(vars) != -1))
 		return (null_free(&tmp), 1);
 	else
-		return (null_free(&tmp), 0);
+		return (null_free(&tmp), 3);
 }
 
 int	check_input(t_vars *vars, int condition)
@@ -72,7 +73,7 @@ int	check_input(t_vars *vars, int condition)
 
 	if (ft_strncmp("", vars->input, 2) == 0)
 		return (vars->exit_stat = 127, 1);
-	if (quote(vars), vars->hist != -1 && condition)
+	if (quote(vars) && vars->hist != -1 && condition)
 		add_history(vars->input);
 	vars->bonus = 1;
 	if (!wildcard_parse(vars))
@@ -115,7 +116,7 @@ int	handle_prompt(t_vars *vars, int condition)
 	if (!parse(vars, -1, -1))
 		return (reset_fds(vars), 0);
 	ret = something_familiar(vars);
-	if (!ret)
+	if (ret == 3)
 		path_finder(vars, vars->input_parsed[0], vars->input_parsed);
 	if (reset_vars(vars) && !reset_fds(vars))
 		return (0);

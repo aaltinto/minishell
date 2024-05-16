@@ -28,8 +28,8 @@ void	echo(t_vars *vars)
 	if (!tmp && err_msg("Strip error"))
 		return ;
 	i = 0;
-	if (ft_strncmp(vars->input_parsed[1], "-n ", 3) == 0
-		|| ft_strncmp(vars->input_parsed[1], "-n", 3) == 0)
+	if (ft_strncmp(tmp, "-n ", ft_strlen(tmp)) == 0
+		|| ft_strncmp(tmp, "-n", ft_strlen(tmp)) == 0)
 		i++;
 	while (vars->input_parsed[++i])
 	{
@@ -37,7 +37,7 @@ void	echo(t_vars *vars)
 		if (vars->input_parsed[i + 1] != 0)
 			ft_putstr_fd(" ", 1);
 	}
-	if (ft_strncmp(tmp, "-n", 3) != 0)
+	if (ft_strncmp(tmp, "-n", ft_strlen(tmp)) != 0)
 		ft_putstr_fd("\n", 1);
 	free(tmp);
 }

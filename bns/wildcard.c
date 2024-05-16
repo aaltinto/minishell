@@ -45,22 +45,21 @@ int	find_in_list_rev(t_vars *vars, char *var, char **split, char **list)
 int	find_in_list(t_vars *vars, char *var, char **split, char **list)
 {
 	char	*tmp;
-	int		i;
 	int		j;
 
-	i = -1;
+	vars->i = -1;
 	j = -1;
 	var = var + 1;
-	while (split[++i])
+	while (split[++vars->i])
 	{
-		tmp = ft_strrchr(split[i], var[0]);
+		tmp = ft_strrchr(split[vars->i], var[0]);
 		if (!tmp)
 			continue ;
 		if (ft_strncmp(var, tmp, ft_strlen(tmp)) == 0)
 		{
 			if (ft_strlen(tmp) != ft_strlen(var))
 				continue ;
-			tmp = ft_strdup(split[i]);
+			tmp = ft_strdup(split[vars->i]);
 			if (!tmp)
 				return (err_msg("Strdup error"), 0);
 			list[++j] = ft_strjoin(tmp, " ");

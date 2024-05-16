@@ -40,7 +40,7 @@ int	count_op(t_vars *vars, int i)
 			count ++;
 		}
 	}
-	return (count++);
+	return (count);
 }
 
 int	executer(t_vars **child, char **commands, int i, int i2)

@@ -71,7 +71,7 @@ int	transform_output(t_vars *vars)
 		if (splitted[i + 1] == NULL)
 			break ;
 		tmp = ft_strdup(splitted[i]);
-		if (null_free(&splitted[i]) &&!tmp && err_msg("Strdup error"))
+		if (null_free(&splitted[i]) && !tmp && err_msg("Strdup error"))
 			return (free_doubles2((void **)splitted, count), 0);
 		splitted[i] = ft_strjoin(tmp, " ");
 		if (null_free(&tmp) && !splitted[i])

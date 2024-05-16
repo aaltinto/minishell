@@ -1,6 +1,0 @@
-*.d
-*.o
-*.a
-*.dSYM/
-.Ds_Store
-*.out
