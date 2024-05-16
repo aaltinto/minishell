@@ -60,13 +60,11 @@ int	new_export(t_vars *vars, int ret, int i)
 	int		i2;
 	char	**new_env;
 
-	if (!vars->input_parsed[1])
-		return (bubblesort(vars, double_counter(vars->env)), 1);
 	if (!check_restore(vars, 0))
 		return (0);
 	new_env = dup_env(vars, vars->env);
 	if (!new_env)
-		return (2);
+		return (0);
 	i2 = double_counter(new_env) - 1;
 	while ((vars->argc + 1) > ++i)
 	{

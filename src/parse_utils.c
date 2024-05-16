@@ -14,6 +14,27 @@
 #include "../libft/libft.h"
 #include <stdlib.h>
 
+int	dup_string(char ***result, char *before, char *after, char *key)
+{
+	if (ft_strncmp(before, "", 1) != 0)
+	{
+		(*result)[0] = ft_strdup(before);
+		if ((*result)[0] == NULL)
+			return (err_msg("Strdup error"), free(*result), 0);
+	}
+	if (ft_strncmp(after, "", 1) != 0)
+	{
+		(*result)[2] = ft_strdup(after);
+		if (!(*result)[2])
+			return (err_msg("Strdup error"), free_doubles(*result), 0);
+	}
+	(*result)[1] = ft_strdup(key);
+	if (!(*result)[1])
+		return (err_msg("Strdup error"),
+			free_doubles2((void **)(*result), 3), 0);
+	return (1);
+}
+
 char	**split_string(char *src, char *key)
 {
 	char	**result;
@@ -34,22 +55,8 @@ char	**split_string(char *src, char *key)
 	i = -1;
 	while (++i < 3)
 		result[i] = NULL;
-	if (ft_strncmp(before, "", 1) != 0)
-	{
-		result[0] = ft_strdup(before);
-		if (result[0] == NULL)
-			return (err_msg("Strdup error"), free(result), NULL);
-	}
-	if (ft_strncmp(after, "", 1) != 0)
-	{
-		result[2] = ft_strdup(after);
-		if (!result[2])
-			return (err_msg("Strdup error"), free_doubles(result), NULL);
-			
-	}
-	result[1] = ft_strdup(key);
-	if (!result[1])
-		return (err_msg("Strdup error"), free_doubles2((void **)result, 3), NULL);
+	if (!dup_string(&result, before, after, key))
+		return (NULL);
 	return (result);
 }
 

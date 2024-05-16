@@ -43,8 +43,8 @@ int	env_find_dollar(t_vars *vars, int i, int j)
 	char	**original;
 
 	original = vars->env;
-	while (vars->input[++i] && vars->input[i] != ' ' && vars->input[i] != '\''
-		&& vars->input[i] != '\"')
+	while (vars->input[++i] && vars->input[i] != ' '
+		&& is_quote(vars->input[i]))
 		j++;
 	var = ft_substr(vars->input, i - j, j);
 	if (!var)
@@ -57,7 +57,7 @@ int	env_find_dollar(t_vars *vars, int i, int j)
 	{
 		tmp[1] = ft_strdup(ft_strchr(vars->env[j], '=') + 1);
 		if (!tmp[1])
-			return (err_msg("Strdup error"), free_doubles2((void **)tmp, 3), -1);
+			return (err_msg("Strdup err"), free_doubles2((void **)tmp, 3), -1);
 	}
 	vars->env = original;
 	if (!append_doubles(&vars->input, tmp, 1) || !vars->input)

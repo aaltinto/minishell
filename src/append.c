@@ -29,13 +29,11 @@ static int	fd_append_operations(t_vars *vars, char *var)
 	if (!tmp)
 		return (err_msg("Strip error"), -1);
 	file = ft_substr(tmp, 0, ft_strlen(var));
-	null_free(&tmp);
-	if (!file)
+	if (null_free(&tmp) && !file)
 		return (err_msg("Error"), -1);
 	fd = open(file, O_WRONLY | O_APPEND | O_CREAT, 0644);
-	if (fd < 0)
+	if (null_free(&file) && fd < 0)
 		return (perror(file), null_free(&file), -1);
-	null_free(&file);
 	vars->origin_stdout = dup(STDOUT_FILENO);
 	if (vars->origin_stdout == -1)
 		return (perror("error: dup"), -1);

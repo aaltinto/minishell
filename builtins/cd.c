@@ -85,12 +85,10 @@ int	new_cd(t_vars *vars)
 	{
 		perror("getcwd");
 		i = find_in_env(vars->env, "PWD=", double_counter(vars->env));
-		if (i == -1)
-			old_path = NULL;
-		else
+		if (i != -1)
 			old_path = ft_strdup(vars->env[i] + 4);
 		if (!old_path)
-			return (err_msg("Strdup error"), 0);
+			return (err_msg("PWD could not set"), 0);
 	}
 	if (ft_strncmp(vars->input_parsed[1], "-", 2) == 0)
 		return (null_free(&old_path), get_oldpwd(vars));
