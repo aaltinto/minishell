@@ -58,7 +58,7 @@ int	something_familiar(t_vars *vars)
 		return (printf("hi baby 😘\n"), null_free(&tmp), 1);
 	else if ((ft_strncmp(vars->input_parsed[0], "export", 7) == 0
 			&& !vars->input_parsed[1]))
-		return (bubblesort(vars, double_counter(vars->env)));
+		return (null_free(&tmp), bubblesort(vars, double_counter(vars->env)));
 	else if (is_builtin(vars) != -1)
 		return (null_free(&tmp), 1);
 	else

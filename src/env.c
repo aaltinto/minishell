@@ -88,6 +88,8 @@ int	find_in_env(char **env, char *to_find, int count)
 	char	**tmp;
 
 	i = -1;
+	if (!env || !to_find)
+		return (-1);
 	while (count >= ++i)
 	{
 		if (!env[i])

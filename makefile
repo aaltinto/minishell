@@ -7,6 +7,7 @@ SRC =	src/main.c\
 	src/free_n_exit.c\
 	src/prompt.c\
 	src/env.c\
+	src/env_utils.c\
 	src/utils.c\
 	src/utils_2.c\
 	src/quote.c\
@@ -33,6 +34,7 @@ SRC =	src/main.c\
 SRC_B =	src/main.c\
 	src/free_n_exit.c\
 	src/env.c\
+	src/env_utils.c\
 	src/utils.c\
 	src/utils_2.c\
 	src/quote.c\

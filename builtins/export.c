@@ -36,29 +36,55 @@ int	illegal_char_check(char *str)
 	return (0);
 }
 
-int	check_val(t_vars *vars, char *export)
+char	*find_before_eq(char *var)
 {
 	char	**split;
 	char	*tmp;
 
-	(void)vars;
-	split = ft_split(export, '=');
+	split = ft_split(var, '=');
 	if (!split)
-		return (err_msg("Split error"), 0);
-	if (ft_strncmp(split[0], "", 1) == 0 || !split[0])
-		return (free_doubles(split), err_msg("not a valid identifier!"), 1);
+		return (err_msg("Split error"), NULL);
 	tmp = strip(split[0]);
 	if (!tmp)
-		return (err_msg("Strip error"), free_doubles(split), 0);
-	if (illegal_char_check(tmp))
-		return (free_doubles(split), null_free(&tmp), 1);
-	return (free_doubles(split), null_free(&tmp), 0);
+		return (err_msg("Strip error"), free_doubles(split), NULL);
+	return (free_doubles(split), tmp);
 }
+
+int	check_val(t_vars *vars, char ***new_env, char *export)
+{
+	char	**tmp2;
+	char	*tmp;
+	int		i;
+	int		count;
+
+	count = double_counter(*new_env);
+	tmp = find_before_eq(export);
+	if (!tmp)
+		return (0);
+	if (ft_strncmp(tmp, "", 1) == 0 || !tmp)
+		return (null_free(&tmp), err_msg("not a valid identifier!"), 1);
+	if (illegal_char_check(tmp))
+		return (null_free(&tmp), 1);
+	i = find_in_env(*new_env, tmp, double_counter(*new_env));
+	if (null_free(&tmp) && i == -1)
+		return (null_free(&tmp), 0);;
+	null_free(&(*new_env)[i]);
+	tmp2 = re_init_double(*new_env, count, 1);
+	if (!tmp2)
+		return (err_msg("env couldn't re-init"), 1);
+	free_doubles2((void **)(*new_env), count);
+	*new_env = dup_env(vars, tmp2);
+	if (!new_env)
+		return (err_msg("env couldn't re-init"), 1);
+	return (free_doubles(tmp2), 0);
+}
+
 
 int	new_export(t_vars *vars, int ret, int i)
 {
 	int		i2;
 	char	**new_env;
+	char	*tmp;
 
 	if (!check_restore(vars, 0))
 		return (0);
@@ -70,7 +96,12 @@ int	new_export(t_vars *vars, int ret, int i)
 	{
 		if (!vars->input_parsed[i])
 			continue ;
-		if (check_val(vars, vars->input_parsed[i]))
+		new_env[i2 + 1] = NULL;
+		tmp = find_before_eq(vars->input_parsed[i]);
+		if (find_in_env(new_env, tmp, i2) != -1)
+			i2--;
+		null_free(&tmp);
+		if (check_val(vars, &new_env, vars->input_parsed[i]))
 		{
 			ret = 0;
 			continue ;
