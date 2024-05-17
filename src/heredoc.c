@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/05 14:36:14 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/05/05 15:11:39 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/05/17 15:24:20 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	handle_eof(char *delimeter, int *fd)
 	return (null_free(&new_input), 1);
 }
 
-int	heredoc_loop(t_vars *vars, char *delimeter)
+int	heredoc_loop(t_vars *vars, char *delimeter, int status)
 {
 	int	fd[2];
 	int	pid;
@@ -66,7 +66,7 @@ int	heredoc_loop(t_vars *vars, char *delimeter)
 	vars->file_opened = 1;
 	pid = fork();
 	if (pid < 0)
-		return (1);
+		return (perror("minishell: fork"), 1);
 	if (pid == 0)
 	{
 		g_l = 42;
@@ -75,10 +75,11 @@ int	heredoc_loop(t_vars *vars, char *delimeter)
 		killer(vars);
 		exit(EXIT_SUCCESS);
 	}
-	if (dup2(fd[0], STDIN_FILENO) == -1 || close(fd[0]) == -1
-		|| close(fd[1]) == -1)
+	if (dup2(fd[0], 0) == -1 || close(fd[0]) == -1 || close(fd[1]) == -1)
 		return (perror("dup2/close"), null_free(&vars->input), -1);
-	return (waitpid(pid, NULL, 0), 1);
+	if (waitpid(pid, &status, 0), WEXITSTATUS(status) == 1)
+		null_free(&vars->input);
+	return (1);
 }
 
 int	heredoc(t_vars *vars, int i)
@@ -107,5 +108,5 @@ int	heredoc(t_vars *vars, int i)
 	deli = ft_substr(tmp, 0, ft_strlen(var));
 	if (null_free(&var) && null_free(&tmp) && !deli)
 		return (err_msg("Substr error"), 0);
-	return (heredoc_loop(vars, deli), null_free(&deli), vars->input != NULL);
+	return (heredoc_loop(vars, deli, 0), null_free(&deli), vars->input != NULL);
 }
