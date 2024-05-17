@@ -31,14 +31,12 @@ int	split_cmds(t_vars *vars, int *p, int i)
 
 	j = *p;
 	para = 0;
-	if (!in_para(vars, i, &para))
-		return (0);
 	while (vars->input[i + j] != '\0')
 	{
-		if (para == 0 && is_logic(vars->input[i + j], vars->input[i + j + 1]))
-			break ;
 		if (!in_para(vars, i + j, &para))
 			return (0);
+		if (para == 0 && is_logic(vars->input[i + j], vars->input[i + j + 1]))
+			break ;
 		j++;
 	}
 	if (para != 0)

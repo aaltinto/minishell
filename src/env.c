@@ -74,7 +74,7 @@ int	re_init_env(t_vars *vars, int count, int del)
 			continue ;
 		new_env[++j] = ft_strdup(vars->env[i]);
 		if (!new_env[j])
-			return (free_doubles(new_env), 
+			return (free_doubles(new_env),
 				err_msg("Strdup error: env corrupted!"),
 				free_doubles2((void **)vars->env, count), 0);
 	}

@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:12:21 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/05/05 14:35:34 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/05/17 14:27:56 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	check_val(t_vars *vars, char ***new_env, char *export)
 		return (null_free(&tmp), 1);
 	i = find_in_env(*new_env, tmp, double_counter(*new_env));
 	if (null_free(&tmp) && i == -1)
-		return (null_free(&tmp), 0);;
+		return (null_free(&tmp), 0);
 	null_free(&(*new_env)[i]);
 	tmp2 = re_init_double(*new_env, count, 1);
 	if (!tmp2)
@@ -79,12 +79,27 @@ int	check_val(t_vars *vars, char ***new_env, char *export)
 	return (free_doubles(tmp2), 0);
 }
 
+static int	check_export(t_vars *vars, char ***new_env, int i, int *i2)
+{
+	int		j2;
+	char	*tmp;
+
+	j2 = *i2;
+	(*new_env)[j2 + 1] = NULL;
+	tmp = find_before_eq(vars->input_parsed[i]);
+	if (!tmp)
+		return (0);
+	if (find_in_env(*new_env, tmp, j2) != -1)
+		j2--;
+	null_free(&tmp);
+	*i2 = j2;
+	return (1);
+}
 
 int	new_export(t_vars *vars, int ret, int i)
 {
 	int		i2;
 	char	**new_env;
-	char	*tmp;
 
 	if (!check_restore(vars, 0))
 		return (0);
@@ -94,13 +109,8 @@ int	new_export(t_vars *vars, int ret, int i)
 	i2 = double_counter(new_env) - 1;
 	while ((vars->argc + 1) > ++i)
 	{
-		if (!vars->input_parsed[i])
+		if (!vars->input_parsed[i] || !check_export(vars, &new_env, i, &i2))
 			continue ;
-		new_env[i2 + 1] = NULL;
-		tmp = find_before_eq(vars->input_parsed[i]);
-		if (find_in_env(new_env, tmp, i2) != -1)
-			i2--;
-		null_free(&tmp);
 		if (check_val(vars, &new_env, vars->input_parsed[i]))
 		{
 			ret = 0;

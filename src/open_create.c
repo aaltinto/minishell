@@ -42,14 +42,14 @@ int	open_fds_parse(t_vars *vars, int in_quotes, char quote_type)
 		else if ((vars->input[i] == '<' && vars->input[i + 1] == '<' && \
 		vars->input[i + 2] != '<' && ++i && heredoc(vars, ++i) == 0)
 			|| (ft_strlen(vars->input) >= (size_t)i && vars->input[i] == '<'
-			&& open_file(vars, i - 1) == -1))
+				&& open_file(vars, i - 1) == -1))
 			return (null_free(&vars->input), 0);
 		else if (((vars->input[i] == '>' && vars->input[i + 1] == '>'
-				&& append_output(vars, i) == -1) 
+					&& append_output(vars, i) == -1)
 				|| (ft_strlen(vars->input) >= (size_t)i && vars->input[i] == '>'
-				&& output_file(vars, i) == -1)))
+					&& output_file(vars, i) == -1)))
 			return (null_free(&vars->input), 0);
-		if (ft_strlen(vars->input) -1 >= (size_t)i + 1)
+		if (ft_strlen(vars->input) - 1 >= (size_t)i + 1)
 			break ;
 	}
 	return (1);

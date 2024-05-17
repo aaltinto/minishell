@@ -29,7 +29,7 @@ SRC =	src/main.c\
 	builtins/pwd.c\
 	builtins/exit.c\
 	builtins/echo.c\
-	#src/signals.c
+	src/signals.c
 
 SRC_B =	src/main.c\
 	src/free_n_exit.c\
@@ -61,7 +61,7 @@ SRC_B =	src/main.c\
 	bns/prompt_bonus.c\
 	bns/wildcard_utils.c\
 	bns/wildcard.c\
-	#src/signals.c
+	src/signals.c
 
 LIBFT = libft/libft.a
 GNL = gnl/gnl.a

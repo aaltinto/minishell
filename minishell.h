@@ -15,9 +15,7 @@
 
 # define SYNTAX_ERR "minishell: syntax error near unexpected token"
 
-#include <sys/wait.h>
-
-//int	g_l;
+int	g_l;
 
 typedef struct s_vars
 {

@@ -1,4 +1,14 @@
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_utils.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/17 13:53:35 by aaltinto          #+#    #+#             */
+/*   Updated: 2024/05/17 13:53:38 by aaltinto         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../minishell.h"
 #include "../libft/libft.h"
@@ -23,7 +33,7 @@ char	**re_init_double(char **env, int count, int del)
 			continue ;
 		new_env[++j] = ft_strdup(env[i]);
 		if (!new_env[j])
-			return (free_doubles(new_env), 
+			return (free_doubles(new_env),
 				err_msg("Strdup error"), NULL);
 	}
 	return (new_env[++j] = NULL, new_env);

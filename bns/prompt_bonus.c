@@ -6,7 +6,7 @@
 /*   By: aaltinto <aaltinto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 16:13:05 by aaltinto          #+#    #+#             */
-/*   Updated: 2024/05/05 15:11:39 by aaltinto         ###   ########.fr       */
+/*   Updated: 2024/05/17 13:57:30 by aaltinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ int	check_input(t_vars *vars, int condition)
 				|| vars->input[i + 1] == '|')
 				return (err_msg(SYNTAX_ERR), 0);
 	}
-	if (!seek_operator(vars))
+	if (destroy_para(vars, 0) || !seek_operator(vars))
 		return (0);
 	return (3);
 }
@@ -111,8 +111,6 @@ int	handle_prompt(t_vars *vars, int condition)
 	ret = open_fds_parse(vars, 0, 0);
 	if (ret == 0)
 		return (vars->exit_stat = 1, 0);
-	if (destroy_para(vars, 0))
-		return (reset_fds(vars), 0);
 	if (!parse(vars, -1, -1))
 		return (reset_fds(vars), 0);
 	ret = something_familiar(vars);
