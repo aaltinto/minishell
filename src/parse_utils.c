@@ -14,7 +14,7 @@
 #include "../libft/libft.h"
 #include <stdlib.h>
 
-int	dup_string(char ***result, char *before, char *after, char *key)
+static int	dup_string(char ***result, char *before, char *after, char *key)
 {
 	if (ft_strncmp(before, "", 1) != 0)
 	{
@@ -78,7 +78,7 @@ char	*strip(char *str)
 	return (ft_substr(str, start, end - start + 1));
 }
 
-int	null_check(char **src)
+static int	null_check(char **src)
 {
 	int	i;
 	int	null_check;

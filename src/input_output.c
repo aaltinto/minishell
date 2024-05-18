@@ -46,7 +46,7 @@ static int	fd_open_operations(t_vars *vars, char *var)
 	return (close(fd), 1);
 }
 
-char	*find_keyword(t_vars *vars, int i, int condition)
+static char	*find_keyword(t_vars *vars, int i, int condition)
 {
 	int		j;
 	int		check;

@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-int	find_in_list_rev(t_vars *vars, char *var, char **split, char **list)
+static int	find_in_list_rev(t_vars *vars, char *var, char **split, char **list)
 {
 	char	*tmp;
 	size_t	len;
@@ -42,7 +42,7 @@ int	find_in_list_rev(t_vars *vars, char *var, char **split, char **list)
 	return (1);
 }
 
-int	find_in_list(t_vars *vars, char *var, char **split, char **list)
+static int	find_in_list(t_vars *vars, char *var, char **split, char **list)
 {
 	char	*tmp;
 	int		j;
@@ -71,7 +71,7 @@ int	find_in_list(t_vars *vars, char *var, char **split, char **list)
 	return (j == -1 || append_doubles(&vars->output, list, 0));
 }
 
-char	*extract_var(t_vars *vars, int i, int rev)
+static char	*extract_var(t_vars *vars, int i, int rev)
 {
 	char	*ret;
 	int		j;
@@ -96,7 +96,7 @@ char	*extract_var(t_vars *vars, int i, int rev)
 	return (ret);
 }
 
-int	find_list(t_vars *vars, char *var, int rev)
+static int	find_list(t_vars *vars, char *var, int rev)
 {
 	char	**split;
 	char	**list;

@@ -43,7 +43,7 @@ char	**split_pipes(t_vars *vars, int pipe_count, int i)
 	return (ret[++i2] = NULL, pipe_checker(ret));
 }
 
-int	create_newvars(t_vars *vars, char **argv, int i)
+static int	create_newvars(t_vars *vars, char **argv, int i)
 {
 	t_vars	new_vars;
 	char	*tmp;
@@ -65,7 +65,7 @@ int	create_newvars(t_vars *vars, char **argv, int i)
 	return (reset_fds(vars), exit(new_vars.exit_stat), 1);
 }
 
-int	child_process(int **pipes, int pipe_count, t_vars *vars, int i)
+static int	child_process(int **pipes, int pipe_count, t_vars *vars, int i)
 {
 	int		j;
 
@@ -82,7 +82,7 @@ int	child_process(int **pipes, int pipe_count, t_vars *vars, int i)
 	return (create_newvars(vars, vars->input_parsed, i), exit(EXIT_FAILURE), 1);
 }
 
-int	pipe_piping(int **pipes, int pipe_count, t_vars *vars, int i)
+static int	pipe_piping(int **pipes, int pipe_count, t_vars *vars, int i)
 {
 	pid_t	*pid;
 	int		j;

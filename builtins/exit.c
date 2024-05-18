@@ -14,7 +14,7 @@
 #include "../libft/libft.h"
 #include <stdio.h>
 
-int	check_digits(t_vars *vars, char **split)
+static int	check_digits(t_vars *vars, char **split)
 {
 	int		i;
 	int		j;

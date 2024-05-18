@@ -16,7 +16,7 @@
 #include <unistd.h>
 #include <stdio.h>
 
-int	get_oldpwd(t_vars *vars)
+static int	get_oldpwd(t_vars *vars)
 {
 	int		i;
 	char	**tmp;
@@ -32,7 +32,7 @@ int	get_oldpwd(t_vars *vars)
 	return (1);
 }
 
-int	create_line(t_vars *vars, char *tmp, int i)
+static int	create_line(t_vars *vars, char *tmp, int i)
 {
 	char	**new_env;
 
@@ -50,7 +50,7 @@ int	create_line(t_vars *vars, char *tmp, int i)
 	return (1);
 }
 
-int	set_env(t_vars *vars, char *to_find, char *to_set)
+static int	set_env(t_vars *vars, char *to_find, char *to_set)
 {
 	int		i;
 	int		count;

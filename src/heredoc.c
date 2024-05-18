@@ -35,7 +35,7 @@ static char	*substract_var(t_vars *vars, int i)
 	return (var);
 }
 
-int	handle_eof(char *delimeter, int *fd)
+static int	handle_eof(char *delimeter, int *fd)
 {
 	char	*new_input;
 
@@ -53,7 +53,7 @@ int	handle_eof(char *delimeter, int *fd)
 	return (null_free(&new_input), 1);
 }
 
-int	heredoc_loop(t_vars *vars, char *delimeter, int status)
+static int	heredoc_loop(t_vars *vars, char *delimeter, int status)
 {
 	int	fd[2];
 	int	pid;

@@ -34,7 +34,7 @@ int	quote_pass(char *str, int i, char *quote_type, int *in_quotes)
 	return (0);
 }
 
-int	get_input(char **new_input, t_vars *vars)
+static int	get_input(char **new_input, t_vars *vars)
 {
 	*new_input = readline("> ");
 	if (!(*new_input))
@@ -48,7 +48,7 @@ int	get_input(char **new_input, t_vars *vars)
 	return (0);
 }
 
-int	wait_close(int quote_check, int type, t_vars *vars)
+static int	wait_close(int quote_check, int type, t_vars *vars)
 {
 	char	*new_input;
 	char	*tmp;

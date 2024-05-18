@@ -20,7 +20,7 @@ int	wexitstatus(int status)
 	return ((status >> 8) & 0x000000ff);
 }
 
-int	pipe_exec(char *path, t_vars *vars, char **argv)
+static int	pipe_exec(char *path, t_vars *vars, char **argv)
 {
 	int		p_id;
 	int		status;
@@ -41,7 +41,7 @@ int	pipe_exec(char *path, t_vars *vars, char **argv)
 	return (vars->exit_stat);
 }
 
-int	check_command(char *cmd, char *tmp, char **argv, t_vars *vars)
+static int	check_command(char *cmd, char *tmp, char **argv, t_vars *vars)
 {
 	char	*this_is_the_way;
 
@@ -54,7 +54,7 @@ int	check_command(char *cmd, char *tmp, char **argv, t_vars *vars)
 	return (null_free(&this_is_the_way), 0);
 }
 
-int	execute(t_vars *vars, char *cmd, char **argv, char	**split_path)
+static int	execute(t_vars *vars, char *cmd, char **argv, char	**split_path)
 {
 	char	*tmp;
 	char	*tmp2;

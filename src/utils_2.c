@@ -12,6 +12,8 @@
 
 #include "../libft/libft.h"
 #include "../minishell.h"
+#include <stdio.h>
+#include <unistd.h>
 
 int	is_empty(char *str)
 {
@@ -78,4 +80,17 @@ int	destroy_para(t_vars *vars, int para)
 	if (null_free(&dest) && !vars->input)
 		return (err_msg("strdup error"), 1);
 	return (0);
+}
+
+int	reset_fds(t_vars *vars)
+{
+	if (vars->file_created)
+		if (dup2(vars->origin_stdout, STDOUT_FILENO) == -1)
+			return (perror("dup2"), 0);
+	if (vars->file_opened)
+	{
+		if (dup2(vars->origin_stdin, STDIN_FILENO) == -1)
+			return (perror("dup2"), 0);
+	}
+	return (1);
 }

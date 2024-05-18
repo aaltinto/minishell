@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-int	illegal_char_check(char *str)
+static int	illegal_char_check(char *str)
 {
 	int		i;
 	char	*err;
@@ -36,7 +36,7 @@ int	illegal_char_check(char *str)
 	return (0);
 }
 
-char	*find_before_eq(char *var)
+static char	*find_before_eq(char *var)
 {
 	char	**split;
 	char	*tmp;
@@ -53,7 +53,7 @@ char	*find_before_eq(char *var)
 	return (tmp);
 }
 
-int	check_val(t_vars *vars, char ***new_env, char *export)
+static int	check_val(t_vars *vars, char ***new_env, char *export)
 {
 	char	**tmp2;
 	char	*tmp;

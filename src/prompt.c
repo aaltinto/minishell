@@ -16,7 +16,7 @@
 #include <stdio.h>
 #include <readline/history.h>
 
-int	is_builtin(t_vars *vars)
+static int	is_builtin(t_vars *vars)
 {
 	char	*input;
 	int		ret;
@@ -43,7 +43,7 @@ int	is_builtin(t_vars *vars)
 	return (null_free(&input), ret);
 }
 
-int	something_familiar(t_vars *vars)
+static int	something_familiar(t_vars *vars)
 {
 	char	*tmp;
 
@@ -65,7 +65,7 @@ int	something_familiar(t_vars *vars)
 		return (null_free(&tmp), 0);
 }
 
-int	check_input(t_vars *vars, int condition)
+static int	check_input(t_vars *vars, int condition)
 {
 	int		i;
 	int		in_quote;

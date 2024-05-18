@@ -18,7 +18,7 @@
 #include "../libft/libft.h"
 #include <stdlib.h>
 
-char	*find_work_dir(char **env)
+static char	*find_work_dir(char **env)
 {
 	char	**split;
 	char	*pwd;
@@ -45,7 +45,7 @@ char	*find_work_dir(char **env)
 	return (null_free(&pwd), ret);
 }
 
-int	prompter(char **env, t_vars *ret)
+static int	prompter(char **env, t_vars *ret)
 {
 	int		i;
 	char	**vars;
@@ -67,7 +67,7 @@ int	prompter(char **env, t_vars *ret)
 	return (append_doubles(&ret->user_pwd, vars, 0), free_doubles(vars), 1);
 }
 
-int	opening_ceremony(t_vars *vars)
+static int	opening_ceremony(t_vars *vars)
 {
 	int		i;
 	int		count;

@@ -15,7 +15,7 @@
 #include <unistd.h>
 #include <stdio.h>
 
-int	new_count(char ***ret, int count)
+static int	new_count(char ***ret, int count)
 {
 	int	i;
 	int	j;
@@ -31,7 +31,7 @@ int	new_count(char ***ret, int count)
 	return (j);
 }
 
-int	strip_spaces(t_vars *vars)
+static int	strip_spaces(t_vars *vars)
 {
 	char	*tmp;
 
@@ -47,7 +47,7 @@ int	strip_spaces(t_vars *vars)
 	return (1);
 }
 
-char	**destroy_spaces(char ***ret, int count)
+static char	**destroy_spaces(char ***ret, int count)
 {
 	int		i;
 	int		j;
@@ -76,7 +76,7 @@ char	**destroy_spaces(char ***ret, int count)
 	return (free_doubles2((void **)(*ret), count), tmp);
 }
 
-int	slice_parse(t_vars *vars, char ***ret, int count)
+static int	slice_parse(t_vars *vars, char ***ret, int count)
 {
 	int		i;
 	int		j;

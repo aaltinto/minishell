@@ -14,7 +14,7 @@
 #include "../libft/libft.h"
 #include <unistd.h>
 
-int	exit_status(t_vars *vars, int i)
+static int	exit_status(t_vars *vars, int i)
 {
 	char	*deli;
 	char	**tmp;
@@ -36,7 +36,7 @@ int	exit_status(t_vars *vars, int i)
 	return (1);
 }
 
-int	env_find_dollar(t_vars *vars, int i, int j)
+static int	env_find_dollar(t_vars *vars, int i, int j)
 {
 	char	*var;
 	char	**tmp;

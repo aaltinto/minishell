@@ -14,13 +14,35 @@
 #include <stdio.h>
 #include "../libft/libft.h"
 
-void	swap(char **a, char **b)
+static void	swap(char **a, char **b)
 {
 	char	*temp;	
 
 	temp = *a;
 	*a = *b;
 	*b = temp;
+}
+
+static void	print_vars(char **arr)
+{
+	char	**exports;
+	int		i;
+
+	i = -1;
+	while (arr[++i])
+	{
+		exports = ft_split(arr[i], '=');
+		if (!exports)
+			return ;
+		if (ft_strchr(arr[i], '=') && !exports[1])
+			printf("declare -x %s=\"\"\n", exports[0]);
+		else if (!exports[1])
+			printf("declare -x %s\n", exports[0]);
+		else
+			printf("declare -x %s=\"%s\"\n", exports[0],
+				(ft_strchr(arr[i], '=') + 1));
+		free_doubles(exports);
+	}
 }
 
 int	bubblesort(t_vars *vars, int n)
@@ -42,28 +64,6 @@ int	bubblesort(t_vars *vars, int n)
 	}
 	print_vars(arr);
 	return (free_doubles(arr), 1);
-}
-
-void	print_vars(char **arr)
-{
-	char	**exports;
-	int		i;
-
-	i = -1;
-	while (arr[++i])
-	{
-		exports = ft_split(arr[i], '=');
-		if (!exports)
-			return ;
-		if (ft_strchr(arr[i], '=') && !exports[1])
-			printf("declare -x %s=\"\"\n", exports[0]);
-		else if (!exports[1])
-			printf("declare -x %s\n", exports[0]);
-		else
-			printf("declare -x %s=\"%s\"\n", exports[0],
-				(ft_strchr(arr[i], '=') + 1));
-		free_doubles(exports);
-	}
 }
 
 int	check_restore(t_vars *vars, int count)

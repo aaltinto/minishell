@@ -54,7 +54,8 @@ static char	*substract_var(t_vars *vars, int i)
 	char	*var;
 
 	check = 1;
-	i += 2;
+	if (ft_strlen(vars->input) > (size_t)(i + 2))
+		i += 2;
 	j = 3;
 	in_quotes = 0;
 	quote = 0;
@@ -62,11 +63,11 @@ static char	*substract_var(t_vars *vars, int i)
 	))))
 	{
 		quote_pass(vars->input, i, &quote, &in_quotes);
-		if (j++ && !is_space(vars->input[i]))
+		if (j++ && (vars->input[i] != '>' && !is_space(vars->input[i])))
 			check = 0;
 	}
 	if (check)
-		return (err_msg("minishell: syntax error near unexpected token"), NULL);
+		return (err_msg(SYNTAX_ERR), NULL);
 	var = ft_substr(vars->input, i - j, j);
 	if (!var)
 		return (err_msg("ft_substr error"), NULL);

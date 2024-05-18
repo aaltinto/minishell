@@ -14,7 +14,7 @@
 #include "../libft/libft.h"
 #include <stdio.h>
 
-int	count_op(t_vars *vars, int i)
+static int	count_op(t_vars *vars, int i)
 {
 	int		check;
 	int		count;
@@ -43,7 +43,7 @@ int	count_op(t_vars *vars, int i)
 	return (count);
 }
 
-int	executer(t_vars **child, char **commands, int i, int i2)
+static int	executer(t_vars **child, char **commands, int i, int i2)
 {
 	if (i != 0)
 	{
@@ -72,7 +72,7 @@ int	executer(t_vars **child, char **commands, int i, int i2)
 	return (0);
 }
 
-int	exec_commands(char **commands, t_vars *vars)
+static int	exec_commands(char **commands, t_vars *vars)
 {
 	int		check;
 	int		i;
@@ -101,7 +101,7 @@ int	exec_commands(char **commands, t_vars *vars)
 	return (vars->exit_stat = child[i2].exit_stat, free(child), 1);
 }
 
-int	split_commands(t_vars *vars, char ***commands)
+static int	split_commands(t_vars *vars, char ***commands)
 {
 	int		i;
 	int		j;

@@ -15,16 +15,34 @@
 #include <unistd.h>
 #include "../libft/libft.h"
 
-int	reset_fds(t_vars *vars)
+static int	syntax_error(t_vars *vars, int i, int x)
 {
-	if (vars->file_created)
-		if (dup2(vars->origin_stdout, STDOUT_FILENO) == -1)
-			return (perror("dup2"), 0);
-	if (vars->file_opened)
-	{
-		if (dup2(vars->origin_stdin, STDIN_FILENO) == -1)
-			return (perror("dup2"), 0);
-	}
+	if (!vars->input || ft_strlen(vars->input) <= (size_t)(i + x))
+		return (err_msg(SYNTAX_ERR), 1);
+	return (0);
+}
+
+static int	check_triple_redirection(char *input, int i)
+{
+	return ((input[i] == '<' && input[i + 1] == '<' && input[i + 2] == '<')
+		|| (input[i] == '>' && input[i + 1] == '>' && input[i + 2] == '>'));
+}
+
+static int	handle_input_redirection(t_vars *vars, int i)
+{
+	if ((vars->input[i] == '<' && vars->input[i + 1] == '<' && ++i
+			&& heredoc(vars, ++i) == 0) || (syntax_error(vars, i, 0)
+			|| (vars->input[i] == '<' && open_file(vars, i - 1) == -1)))
+		return (null_free(&vars->input), 0);
+	return (1);
+}
+
+static int	handle_output_redirection(t_vars *vars, int i)
+{
+	if (((vars->input[i] == '>' && vars->input[i + 1] == '>'
+				&& append_output(vars, i) == -1) || (vars->input[i] == '>'
+				&& output_file(vars, i) == -1)))
+		return (null_free(&vars->input), 0);
 	return (1);
 }
 
@@ -37,20 +55,12 @@ int	open_fds_parse(t_vars *vars, int in_quotes, char quote_type)
 	{
 		if (quote_pass(vars->input, i, &quote_type, &in_quotes) || in_quotes)
 			continue ;
-		else if ((vars->input[i] == '<' && vars->input[i + 1] == '<'
-				&& vars->input[i + 2] == '<') || (vars->input[i] == '>'
-				&& vars->input[i + 1] == '>' && vars->input[i + 2] == '>'))
+		else if (check_triple_redirection(vars->input, i))
 			return (err_msg(SYNTAX_ERR), null_free(&vars->input), 0);
-		else if ((vars->input[i] == '<' && vars->input[i + 1] == '<'
-				&& vars->input[i + 2] != '<' && ++i && heredoc(vars, ++i) == 0)
-			|| (ft_strlen(vars->input) >= (size_t)i && vars->input[i] == '<'
-				&& vars->input[i + 2] != '<' && open_file(vars, i - 1) == -1))
-			return (null_free(&vars->input), 0);
-		else if (((vars->input[i] == '>' && vars->input[i + 1] == '>'
-					&& append_output(vars, i) == -1)
-				|| (ft_strlen(vars->input) >= (size_t)i && vars->input[i] == '>'
-					&& output_file(vars, i) == -1)))
-			return (null_free(&vars->input), 0);
+		else if (vars->input[i] == '<' && !handle_input_redirection(vars, i))
+			return (0);
+		else if (vars->input[i] == '>' && !handle_output_redirection(vars, i))
+			return (0);
 		if (ft_strlen(vars->input) - 1 <= (size_t)i + 1)
 			break ;
 	}
