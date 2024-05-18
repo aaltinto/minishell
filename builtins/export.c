@@ -44,10 +44,13 @@ char	*find_before_eq(char *var)
 	split = ft_split(var, '=');
 	if (!split)
 		return (err_msg("Split error"), NULL);
+	if (ft_strncmp(split[0], "", 1) == 0 || !split[0]
+		|| var[0] == '=')
+		return (free_doubles(split), err_msg("not a valid identifier!"), NULL);
 	tmp = strip(split[0]);
-	if (!tmp)
-		return (err_msg("Strip error"), free_doubles(split), NULL);
-	return (free_doubles(split), tmp);
+	if (free_doubles(split), !tmp)
+		return (err_msg("Strip error"), NULL);
+	return (tmp);
 }
 
 int	check_val(t_vars *vars, char ***new_env, char *export)
@@ -61,11 +64,9 @@ int	check_val(t_vars *vars, char ***new_env, char *export)
 	tmp = find_before_eq(export);
 	if (!tmp)
 		return (0);
-	if (ft_strncmp(tmp, "", 1) == 0 || !tmp)
-		return (null_free(&tmp), err_msg("not a valid identifier!"), 1);
 	if (illegal_char_check(tmp))
 		return (null_free(&tmp), 1);
-	i = find_in_env(*new_env, tmp, double_counter(*new_env));
+	i = find_in_env_var(*new_env, tmp, double_counter(*new_env));
 	if (null_free(&tmp) && i == -1)
 		return (null_free(&tmp), 0);
 	null_free(&(*new_env)[i]);
@@ -89,7 +90,7 @@ static int	check_export(t_vars *vars, char ***new_env, int i, int *i2)
 	tmp = find_before_eq(vars->input_parsed[i]);
 	if (!tmp)
 		return (0);
-	if (find_in_env(*new_env, tmp, j2) != -1)
+	if (find_in_env_var(*new_env, tmp, j2) != -1)
 		j2--;
 	null_free(&tmp);
 	*i2 = j2;

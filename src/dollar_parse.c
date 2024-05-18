@@ -52,7 +52,7 @@ int	env_find_dollar(t_vars *vars, int i, int j)
 	tmp = split_string(vars->input, var);
 	if (!tmp)
 		return (null_free(&var), -1);
-	j = find_in_env(vars->env, var + 1, double_counter(vars->env));
+	j = find_in_env_var(vars->env, var + 1, double_counter(vars->env));
 	if (null_free(&var) && null_free(&tmp[1]) && j != -1)
 	{
 		tmp[1] = ft_strdup(ft_strchr(vars->env[j], '=') + 1);
