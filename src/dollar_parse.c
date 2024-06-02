@@ -35,7 +35,7 @@ static int	exit_status(t_vars *vars, int i)
 	free_doubles2((void **)tmp, 3);
 	return (1);
 }
-#include <stdio.h>
+
 static int	env_find_dollar(t_vars *vars, int i, int j)
 {
 	char	*var;

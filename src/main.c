@@ -97,13 +97,6 @@ static int	opening_ceremony(t_vars *vars)
 	return (printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m"), 1);
 }
 
-int	update_path(t_vars *vars)
-{
-	vars->input = ft_strjoin("export PATH=$PATH:", PATH);
-	handle_prompt(vars, 0);
-	return (1);
-}
-
 int	marche(t_vars *vars, char **env, int condition)
 {
 	if (!env_init(vars, env))
@@ -118,7 +111,11 @@ int	marche(t_vars *vars, char **env, int condition)
 	vars->hist = 0;
 	vars->bonus = 0;
 	if (condition)
+	{
+		vars->input = ft_strjoin("export PATH=$PATH:", PATH);
+		handle_prompt(vars, 0);
 		return (opening_ceremony(vars));
+	}
 	return (1);
 }
 

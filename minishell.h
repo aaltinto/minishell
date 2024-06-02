@@ -15,7 +15,8 @@
 
 # define SYNTAX_ERR "minishell: syntax error near unexpected token"
 # define PATH "/opt/homebrew/bin:/opt/homebrew/sbin:/opt/local/bin:\
-/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\
+/Users/alialtintoprak/anaconda3/bin/norminette"
 
 int	g_l;
 
