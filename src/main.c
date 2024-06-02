@@ -127,8 +127,6 @@ int	main(int argc, char **argv, char **env)
 		return (run_files(argc, argv, env));
 	if (!marche(&vars, env, 1))
 		exit (EXIT_FAILURE);
-	if (!update_path(&vars))
-		return (0);
 	while (1)
 	{
 		reset_vars(&vars);
