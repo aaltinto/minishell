@@ -74,6 +74,34 @@ static int	set_env(t_vars *vars, char *to_find, char *to_set)
 	return (null_free(&tmp), 1);
 }
 
+int	change_dir(t_vars *vars)
+{
+	char	**tmp;
+	char	**split;
+	int		inx;
+
+	tmp = split_string(vars->input_parsed[1], "~");
+	if (tmp)
+	{
+		null_free(&tmp[1]);
+		inx = find_in_env(vars->env, "HOME=", double_counter(vars->env));
+		if (inx == -1)
+			return (err_msg(HOME_ERR), free_doubles2((void **)tmp, 3), 0);
+		split = ft_split(vars->env[inx], '=');
+		if (!split)
+			return (err_msg("Split error"), free_doubles2((void **)tmp, 3), 0);
+		tmp[1] = ft_strdup(split[1]);
+		free_doubles(split);
+		null_free(&vars->input_parsed[1]);
+		if (!append_doubles(&vars->input_parsed[1], tmp, 1))
+			return (free_doubles2((void **)tmp, 3), 0);
+		free_doubles2((void **)tmp, 3);
+	}
+	if (chdir(vars->input_parsed[1]) != 0)
+		return (perror("minishell: cd"), 0);
+	return (1);
+}
+
 int	new_cd(t_vars *vars)
 {
 	char	*old_path;
@@ -92,8 +120,8 @@ int	new_cd(t_vars *vars)
 	}
 	if (ft_strncmp(vars->input_parsed[1], "-", 2) == 0)
 		return (null_free(&old_path), get_oldpwd(vars));
-	if (chdir(vars->input_parsed[1]) != 0)
-		return (perror("minishell: cd"), null_free(&old_path), 0);
+	if (!change_dir(vars))
+		return (null_free(&old_path), 0);
 	new_path = getcwd(NULL, 0);
 	if (!new_path)
 		return (perror("minishell: getcwd"), null_free(&old_path), 0);

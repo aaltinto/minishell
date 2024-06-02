@@ -17,6 +17,8 @@
 # define PATH "/opt/homebrew/bin:/opt/homebrew/sbin:/opt/local/bin:\
 /opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:\
 /Users/aaltinto/Library/Python/3.9/bin"
+# define HOME_ERR "Home could not find. Please assign your Home path \
+in to variables or enter manually"
 
 int	g_l;
 
