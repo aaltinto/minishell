@@ -35,7 +35,7 @@ static int	exit_status(t_vars *vars, int i)
 	free_doubles2((void **)tmp, 3);
 	return (1);
 }
-
+#include <stdio.h>
 static int	env_find_dollar(t_vars *vars, int i, int j)
 {
 	char	*var;
@@ -43,10 +43,10 @@ static int	env_find_dollar(t_vars *vars, int i, int j)
 	char	**original;
 
 	original = vars->env;
-	while (vars->input[++i] && vars->input[i] != ' '
+	while (vars->input[++i] && ft_isalpha(vars->input[i])
 		&& !is_quote(vars->input[i]))
 		j++;
-	var = ft_substr(vars->input, i - j, j);
+	var = ft_substr(vars->input, (i -1) - j, j + 1);
 	if (!var)
 		return (err_msg("Substr error"), -1);
 	tmp = split_string(vars->input, var);
@@ -86,7 +86,7 @@ int	dolar_parse(t_vars *vars, int i)
 		}
 		else if ((vars->input[i] == '$' && !is_quote(vars->input[i + 1]) \
 		&& vars->input[i + 1] != '\0' && !is_space(vars->input[i + 1])
-				&& env_find_dollar(vars, i -1, 0) == -1))
+				&& env_find_dollar(vars, i, 0) == -1))
 			return (null_free(&vars->input), 0);
 		if (!vars->input || vars->input[i] == '\0')
 			break ;

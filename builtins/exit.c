@@ -44,15 +44,15 @@ int	exit_setter(t_vars *vars)
 		return (ft_putendl_fd("exit", 1), 1);
 	count = double_counter(vars->input_parsed);
 	if (count == 1)
-		return (0);
+		return (2);
 	if (count > 2)
 		return (err_msg("too many arguments"), 0);
 	if (!check_digits(vars, vars->input_parsed))
-		return (0);
+		return (2);
 	printf("exit\n");
 	num = ft_atoi(vars->input_parsed[1]);
 	if (num > 255)
 		num = num % 256;
 	vars->exit_stat = num;
-	return (num);
+	return (2);
 }

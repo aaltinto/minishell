@@ -53,19 +53,21 @@ static char	*find_before_eq(char *var)
 	return (tmp);
 }
 
-static int	check_val(t_vars *vars, char ***new_env, char *export)
+int	check_val(t_vars *vars, char ***new_env, char *export, int con)
 {
 	char	**tmp2;
 	char	*tmp;
 	int		i;
 	int		count;
 
-	count = double_counter(*new_env);
 	tmp = find_before_eq(export);
 	if (!tmp)
 		return (0);
 	if (illegal_char_check(tmp))
 		return (null_free(&tmp), 1);
+	if (con)
+		return (0);
+	count = double_counter(*new_env);
 	i = find_in_env_var(*new_env, tmp, double_counter(*new_env));
 	if (null_free(&tmp) && i == -1)
 		return (null_free(&tmp), 0);
@@ -112,7 +114,7 @@ int	new_export(t_vars *vars, int ret, int i)
 	{
 		if (!vars->input_parsed[i] || !check_export(vars, &new_env, i, &i2))
 			continue ;
-		if (check_val(vars, &new_env, vars->input_parsed[i]))
+		if (check_val(vars, &new_env, vars->input_parsed[i], 0))
 		{
 			ret = 0;
 			continue ;

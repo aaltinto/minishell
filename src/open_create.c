@@ -18,7 +18,7 @@
 static int	syntax_error(t_vars *vars, int i, int x)
 {
 	if (!vars->input || ft_strlen(vars->input) <= (size_t)(i + x))
-		return (err_msg(SYNTAX_ERR), 1);
+		return (1);
 	return (0);
 }
 

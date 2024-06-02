@@ -22,20 +22,22 @@ int	unset(t_vars *vars, int del, int count)
 	if (vars->input_parsed[1] == NULL)
 		return (1);
 	i = -1;
-	while (vars->env[++i])
+	while (vars->input_parsed[++i])
 	{
+		if (check_val(vars, NULL, vars->input_parsed[i], 1))
+			continue ;
 		j = 0;
-		exports = ft_split(vars->env[i], '=');
-		if (!exports)
-			return (err_msg("allocation error"), 0);
-		while (vars->input_parsed[++j])
+		while (vars->env[++j])
 		{
-			if (ft_strncmp(exports[0], vars->input_parsed[j],
+			exports = ft_split(vars->env[j], '=');
+			if (!exports)
+				return (err_msg("allocation error"), 0);
+			if (ft_strncmp(exports[0], vars->input_parsed[i],
 					ft_strlen(exports[0])) == 0)
-				if (null_free(&vars->env[i]), del++)
+				if (null_free(&vars->env[j]), del++)
 					break ;
+			free_doubles(exports);
 		}
-		free_doubles(exports);
 	}
 	return (re_init_env(vars, count, del));
 }

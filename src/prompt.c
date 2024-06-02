@@ -53,7 +53,7 @@ static int	something_familiar(t_vars *vars)
 	if (!tmp)
 		return (err_msg("Error"), 1);
 	if (ft_strncmp("exit", tmp, 4) == 0)
-		return (null_free(&tmp), 2);
+		return (null_free(&tmp), exit_setter(vars));
 	else if (ft_strncmp("hi", tmp, 3) == 0)
 		return (printf("hi baby 😘\n"), null_free(&tmp), 1);
 	else if ((ft_strncmp(vars->input_parsed[0], "export", 7) == 0

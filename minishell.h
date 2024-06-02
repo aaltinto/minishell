@@ -14,6 +14,8 @@
 # define MINISHELL_H
 
 # define SYNTAX_ERR "minishell: syntax error near unexpected token"
+# define PATH "/opt/homebrew/bin:/opt/homebrew/sbin:/opt/local/bin:\
+/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 
 int	g_l;
 
@@ -66,6 +68,7 @@ int		check_restore(t_vars *vars, int count);
 int		unset(t_vars *vars, int del, int count);
 void	new_env(t_vars *vars);
 int		bubblesort(t_vars *vars, int n);
+int		check_val(t_vars *vars, char ***new_env, char *export, int con);
 
 //pipe utils
 int		pipe_counter(t_vars *vars);
@@ -118,5 +121,6 @@ int		is_logic(int chr, int chr2);
 int		check_commands(char **commands, t_vars **child);
 int		in_para(t_vars *vars, int i, int *para);
 int		destroy_para(t_vars *vars, int para);
+int		run_files(int ac, char **argv, char **env);
 
 #endif

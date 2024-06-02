@@ -64,7 +64,9 @@ static int	prompter(char **env, t_vars *ret)
 	if (!vars[0] || !vars[1] || !vars[2] || !vars[3])
 		return (err_msg("strdup error"), free_doubles2((void **)vars, 4), 1);
 	vars[4] = NULL;
-	return (append_doubles(&ret->user_pwd, vars, 0), free_doubles(vars), 1);
+	if (!append_doubles(&ret->user_pwd, vars, 0))
+		return (err_msg("Error"), 0);
+	return (free_doubles(vars), 1);
 }
 
 static int	opening_ceremony(t_vars *vars)
@@ -95,6 +97,13 @@ static int	opening_ceremony(t_vars *vars)
 	return (printf("\e[1;33mMornin' Sunshine 🌞\n\e[0m"), 1);
 }
 
+int	update_path(t_vars *vars)
+{
+	vars->input = ft_strjoin("export PATH=$PATH:", PATH);
+	handle_prompt(vars, 0);
+	return (1);
+}
+
 int	marche(t_vars *vars, char **env, int condition)
 {
 	if (!env_init(vars, env))
@@ -117,16 +126,17 @@ int	main(int argc, char **argv, char **env)
 {
 	t_vars	vars;
 
-	(void)argv;
-	if (argc != 1)
-		return (err_msg("Error\nRun without arguments"), 1);
+	if (argc > 1)
+		return (run_files(argc, argv, env));
 	if (!marche(&vars, env, 1))
 		exit (EXIT_FAILURE);
+	if (!update_path(&vars))
+		return (0);
 	while (1)
 	{
 		reset_vars(&vars);
 		if (!prompter(vars.env, &vars) || !vars.user_pwd)
-			exit (EXIT_FAILURE);
+			break ;
 		init_signals();
 		vars.input = readline(vars.user_pwd);
 		init_signals2();
@@ -135,6 +145,6 @@ int	main(int argc, char **argv, char **env)
 			break ;
 	}
 	killer(&vars);
-	exit(exit_setter(&vars));
+	exit(vars.exit_stat);
 	return (vars.exit_stat);
 }
