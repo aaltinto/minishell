@@ -60,6 +60,7 @@ char	**dup_env(t_vars *vars, char **to_dup);
 int		find_in_env_var(char **env, char *to_find, int count);
 char	**re_init_double(char **env, int count, int del);
 int		re_init_env(t_vars *vars, int count, int del);
+int		update_env(t_vars *vars, t_vars *child);
 
 //builtins
 int		exit_setter(t_vars *vars);

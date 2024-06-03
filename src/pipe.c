@@ -61,7 +61,8 @@ static int	create_newvars(t_vars *vars, char **argv, int i)
 		return (killer(&new_vars), err_msg("Strdup error"),
 			exit(EXIT_FAILURE), 0);
 	handle_prompt(&new_vars, 0);
-	killer(&new_vars);
+	if (null_free(&new_vars.input), !update_env(vars, &new_vars))
+		return (reset_fds(vars), exit(new_vars.exit_stat), 1);
 	return (reset_fds(vars), exit(new_vars.exit_stat), 1);
 }
 

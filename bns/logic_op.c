@@ -88,8 +88,8 @@ static int	exec_commands(char **commands, t_vars *vars)
 		check = 0;
 		marche(&child[++i2], vars->env, 0);
 		check = executer(&child, commands, i, i2);
-		free_doubles(child[i2].env);
-		null_free(&child[i2].input);
+		if (null_free(&child[i2].input), !update_env(vars, &child[i2]))
+			return (vars->exit_stat = 1, free(child), 0);
 		if (check == -1)
 			return (vars->exit_stat = 1, free(child), 0);
 		if (!check)

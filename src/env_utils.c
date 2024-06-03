@@ -38,3 +38,22 @@ char	**re_init_double(char **env, int count, int del)
 	}
 	return (new_env[++j] = NULL, new_env);
 }
+
+int	update_env(t_vars *vars, t_vars *child)
+{
+	int i;
+
+	free_doubles(vars->env);
+	vars->env = (char **)malloc(sizeof(char *) * (double_counter(child->env) + 1));
+	i = -1;
+	while (child->env[++i])
+	{
+		vars->env[i] = ft_strdup(child->env[i]);
+		if (!vars->env[i])
+			return (err_msg("error\nenv corrupted!"), \
+		free_doubles2((void **)vars->env, i), free_doubles(child->env), 0);
+	}
+	vars->env[++i] = NULL;
+	free_doubles(child->env);
+	return (1);
+}
