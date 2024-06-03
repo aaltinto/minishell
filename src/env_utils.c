@@ -41,10 +41,11 @@ char	**re_init_double(char **env, int count, int del)
 
 int	update_env(t_vars *vars, t_vars *child)
 {
-	int i;
+	int	i;
 
 	free_doubles(vars->env);
-	vars->env = (char **)malloc(sizeof(char *) * (double_counter(child->env) + 1));
+	vars->env = (char **)malloc(sizeof(char *)
+			* (double_counter(child->env) + 1));
 	i = -1;
 	while (child->env[++i])
 	{

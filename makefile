@@ -1,7 +1,7 @@
 NAME = minishell
 NAME_B = minishell_bonus
 CC = gcc
-FLAGS =  -Wall -Wextra -Werror -g #-fsanitize=address -g
+FLAGS =  -Wall -Wextra -Werror -g # -D PATH= /* your path */
 
 SRC =	src/main.c\
 	src/free_n_exit.c\
@@ -85,7 +85,7 @@ $(NAME) : $(OBJ)
 	$(BUILD_PRINT)
 	@make all -C libft
 	@make all -C gnl
-	@$(CC) $(FLAGS) $(OBJ) $(LIBFT) $(GNL) -lreadline -o $(NAME) 
+	@$(CC) $(FLAGS) $(OBJ) $(LIBFT) $(GNL) -lreadline -o $(NAME)
 	@printf "\033[K\r"
 	$(SUCCESS_MSG)
 
